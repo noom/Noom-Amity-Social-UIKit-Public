@@ -133,7 +133,11 @@ public final class AmityUIKitManager {
     }
     
     static var bundle: Bundle {
+        #if SWIFT_PACKAGE
+        return Bundle.module
+        #else
         return Bundle(for: self)
+        #endif
     }
     
     // MARK: - Helper methods
