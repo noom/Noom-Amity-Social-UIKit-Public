@@ -14,10 +14,12 @@ public struct AmityCommunityCategoryModel {
     public let name: String
     let avatarURL: String
     public let categoryId: String
+    public var communityCount: Int
     
-    init(object: AmityCommunityCategory) {
+    init(object: AmityCommunityCategory, communityCount: Int? = 0) {
         self.name = object.name
         self.avatarURL = object.avatar?.fileURL ?? ""
         self.categoryId = object.categoryId
+        self.communityCount = communityCount ?? 0
     }
 }

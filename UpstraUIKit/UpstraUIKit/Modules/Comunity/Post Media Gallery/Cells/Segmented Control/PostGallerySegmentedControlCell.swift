@@ -58,7 +58,7 @@ class PostGallerySegmentedControlCell: UICollectionViewCell, Nibbable {
             ]
         } else {
             attributes = [
-                .foregroundColor: AmityThemeManager.currentTheme.secondary.blend(.shade3),
+                .foregroundColor: AmityThemeManager.currentTheme.unselectedToggle,
                 .font: AmityFontSet.body
             ]
         }

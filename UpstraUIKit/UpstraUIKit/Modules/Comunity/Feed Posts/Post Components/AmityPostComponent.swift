@@ -10,6 +10,7 @@ import UIKit
 
 enum AmityPostConstant {
     static let defaultNumberComponent = 3
+    static let separator = 1
 }
 
 struct AmityPostComponent {

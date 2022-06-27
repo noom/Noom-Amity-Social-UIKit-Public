@@ -45,7 +45,7 @@
                                                         </constraints>
                                                     </imageView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i3V-xw-Dtq">
-                                                        <rect key="frame" x="32" y="2" width="386" height="83"/>
+                                                        <rect key="frame" x="32" y="2" width="354" height="83"/>
                                                         <string key="text">Label 1
 Label 2
 ...
@@ -54,14 +54,24 @@ Label 4</string>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L5w-ic-ie1">
+                                                        <rect key="frame" x="394" y="0.0" width="24" height="85"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="24" id="mzo-To-hfE"/>
+                                                        </constraints>
+                                                    </view>
                                                 </subviews>
-                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstItem="e41-YO-6KR" firstAttribute="top" secondItem="fOk-Bm-43z" secondAttribute="top" id="4Ib-em-Hvf"/>
                                                     <constraint firstAttribute="bottom" secondItem="i3V-xw-Dtq" secondAttribute="bottom" id="73H-ac-FJj"/>
-                                                    <constraint firstAttribute="trailing" secondItem="i3V-xw-Dtq" secondAttribute="trailing" id="8oR-ir-fDA"/>
+                                                    <constraint firstAttribute="bottom" secondItem="L5w-ic-ie1" secondAttribute="bottom" id="A6R-8r-mHP"/>
                                                     <constraint firstItem="e41-YO-6KR" firstAttribute="leading" secondItem="fOk-Bm-43z" secondAttribute="leading" id="FNa-eX-Bnl"/>
+                                                    <constraint firstItem="L5w-ic-ie1" firstAttribute="top" secondItem="fOk-Bm-43z" secondAttribute="top" id="PDm-Mh-05G"/>
                                                     <constraint firstItem="i3V-xw-Dtq" firstAttribute="top" secondItem="fOk-Bm-43z" secondAttribute="top" constant="2" id="R4W-60-m5B"/>
+                                                    <constraint firstItem="L5w-ic-ie1" firstAttribute="leading" secondItem="i3V-xw-Dtq" secondAttribute="trailing" constant="8" symbolic="YES" id="RDL-cw-DQ6"/>
+                                                    <constraint firstAttribute="trailing" secondItem="L5w-ic-ie1" secondAttribute="trailing" id="ovS-fK-hjF"/>
                                                     <constraint firstItem="i3V-xw-Dtq" firstAttribute="leading" secondItem="e41-YO-6KR" secondAttribute="trailing" constant="8" symbolic="YES" id="wiw-uB-P5U"/>
                                                 </constraints>
                                             </view>
@@ -132,9 +142,6 @@ Label 4</string>
     </objects>
     <resources>
         <image name="icon_radio_on" width="24" height="24"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
         <systemColor name="systemBlueColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

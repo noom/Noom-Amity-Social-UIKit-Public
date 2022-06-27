@@ -48,7 +48,7 @@ final class AmitySettingsItemToggleContentTableViewCell: UITableViewCell, Nibbab
         iconView.isHidden = content.iconContent?.icon == nil
 
         if let hasBackground = content.iconContent?.hasBackground, hasBackground {
-            iconView.backgroundIcon = AmityColorSet.base.blend(.shade4)
+            iconView.backgroundIcon = AmityThemeManager.currentTheme.messageBubble
         } else {
             iconView.backgroundIcon = .none
         }
