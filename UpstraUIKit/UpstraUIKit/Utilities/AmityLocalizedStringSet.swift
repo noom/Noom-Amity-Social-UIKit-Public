@@ -260,6 +260,8 @@ public struct AmityLocalizedStringSet {
     
     // MARK: - Category
     static let categoryTitle = "category_title"
+    static let categoryCommunityCount = "category_community_count"
+    static let categoryCommunityCountSingular = "category_community_count_singular"
     
     // MARK: - Member title
     static let memberTitle = "member_list_title"

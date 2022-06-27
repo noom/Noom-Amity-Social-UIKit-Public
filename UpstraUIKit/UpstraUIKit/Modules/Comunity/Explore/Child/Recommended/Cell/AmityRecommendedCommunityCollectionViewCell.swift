@@ -66,6 +66,7 @@ private extension AmityRecommendedCommunityCollectionViewCell {
     
     func setupContainerView() {
         containerView.layer.cornerRadius = 4
+        containerView.layer.backgroundColor = AmityThemeManager.currentTheme.messageBubble.cgColor
     }
     
     func setupAvatarView() {

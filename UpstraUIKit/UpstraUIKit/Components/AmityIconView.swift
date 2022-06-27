@@ -17,11 +17,12 @@ final class AmityIconView: AmityView {
     // MARK: - Properties
     var image: UIImage? {
         didSet {
-            imageView.image = image
+            imageView.image = image?.withRenderingMode(.alwaysTemplate)
+            imageView.tintColor = AmityThemeManager.currentTheme.unselectedToggle
         }
     }
     
-    var backgroundIcon: UIColor? = AmityColorSet.base.blend(.shade4) {
+    var backgroundIcon: UIColor? = UIColor.clear {
         didSet {
             containerView.backgroundColor = backgroundIcon
         }

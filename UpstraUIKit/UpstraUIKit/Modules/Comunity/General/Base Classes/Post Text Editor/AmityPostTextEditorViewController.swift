@@ -784,7 +784,7 @@ extension AmityPostTextEditorViewController: AmityPostTextEditorMenuViewDelegate
         
         let bottomSheet = BottomSheetViewController()
         let contentView = ItemOptionView<ImageItemOption>()
-        let imageBackgroundColor = AmityColorSet.base.blend(.shade4)
+        let imageBackgroundColor = UIColor.clear
         let disabledColor = AmityColorSet.base.blend(.shade3)
         
         var cameraOption = ImageItemOption(title: AmityLocalizedStringSet.General.camera.localizedString,
