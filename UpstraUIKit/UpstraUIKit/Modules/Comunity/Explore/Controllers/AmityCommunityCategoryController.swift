@@ -41,7 +41,19 @@ final class AmityCommunityCategoryController: AmityCommunityCategoryControllerPr
         var category: [AmityCommunityCategoryModel] = []
         for index in 0..<min(collection.count(), maxCategories) {
             guard let object = collection.object(at: index) else { continue }
-            let model = AmityCommunityCategoryModel(object: object)
+            let communityCount = self.repository
+                .getCommunities(
+                    displayName: nil,
+                    filter: .all,
+                    sortBy: .displayName,
+                    categoryId: object.categoryId,
+                    includeDeleted: false
+                )
+                .count()
+            let model = AmityCommunityCategoryModel(
+                object: object,
+                communityCount: Int(communityCount)
+            )
             category.append(model)
         }
         return category

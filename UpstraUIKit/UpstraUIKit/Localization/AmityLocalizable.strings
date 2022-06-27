@@ -245,6 +245,8 @@
 
 // MARK: - Categories
 "category_title" = "Categories";
+"category_community_count" = "%@ groups";
+"category_community_count_singular" = "%@ group";
 
 // MARK: - Community Settings
 "community_settings_item_header_basic_info" = "Basic info";
