@@ -11,7 +11,7 @@ import UIKit
 public final class AmityCategoryPreviewViewController: UIViewController, AmityRefreshable {
     // MARK: - Constant
     private enum Constant {
-        static let column: CGFloat = 2
+        static let column: CGFloat = 1
         static let height: CGFloat = 56
     }
     

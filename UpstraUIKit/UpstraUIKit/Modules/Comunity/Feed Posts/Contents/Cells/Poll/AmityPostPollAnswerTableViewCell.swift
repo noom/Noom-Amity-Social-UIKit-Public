@@ -58,26 +58,30 @@ final public class AmityPostPollAnswerTableViewCell: UITableViewCell, Nibbable {
             voteCountLabel.text = "\(answer.voteCount.formatUsingAbbrevation()) \(AmityLocalizedStringSet.Poll.Option.voteCountTitle.localizedString)"
             
             let voteProgress = poll.voteCount > 0 ? Double(answer.voteCount) / Double(poll.voteCount) : 0
-            
-            let progressTintColor = answer.isVotedByUser ? AmityColorSet.primary : AmityColorSet.base.blend(.shade1)
-            let containerViewBorderColor = answer.isVotedByUser ? AmityColorSet.primary : AmityColorSet.base.blend(.shade4)
+            let theme = AmityThemeManager.currentTheme
+            let progressTintColor = answer.isVotedByUser ? theme.secondary : theme.pollVotedOther
+            let containerViewBorderColor = answer.isVotedByUser ? theme.secondary : theme.pollBackground
             
             voteProgressView.progress = Float(voteProgress)
-            voteProgressView.trackTintColor = AmityColorSet.base.blend(.shade4)
+            voteProgressView.trackTintColor = theme.pollBackground
             voteProgressView.progressTintColor = progressTintColor
             
             containerView.layer.borderColor = containerViewBorderColor.cgColor
         } else {
             if poll.isMultipleVoted {
-                iconImageView.image = answer.isSelected ? AmityIconSet.iconRadioCheck : AmityIconSet.iconRadioOff
+                iconImageView.image = answer.isSelected ? AmityIconSet.iconRadioMultipleOn : AmityIconSet.iconRadioMultipleOff
             } else {
-                iconImageView.image = answer.isSelected ? AmityIconSet.iconRadioOn : AmityIconSet.iconRadioOff
+                iconImageView.image = answer.isSelected ? AmityIconSet.iconRadioOnInverted : AmityIconSet.iconRadioOff
             }
             
             if answer.isVotedByUser || answer.isSelected {
-                containerView.layer.borderColor = AmityColorSet.primary.cgColor
+                containerView.layer.backgroundColor = AmityThemeManager.currentTheme.secondary.cgColor
+                containerView.layer.borderColor = AmityThemeManager.currentTheme.secondary.cgColor
+                titleLabel.textColor = .white
             } else {
-                containerView.layer.borderColor = AmityColorSet.base.blend(.shade4).cgColor
+                containerView.layer.backgroundColor = AmityThemeManager.currentTheme.messageBubble.cgColor
+                containerView.layer.borderColor = AmityThemeManager.currentTheme.messageBubble.cgColor
+                titleLabel.textColor = AmityThemeManager.currentTheme.base
             }
         }
     }
@@ -109,7 +113,7 @@ final public class AmityPostPollAnswerTableViewCell: UITableViewCell, Nibbable {
     }
     
     private func setupStatusView() {
-        statusView.backgroundColor = AmityColorSet.primary
+        statusView.backgroundColor = AmityColorSet.secondary
     }
     
     private func setupContainer() {

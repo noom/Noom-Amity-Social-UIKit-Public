@@ -47,6 +47,15 @@ public struct AmityTheme {
     // Color for message bubble background
     // It will apply to incoming message components
     let messageBubbleInverse: UIColor
+
+    // Color for cell spacing
+    let separator: UIColor
+
+    let unselectedToggle: UIColor
+
+    let pollBackground: UIColor
+
+    let pollVotedOther: UIColor
     
     public init(primary: UIColor? = nil,
                 secondary: UIColor? = nil,
@@ -55,7 +64,11 @@ public struct AmityTheme {
                 base: UIColor? = nil,
                 baseInverse: UIColor? = nil,
                 messageBubble: UIColor? = nil,
-                messageBubbleInverse: UIColor? = nil) {
+                messageBubbleInverse: UIColor? = nil,
+                separator: UIColor? = nil,
+                unselectedToggle: UIColor? = nil,
+                pollBackground: UIColor? = nil,
+                pollVotedOther: UIColor? = nil) {
         self.primary = primary ?? UIColor(hex: "#1054DE")
         self.secondary = secondary ?? UIColor(hex: "#292B32")
         self.alert = alert ?? UIColor(hex: "#FA4D30")
@@ -64,6 +77,10 @@ public struct AmityTheme {
         self.baseInverse = baseInverse ?? .white
         self.messageBubble = messageBubble ?? UIColor(hex: "#1054DE")
         self.messageBubbleInverse = messageBubbleInverse ?? UIColor(hex: "#EBECEF")
+        self.separator = separator ?? UIColor(hex: "#FFFFFF")
+        self.unselectedToggle = unselectedToggle ?? UIColor.black
+        self.pollBackground = pollBackground ?? UIColor(hex: "#EBECEF")
+        self.pollVotedOther = pollVotedOther ?? UIColor(hex: "#292B32")
     }
     
 }

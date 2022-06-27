@@ -31,13 +31,7 @@ class AmityPostSharePermission {
     }
     
     private static func getPermittedSharingTargets(post: AmityPostModel) -> Set<AmityPostSharingTarget> {
-        switch post.postTargetType {
-        case .user:
-            return post.isOwner ? AmityFeedUISettings.shared.myFeedSharingTargets : AmityFeedUISettings.shared.userFeedSharingTargets
-        case .community:
-            return (post.targetCommunity?.isPublic ?? false) ? AmityFeedUISettings.shared.publicCommunitySharingTargets : AmityFeedUISettings.shared.privateCommunitySharingTargets
-        @unknown default:
-            return []
-        }
+        // quickly disable sharing
+        return []
     }
 }

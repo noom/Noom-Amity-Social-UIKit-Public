@@ -99,7 +99,7 @@ class AmityPostTextEditorMenuView: UIView {
             ])
             button.layer.cornerRadius = 16
             button.clipsToBounds = true
-            button.backgroundColor = (button == expandButton) ? .clear : AmityColorSet.base.blend(.shade4)
+            button.backgroundColor = .clear
             button.setTintColor(AmityColorSet.base, for: .normal)
             button.setTintColor(AmityColorSet.base.blend(.shade3), for: .disabled)
             stackView.addArrangedSubview(button)

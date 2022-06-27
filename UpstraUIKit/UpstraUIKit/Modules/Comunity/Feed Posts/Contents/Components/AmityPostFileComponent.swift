@@ -29,7 +29,7 @@ public struct AmityPostFileComponent: AmityPostComposable {
     public func getComponentCount(for index: Int) -> Int {
         switch post.appearance.displayType {
         case .feed:
-            return AmityPostConstant.defaultNumberComponent + post.maximumLastestComments + post.viewAllCommentSection
+            return AmityPostConstant.defaultNumberComponent + post.maximumLastestComments + post.viewAllCommentSection + AmityPostConstant.separator
         case .postDetail:
             return AmityPostConstant.defaultNumberComponent
         }
@@ -49,8 +49,21 @@ public struct AmityPostFileComponent: AmityPostComposable {
             cell.display(post: post)
             return cell
         case AmityPostConstant.defaultNumberComponent + post.maximumLastestComments:
-            let cell: AmityPostViewAllCommentsTableViewCell = tableView.dequeueReusableCell(for: indexPath)
-            return cell
+            if post.allCommentCount > post.maximumLastestComments {
+                let cell: AmityPostViewAllCommentsTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+                return cell
+            } else {
+                let cell: AmityPostSeparatorTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+                return cell
+            }
+        case AmityPostConstant.defaultNumberComponent + post.maximumLastestComments + AmityPostConstant.separator:
+            if post.allCommentCount > post.maximumLastestComments {
+                let cell: AmityPostSeparatorTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+                return cell
+            } else {
+                let cell: AmityPostViewAllCommentsTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+                return cell
+            }
         default:
             let cell: AmityPostPreviewCommentTableViewCell = tableView.dequeueReusableCell(for: indexPath)
             cell.display(post: post, comment: post.getComment(at: indexPath, totalComponent: AmityPostConstant.defaultNumberComponent))

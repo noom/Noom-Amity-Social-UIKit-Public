@@ -67,7 +67,7 @@ class AmityCommentView: AmityView {
         contentLabel.font = AmityFontSet.body
         contentLabel.numberOfLines = 8
         separatorLineView.backgroundColor  = AmityColorSet.secondary.blend(.shade4)
-        labelContainerView.backgroundColor = AmityColorSet.base.blend(.shade4)
+        labelContainerView.backgroundColor = AmityThemeManager.currentTheme.messageBubble
         labelContainerView.layer.cornerRadius = 12
         labelContainerView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
         
