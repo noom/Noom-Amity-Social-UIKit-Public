@@ -21,32 +21,37 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NKX-H5-1S6">
                         <rect key="frame" x="0.0" y="0.0" width="256" height="86"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="4af-hI-2Td">
-                                <rect key="frame" x="16" y="8" width="224" height="70"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U4K-Fm-sBP" customClass="AmityAvatarView" customModule="AmityUIKit">
-                                        <rect key="frame" x="0.0" y="15" width="40" height="40"/>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="40" id="Ixl-L0-YZv"/>
-                                            <constraint firstAttribute="height" constant="40" id="gNm-pz-JKb"/>
-                                        </constraints>
-                                    </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nNw-co-Ubk">
-                                        <rect key="frame" x="48" y="25" width="176" height="20.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                            </stackView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U4K-Fm-sBP" customClass="AmityAvatarView" customModule="AmityUIKit">
+                                <rect key="frame" x="16" y="23" width="40" height="40"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="Ixl-L0-YZv"/>
+                                    <constraint firstAttribute="height" constant="40" id="gNm-pz-JKb"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Category name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nNw-co-Ubk">
+                                <rect key="frame" x="64" y="23" width="172" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="asdasd" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oQ3-JS-Sa1">
+                                <rect key="frame" x="64" y="42.5" width="172" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="4af-hI-2Td" firstAttribute="leading" secondItem="NKX-H5-1S6" secondAttribute="leading" constant="16" id="93C-To-AOP"/>
-                            <constraint firstAttribute="trailing" secondItem="4af-hI-2Td" secondAttribute="trailing" constant="16" id="OgW-2o-a6t"/>
-                            <constraint firstAttribute="bottom" secondItem="4af-hI-2Td" secondAttribute="bottom" constant="8" id="fy1-hc-E6y"/>
-                            <constraint firstItem="4af-hI-2Td" firstAttribute="top" secondItem="NKX-H5-1S6" secondAttribute="top" constant="8" id="iZp-Ob-sg9"/>
+                            <constraint firstItem="nNw-co-Ubk" firstAttribute="leading" secondItem="U4K-Fm-sBP" secondAttribute="trailing" constant="8" symbolic="YES" id="EEU-Pa-Zt1"/>
+                            <constraint firstItem="nNw-co-Ubk" firstAttribute="top" secondItem="U4K-Fm-sBP" secondAttribute="top" id="TPL-Y2-Eiq"/>
+                            <constraint firstItem="U4K-Fm-sBP" firstAttribute="centerY" secondItem="NKX-H5-1S6" secondAttribute="centerY" id="Y96-lG-qnk"/>
+                            <constraint firstAttribute="trailing" secondItem="oQ3-JS-Sa1" secondAttribute="trailing" constant="20" symbolic="YES" id="acn-og-ZI3"/>
+                            <constraint firstAttribute="trailing" secondItem="nNw-co-Ubk" secondAttribute="trailing" constant="20" symbolic="YES" id="hcr-7u-GPP"/>
+                            <constraint firstItem="oQ3-JS-Sa1" firstAttribute="bottom" secondItem="U4K-Fm-sBP" secondAttribute="bottom" id="k5Y-YY-bnp"/>
+                            <constraint firstItem="U4K-Fm-sBP" firstAttribute="leading" secondItem="NKX-H5-1S6" secondAttribute="leading" constant="16" id="lGn-BO-LmB"/>
+                            <constraint firstItem="oQ3-JS-Sa1" firstAttribute="leading" secondItem="U4K-Fm-sBP" secondAttribute="trailing" constant="8" symbolic="YES" id="rlj-5g-Yud"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -62,6 +67,7 @@
             <connections>
                 <outlet property="avatarView" destination="U4K-Fm-sBP" id="OiQ-yI-fya"/>
                 <outlet property="categoryNameLabel" destination="nNw-co-Ubk" id="mqL-13-LuN"/>
+                <outlet property="communityCount" destination="oQ3-JS-Sa1" id="qSx-lw-I8d"/>
                 <outlet property="containerView" destination="NKX-H5-1S6" id="cAe-F4-QHA"/>
             </connections>
             <point key="canvasLocation" x="286.95652173913044" y="129.91071428571428"/>
