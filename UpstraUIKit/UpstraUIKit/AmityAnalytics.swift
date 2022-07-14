@@ -6,12 +6,12 @@
 import Foundation
 
 public protocol AmityAnalytics {
-    func track(_ event: AnalyticsEvent)
+    func track(_ event: AmityAnalyticsEvent)
 }
 
-public enum AnalyticsEvent {
-    case screenViewed(screen: ScreenIdentifier)
-    case communityCreated(communityId: String, name: String, private: Bool)
+public enum AmityAnalyticsEvent {
+    case screenViewed(screen: AmityScreenIdentifier)
+    case communityCreated(communityId: String, name: String, isPrivate: Bool)
     case communityJoined(communityId: String)
     case communityLeft(communityId: String)
     case communityClosed(communityId: String)
@@ -30,7 +30,7 @@ public enum CreatePostSource: String {
     case other
 }
 
-public enum ScreenIdentifier: String {
+public enum AmityScreenIdentifier: String {
     case feed
     case explore
     case userCommunities

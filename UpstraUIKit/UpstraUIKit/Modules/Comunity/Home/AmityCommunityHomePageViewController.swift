@@ -28,7 +28,8 @@ public class AmityCommunityHomePageViewController: AmityPageViewController {
         setupNavigationBar()
     }
     
-    public static func make() -> AmityCommunityHomePageViewController {
+    public static func make(analytics: AmityAnalytics) -> AmityCommunityHomePageViewController {
+        AmityUIKitManager.set(analyticsClient: analytics)
         return AmityCommunityHomePageViewController()
     }
     
@@ -69,6 +70,8 @@ private extension AmityCommunityHomePageViewController {
     @objc func closeTapped() {
         navigationController?.popViewController(animated: true)
         AmityUIKitManager.track(event: .userClosedAmity)
+        // Unset analytics to prevent dangling references.
+        AmityUIKitManager.set(analyticsClient: nil)
     }
 }
 
