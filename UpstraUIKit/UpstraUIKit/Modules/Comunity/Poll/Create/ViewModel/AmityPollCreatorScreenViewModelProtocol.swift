@@ -12,8 +12,12 @@ import AmitySDK
 protocol AmityPollCreatorScreenViewModelDelegate: AnyObject {
     func screenViewModelCanPost(_ isEnabled: Bool)
     func screenViewModelFieldsChange(_ isChanged: Bool)
-    func screenViewModelDidCreatePost(_ viewModel: AmityPollCreatorScreenViewModelType, post: AmityPost?, error: Error?)
-    
+    func screenViewModelDidCreatePost(
+        _ viewModel: AmityPollCreatorScreenViewModelType,
+        post: AmityPost?,
+        error: Error?,
+        source: CreatePostSource
+    )
 }
 
 protocol AmityPollCreatorScreenViewModelDataSource {
@@ -34,7 +38,11 @@ protocol AmityPollCreatorScreenViewModelAction {
     func updateAnswer(_ text: String?, at indexPath: IndexPath?, completion: (() -> Void)?)
     func deleteAnswer(at indexPath: IndexPath?, completion: (() -> Void))
     
-    func createPoll(withMetadata metadata: [String: Any]?, andMentionees mentionees: AmityMentioneesBuilder?)
+    func createPoll(
+        withMetadata metadata: [String: Any]?,
+        andMentionees mentionees: AmityMentioneesBuilder?,
+        source: CreatePostSource
+    )
     func validateFieldsIsChange()
 }
 

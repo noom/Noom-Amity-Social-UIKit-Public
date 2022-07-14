@@ -67,9 +67,11 @@ final class AmityCommunityRepositoryManager: AmityCommunityRepositoryManagerProt
     }
     
     func join(_ completion: ((AmityError?) -> Void)?) {
+        let communityId = self.communityId
         communityRepository.joinCommunity(withId: communityId) { (success, error) in
             if success {
                 completion?(nil)
+                AmityUIKitManager.track(event: .communityJoined(communityId: communityId))
             } else {
                 completion?(AmityError(error: error) ?? .unknown)
             }

@@ -70,15 +70,17 @@ public class AmityPostTextEditorViewController: AmityViewController {
     
     weak var delegate: AmityPostViewControllerDelegate?
     
-    init(postTarget: AmityPostTarget, postMode: AmityPostMode, settings: AmityPostEditorSettings) {
-        
+    init(
+        postTarget: AmityPostTarget,
+        postMode: AmityPostMode,
+        settings: AmityPostEditorSettings
+    ) {
         self.postTarget = postTarget
         self.postMode = postMode
         self.settings = settings
         self.postMenuView = AmityPostTextEditorMenuView(allowPostAttachments: settings.allowPostAttachments)
         self.mentionTableView = AmityMentionTableView(frame: .zero)
-        
-        if postMode == .create {
+        if case .create = postMode {
             var communityId: String? = nil
             switch postTarget {
             case .community(let community):
@@ -100,9 +102,14 @@ public class AmityPostTextEditorViewController: AmityViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         filePicker = AmityFilePicker(presentationController: self, delegate: self)
-        
-        let isCreateMode = (postMode == .create)
-        postButton = UIBarButtonItem(title: isCreateMode ? AmityLocalizedStringSet.General.post.localizedString : AmityLocalizedStringSet.General.save.localizedString, style: .plain, target: self, action: #selector(onPostButtonTap))
+
+        let buttonTitle: String
+        if case .create = postMode {
+            buttonTitle = AmityLocalizedStringSet.General.post.localizedString
+        } else {
+            buttonTitle = AmityLocalizedStringSet.General.save.localizedString
+        }
+        postButton = UIBarButtonItem(title: buttonTitle, style: .plain, target: self, action: #selector(onPostButtonTap))
         postButton.tintColor = AmityColorSet.primary
         navigationItem.rightBarButtonItem = postButton
         navigationItem.rightBarButtonItem?.isEnabled = false
@@ -163,7 +170,13 @@ public class AmityPostTextEditorViewController: AmityViewController {
         case .edit:
             postMenuView.isHidden = true
         }
-        
+
+        let postMenuHeightAnchor: CGFloat
+        if case .create = postMode {
+            postMenuHeightAnchor = AmityPostTextEditorMenuView.defaultHeight
+        } else {
+            postMenuHeightAnchor = 0
+        }
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -171,7 +184,7 @@ public class AmityPostTextEditorViewController: AmityViewController {
             scrollView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor),
             postMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             postMenuView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            postMenuView.heightAnchor.constraint(equalToConstant: postMode == .create ? AmityPostTextEditorMenuView.defaultHeight : 0),
+            postMenuView.heightAnchor.constraint(equalToConstant:  postMenuHeightAnchor),
             postMenuViewBottomConstraints,
             comunityPanelView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             comunityPanelView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -227,6 +240,16 @@ public class AmityPostTextEditorViewController: AmityViewController {
         mentionTableView.delegate = self
         mentionTableView.dataSource = self
         mentionManager?.delegate = self
+    }
+
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        switch postMode {
+        case .create:
+            AmityUIKitManager.track(event: .screenViewed(screen: .postCreate))
+        case .edit:
+            AmityUIKitManager.track(event: .screenViewed(screen: .postEdit))
+        }
     }
     
     public override func didTapLeftBarButton() {
@@ -285,7 +308,16 @@ public class AmityPostTextEditorViewController: AmityViewController {
             if case .community(let community) = postTarget {
                 communityId = community.communityId
             }
-            screenViewModel.createPost(text: text, medias: medias, files: files, communityId: communityId, metadata: metadata, mentionees: mentionees)
+            if case .create(let source) = postMode {
+                screenViewModel.createPost(
+                    text: text,
+                    medias: medias,
+                    files: files,
+                    communityId: communityId,
+                    metadata: metadata,
+                    mentionees: mentionees,
+                    source: source)
+            }
         }
         
     }
@@ -733,8 +765,14 @@ extension AmityPostTextEditorViewController: AmityPostTextEditorScreenViewModelD
         updateConstraints()
     }
     
-    func screenViewModelDidCreatePost(_ viewModel: AmityPostTextEditorScreenViewModel, post: AmityPost?, error: Error?) {
+    func screenViewModelDidCreatePost(
+        _ viewModel: AmityPostTextEditorScreenViewModel,
+        post: AmityPost?,
+        error: Error?,
+        source: CreatePostSource
+    ) {
         if let post = post {
+            AmityUIKitManager.track(event: .userCreatedPost(source: source))
             switch post.getFeedType() {
             case .reviewing:
                 AmityAlertController.present(title: AmityLocalizedStringSet.postCreationSubmitTitle.localizedString,

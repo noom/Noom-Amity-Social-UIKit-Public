@@ -64,11 +64,18 @@ public class AmityPendingPostsViewController: AmityViewController {
 }
 
 extension AmityPendingPostsViewController: AmityPostTableViewDelegate {
+    func impressionStopped(for tableView: AmityPostTableView) {
+        
+    }
+
     func tableView(_ tableView: AmityPostTableView, didSelectRowAt indexPath: IndexPath) {
         let singleComponent = screenViewModel.dataSource.postComponents(in: indexPath.section)
         let postId = singleComponent._composable.post.postId
         let vc = AmityPendingPostsDetailViewController.make(communityId: screenViewModel.dataSource.communityId, postId: postId)
         navigationController?.pushViewController(vc, animated: true)
+    }
+    func tableView(_ tableView: AmityPostTableView, didStartImpressionOn posts: [AmityPostModel]) {
+
     }
 }
 

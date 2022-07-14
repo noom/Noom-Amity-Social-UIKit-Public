@@ -26,6 +26,11 @@ final class AmityCommunitySearchViewController: AmityViewController, IndicatorIn
         setupTableView()
         setupScreenViewModle()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AmityUIKitManager.track(event: .screenViewed(screen: .communitySearch))
+    }
     
     static func make(title: String) -> AmityCommunitySearchViewController {
         let communityListRepositoryManager = AmityCommunityListRepositoryManager()

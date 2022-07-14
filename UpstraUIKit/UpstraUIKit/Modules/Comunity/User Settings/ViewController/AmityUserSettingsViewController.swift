@@ -23,7 +23,12 @@ final class AmityUserSettingsViewController: AmityViewController {
         setupSettingTableView()
         screenViewModel.action.fetchUserSettings()
     }
-    
+
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AmityUIKitManager.track(event: .screenViewed(screen: .userSettings))
+    }
+
     static func make(withUserId userId: String)->  AmityUserSettingsViewController{
         let userNotificationController = AmityUserNotificationSettingsController()
         let viewModel: AmityUserSettingsScreenViewModelType = AmityUserSettingsScreenViewModel(userId: userId, userNotificationController: userNotificationController)

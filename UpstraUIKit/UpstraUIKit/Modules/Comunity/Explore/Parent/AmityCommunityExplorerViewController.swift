@@ -41,6 +41,11 @@ public final class AmityCommunityExplorerViewController: AmityViewController, In
         super.viewWillAppear(animated)
         reloadData()
     }
+
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AmityUIKitManager.track(event: .screenViewed(screen: .explore))
+    }
     
     public static func make() -> AmityCommunityExplorerViewController {
         return AmityCommunityExplorerViewController(nibName: AmityCommunityExplorerViewController.identifier, bundle: AmityUIKitManager.bundle)

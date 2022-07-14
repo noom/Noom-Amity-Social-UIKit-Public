@@ -12,6 +12,7 @@ final public class AmityPostTargetPickerViewController: AmityViewController {
     
     /// Set this variable to indicate post type to create.
     var postContentType: AmityPostContentType = .post
+    var analyticsSource: CreatePostSource = .other
 
     private let tableView = UITableView(frame: .zero, style: .plain)
     private let screenViewModel = AmityPostTargetPickerScreenViewModel()
@@ -25,9 +26,13 @@ final public class AmityPostTargetPickerViewController: AmityViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public static func make(postContentType: AmityPostContentType = .post) -> AmityPostTargetPickerViewController {
+    public static func make(
+        postContentType: AmityPostContentType = .post,
+        analyticsSource: CreatePostSource
+    ) -> AmityPostTargetPickerViewController {
         let vc = AmityPostTargetPickerViewController()
         vc.postContentType = postContentType
+        vc.analyticsSource = analyticsSource
         return vc
     }
 
@@ -36,6 +41,11 @@ final public class AmityPostTargetPickerViewController: AmityViewController {
         setupView()
         setupTableView()
         setupScreenViewModel()
+    }
+
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AmityUIKitManager.track(event: .screenViewed(screen: .postTargetSelect))
     }
     
     private func setupView() {
@@ -130,7 +140,12 @@ extension AmityPostTargetPickerViewController: UITableViewDelegate {
             postTarget = .community(object: community)
         }
         
-        AmityEventHandler.shared.postTargetDidSelect(from: self, postTarget: postTarget, postContentType: self.postContentType)
+        AmityEventHandler.shared.postTargetDidSelect(
+            from: self,
+            postTarget: postTarget,
+            postContentType: self.postContentType,
+            analyticsSource: analyticsSource
+        )
     }
     
 }
