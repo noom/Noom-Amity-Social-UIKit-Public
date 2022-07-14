@@ -157,11 +157,11 @@ public final class AmityUIKitManager {
         AmityChannelEventHandler.shared = channelEventHandler
     }
 
-    public static func set(analyticsClient: AmityAnalytics) {
+    public static func set(analyticsClient: AmityAnalytics?) {
         AmityUIKitManagerInternal.shared.set(analyticsClient: analyticsClient)
     }
 
-    public static func track(event: AnalyticsEvent) {
+    public static func track(event: AmityAnalyticsEvent) {
         AmityUIKitManagerInternal.shared.analytics?.track(event)
     }
 }
@@ -261,7 +261,7 @@ extension AmityUIKitManagerInternal: AmityClientErrorDelegate {
 }
 
 extension AmityUIKitManagerInternal {
-    func set(analyticsClient: AmityAnalytics) {
+    func set(analyticsClient: AmityAnalytics?) {
         self.analytics = analyticsClient
     }
 }

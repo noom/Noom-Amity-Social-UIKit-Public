@@ -17,7 +17,6 @@ class AmityPostImpressionTracker {
 
     func postsVisible(_ posts: [AmityPostModel]) {
         stopTracking()
-        print("adding \(posts.map{ $0.postId  })")
         self.visiblePosts = Set(posts.map { VisiblePost(time: Date(), postId: $0.postId) })
     }
 
@@ -25,9 +24,8 @@ class AmityPostImpressionTracker {
         visiblePosts
             .filter { Date().timeIntervalSince($0.time) >= AmityPostImpressionTracker.impressionTime }
             .forEach { post in
-                let event = AnalyticsEvent.postImpression(postId: post.postId)
+                let event = AmityAnalyticsEvent.postImpression(postId: post.postId)
                 AmityUIKitManager.track(event: event)
-                print("sending for post \(post.postId)")
             }
         visiblePosts.removeAll()
     }
