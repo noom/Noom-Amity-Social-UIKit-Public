@@ -104,7 +104,7 @@ public class AmityCommunityProfileEditorViewController: AmityViewController {
 
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let screen: ScreenIdentifier
+        let screen: AmityScreenIdentifier
         switch viewType {
         case .create:
             screen = .createCommunity
