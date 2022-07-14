@@ -51,7 +51,13 @@ final class AmityPendingPostsDetailViewController: AmityViewController {
 }
 
 extension AmityPendingPostsDetailViewController: AmityPostTableViewDelegate {
-   
+    func impressionStopped(for tableView: AmityPostTableView) {
+        
+    }
+
+    func tableView(_ tableView: AmityPostTableView, didStartImpressionOn posts: [AmityPostModel]) {
+
+    }
 }
 
 extension AmityPendingPostsDetailViewController: AmityPostTableViewDataSource {

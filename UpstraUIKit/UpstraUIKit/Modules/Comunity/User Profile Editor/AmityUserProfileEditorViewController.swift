@@ -66,6 +66,11 @@ final public class AmityUserProfileEditorViewController: AmityViewController {
         setupNavigationBar()
         setupView()
     }
+
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AmityUIKitManager.track(event: .screenViewed(screen: .userProfileEdit))
+    }
     
     private func setupNavigationBar() {
         saveBarButtonItem = UIBarButtonItem(title: AmityLocalizedStringSet.General.save.localizedString, style: .done, target: self, action: #selector(saveButtonTap))

@@ -44,6 +44,15 @@ public class AmityCommunityHomePageViewController: AmityPageViewController {
         let searchItem = UIBarButtonItem(image: AmityIconSet.iconSearch, style: .plain, target: self, action: #selector(searchTap))
         searchItem.tintColor = AmityColorSet.base
         navigationItem.rightBarButtonItem = searchItem
+        searchItem.tintColor = AmityColorSet.base
+        navigationItem.rightBarButtonItem = searchItem
+        let closeItem = UIBarButtonItem(
+            image: AmityIconSet.iconClose,
+            style: .plain,
+            target: self,
+            action: #selector(closeTapped)
+        )
+        navigationItem.leftBarButtonItem = closeItem
     }
 }
 
@@ -55,6 +64,11 @@ private extension AmityCommunityHomePageViewController {
         nav.modalPresentationStyle = .fullScreen
         nav.modalTransitionStyle = .crossDissolve
         present(nav, animated: true, completion: nil)
+    }
+
+    @objc func closeTapped() {
+        navigationController?.popViewController(animated: true)
+        AmityUIKitManager.track(event: .userClosedAmity)
     }
 }
 

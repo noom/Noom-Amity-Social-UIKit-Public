@@ -38,6 +38,11 @@ public class AmityCategoryListViewController: AmityViewController {
         setupScreenViewModel()
         setupTableView()
     }
+
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AmityUIKitManager.track(event: .screenViewed(screen: .communityCategories))
+    }
     
     // MARK: - Private functions
     

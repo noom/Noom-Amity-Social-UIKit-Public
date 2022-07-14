@@ -39,6 +39,7 @@ public final class AmityCommunityProfilePageViewController: AmityProfileViewCont
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        AmityUIKitManager.track(event: .screenViewed(screen: .communityDetails))
         showCommunitySettingModal()
     }
     
@@ -171,7 +172,11 @@ extension AmityCommunityProfilePageViewController: AmityCommunityProfileScreenVi
         guard let community = viewModel.community else { return }
         switch route {
         case .post:
-            AmityEventHandler.shared.createPostBeingPrepared(from: self, postTarget: .community(object: community.object))
+            AmityEventHandler.shared.createPostBeingPrepared(
+                from: self,
+                postTarget: .community(object: community.object),
+                analyticsSource: .communityProfile
+            )
         case .member:
             let vc = AmityCommunityMemberSettingsViewController.make(community: community.object)
             navigationController?.pushViewController(vc, animated: true)

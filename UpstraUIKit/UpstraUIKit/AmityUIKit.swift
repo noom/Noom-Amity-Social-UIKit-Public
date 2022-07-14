@@ -156,6 +156,14 @@ public final class AmityUIKitManager {
     public static func set(channelEventHandler: AmityChannelEventHandler) {
         AmityChannelEventHandler.shared = channelEventHandler
     }
+
+    public static func set(analyticsClient: AmityAnalytics) {
+        AmityUIKitManagerInternal.shared.set(analyticsClient: analyticsClient)
+    }
+
+    public static func track(event: AnalyticsEvent) {
+        AmityUIKitManagerInternal.shared.analytics?.track(event)
+    }
 }
 
 final class AmityUIKitManagerInternal: NSObject {
@@ -164,6 +172,7 @@ final class AmityUIKitManagerInternal: NSObject {
     
     public static let shared = AmityUIKitManagerInternal()
     private var _client: AmityClient?
+    private(set) var analytics: AmityAnalytics?
     private var apiKey: String = ""
     
     private(set) var fileService = AmityFileService()
@@ -248,5 +257,11 @@ extension AmityUIKitManagerInternal: AmityClientErrorDelegate {
     
     func didReceiveAsyncError(_ error: Error) {
         AmityHUD.show(.error(message: error.localizedDescription))
+    }
+}
+
+extension AmityUIKitManagerInternal {
+    func set(analyticsClient: AmityAnalytics) {
+        self.analytics = analyticsClient
     }
 }

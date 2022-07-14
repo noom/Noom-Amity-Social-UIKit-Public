@@ -17,6 +17,8 @@ protocol AmityPostTableViewDelegate: AnyObject {
     func tableView(_ tableView: AmityPostTableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
     func tableView(_ tableView: AmityPostTableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath)
     func tableView(_ tableView: AmityPostTableView, viewForFooterInSection section: Int) -> UIView?
+    func tableView(_ tableView: AmityPostTableView, didStartImpressionOn posts: [AmityPostModel])
+    func impressionStopped(for tableView: AmityPostTableView)
 }
 extension AmityPostTableViewDelegate {
     func tableView(_ tableView: AmityPostTableView, didSelectRowAt indexPath: IndexPath) { }
@@ -37,7 +39,7 @@ protocol AmityPostTableViewDataSource: AnyObject {
     func tableView(_ tableView: AmityPostTableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 }
 
-final class AmityPostTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
+final class AmityPostTableView: UITableView, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     
     // Internal Delegate
     weak var postDelegate: AmityPostTableViewDelegate?
@@ -140,5 +142,68 @@ final class AmityPostTableView: UITableView, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return postDataSource?.tableView(self, cellForRowAt: indexPath) ?? UITableViewCell()
+    }
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        startTrackingImpression()
+    }
+
+    func startTrackingImpression() {
+        let visiblePosts = self.visibleCells
+            .compactMap({ cell -> AmityPostModel? in
+                guard cell.isMainPostCell(),
+                      cell.isFullyVisible(within: self) else {
+                    return nil
+                }
+                return cell.cellPost()
+            })
+        postDelegate?.tableView(
+            self,
+            didStartImpressionOn: visiblePosts
+        )
+    }
+    func stopTracking() {
+        postDelegate?.impressionStopped(for: self)
+    }
+}
+
+extension UITableViewCell {
+    func cellPost() -> AmityPostModel? {
+        switch self.self {
+        case is AmityPostTextTableViewCell:
+            return (self as? AmityPostTextTableViewCell)?.post
+        case is AmityPostFileTableViewCell:
+            return (self as? AmityPostFileTableViewCell)?.post
+        case is AmityPostGalleryTableViewCell:
+            return (self as? AmityPostGalleryTableViewCell)?.post
+        case is AmityPostPollTableViewCell:
+            return (self as? AmityPostPollTableViewCell)?.post
+        default:
+            return nil
+        }
+    }
+
+    func isMainPostCell() -> Bool {
+        return self.isKind(of: AmityPostTextTableViewCell.self)
+        || self.isKind(of: AmityPostFileTableViewCell.self)
+        || self.isKind(of: AmityPostGalleryTableViewCell.self)
+        || self.isKind(of: AmityPostPollTableViewCell.self)
+    }
+
+    func isFullyVisible(within tableView: UITableView) -> Bool {
+        guard let indexPath = tableView.indexPath(for: self) else {
+            return false
+        }
+
+        let cellRect = tableView.rectForRow(at: indexPath)
+        let bounds = tableView.bounds
+        let insets = UIEdgeInsets(
+            top: 0,
+            left: 0,
+            bottom: bounds.height * 0.2,
+            right: 0
+        )
+        let insetBounds = tableView.bounds.inset(by: insets)
+        let intersection = insetBounds.intersection(cellRect)
+        return intersection.height > cellRect.height / 2.0
     }
 }

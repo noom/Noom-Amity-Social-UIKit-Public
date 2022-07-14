@@ -29,8 +29,15 @@ class AmityPostTextEditorScreenViewModel: AmityPostTextEditorScreenViewModelType
     
     // MARK: - Action
     
-    func createPost(text: String, medias: [AmityMedia], files: [AmityFile], communityId: String?, metadata: [String: Any]?, mentionees: AmityMentioneesBuilder?) {
-        
+    func createPost(
+        text: String,
+        medias: [AmityMedia],
+        files: [AmityFile],
+        communityId: String?,
+        metadata: [String: Any]?,
+        mentionees: AmityMentioneesBuilder?,
+        source: CreatePostSource
+    ) {
         let targetType: AmityPostTargetType = communityId == nil ? .user : .community
         var postBuilder: AmityPostBuilder
         
@@ -74,11 +81,19 @@ class AmityPostTextEditorScreenViewModel: AmityPostTextEditorScreenViewModelType
         
         if let mentionees = mentionees {
             postrepository.createPost(postBuilder, targetId: communityId, targetType: targetType, metadata: metadata, mentionees: mentionees) { [weak self] (post, error) in
-                self?.createPostResponseHandler(forPost: post, error: error)
+                self?.createPostResponseHandler(
+                    forPost: post,
+                    error: error,
+                    source: source
+                )
             }
         } else {
             postrepository.createPost(postBuilder, targetId: communityId, targetType: targetType) { [weak self] (post, error) in
-                self?.createPostResponseHandler(forPost: post, error: error)
+                self?.createPostResponseHandler(
+                    forPost: post,
+                    error: error,
+                    source: source
+                )
             }
         }
     }
@@ -180,13 +195,25 @@ class AmityPostTextEditorScreenViewModel: AmityPostTextEditorScreenViewModelType
     
     // MARK:- Response Helpers
     
-    private func createPostResponseHandler(forPost post: AmityPost?, error: Error?) {
+    private func createPostResponseHandler(
+        forPost post: AmityPost?,
+        error: Error?,
+        source: CreatePostSource
+    ) {
         Log.add("File Post Created: \(post != nil) Error: \(String(describing: error))")
-        delegate?.screenViewModelDidCreatePost(self, post: post, error: error)
+        delegate?.screenViewModelDidCreatePost(
+            self,
+            post: post,
+            error: error,
+            source: source
+        )
         NotificationCenter.default.post(name: NSNotification.Name.Post.didCreate, object: nil)
     }
     
-    private func updatePostResponseHandler(forPost post: AmityPost?, error: Error?) {
+    private func updatePostResponseHandler(
+        forPost post: AmityPost?,
+        error: Error?
+    ) {
         Log.add("File Post updated: \(post != nil) Error: \(String(describing: error))")
         delegate?.screenViewModelDidUpdatePost(self, error: error)
         NotificationCenter.default.post(name: NSNotification.Name.Post.didUpdate, object: nil)

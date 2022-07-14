@@ -54,10 +54,10 @@ private extension AmityPollCreatorScreenViewModel {
         delegate?.screenViewModelCanPost(true)
     }
     
-    private func handleResponse(post: AmityPost?, error: Error?) {
+    private func handleResponse(post: AmityPost?, error: Error?, source: CreatePostSource) {
         let success = post != nil
         Log.add("Poll post created: \(success) Error: \(String(describing: error))")
-        delegate?.screenViewModelDidCreatePost(self, post: post, error: error)
+        delegate?.screenViewModelDidCreatePost(self, post: post, error: error, source: source)
         NotificationCenter.default.post(name: NSNotification.Name.Post.didCreate, object: nil)
     }
 }
@@ -101,7 +101,11 @@ extension AmityPollCreatorScreenViewModel {
         completion()
     }
     
-    func createPoll(withMetadata metadata: [String: Any]?, andMentionees mentionees: AmityMentioneesBuilder?) {
+    func createPoll(
+        withMetadata metadata: [String: Any]?,
+        andMentionees mentionees: AmityMentioneesBuilder?,
+        source: CreatePostSource
+    ) {
         let builder = AmityPollCreationBuilder()
         
         for item in answersItem {
@@ -129,11 +133,11 @@ extension AmityPollCreatorScreenViewModel {
                 
                 if let metadata = metadata, let mentionees = mentionees {
                     self?.postRepository.createPost(pollPostBuilder, targetId: targetId, targetType: targetType, metadata: metadata, mentionees: mentionees, completion: { post, error in
-                        self?.handleResponse(post: post, error: error)
+                        self?.handleResponse(post: post, error: error, source: source)
                     })
                 } else {
                     self?.postRepository.createPost(pollPostBuilder, targetId: targetId, targetType: targetType, completion: { post, error in
-                        self?.handleResponse(post: post, error: error)
+                        self?.handleResponse(post: post, error: error, source: source)
                     })
                 }
             }
