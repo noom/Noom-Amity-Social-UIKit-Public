@@ -32,6 +32,11 @@ public final class AmityMyCommunityViewController: AmityViewController {
         super.viewWillAppear(animated)
         searchController.searchBar.text = screenViewModel.dataSource.searchText
     }
+
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AmityUIKitManager.track(event: .screenViewed(screen: .userCommunities))
+    }
     
     public static func make() -> AmityMyCommunityViewController {
         let communityListRepositoryManager = AmityCommunityListRepositoryManager()

@@ -88,6 +88,11 @@ open class AmityPostDetailViewController: AmityViewController {
         navigationController?.reset()
         mentionManager?.delegate = nil
     }
+
+    open override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AmityUIKitManager.track(event: .screenViewed(screen: .postDetail))
+    }
     
     // MARK: Setup Post Protocol Handler
     private func setupProtocolHandler() {
@@ -243,6 +248,9 @@ open class AmityPostDetailViewController: AmityViewController {
 
 // MARK: - AmityPostTableViewDelegate
 extension AmityPostDetailViewController: AmityPostTableViewDelegate {
+    func impressionStopped(for tableView: AmityPostTableView) {
+
+    }
     
     func tableView(_ tableView: AmityPostTableView, didSelectRowAt indexPath: IndexPath) {
         // load more reply did tap
@@ -315,6 +323,9 @@ extension AmityPostDetailViewController: AmityPostTableViewDelegate {
             break
         }
         
+    }
+    func tableView(_ tableView: AmityPostTableView, didStartImpressionOn posts: [AmityPostModel]) {
+
     }
     
     func tableView(_ tableView: AmityPostTableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

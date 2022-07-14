@@ -51,6 +51,7 @@ open class AmityEventHandler {
     /// A default behavior is popping to `AmityCommunityHomePageViewController`, `AmityNewsfeedViewController`.or `AmityFeedViewController`.
     /// If any of them doesn't exsist, popping to previous page.
     open func leaveCommunityDidTap(from source: AmityViewController, communityId: String) {
+        AmityUIKitManager.track(event: .communityLeft(communityId: communityId))
         if let vc = source.navigationController?
             .viewControllers.last(where: { $0.isKind(of: AmityCommunityHomePageViewController.self)
                                     || $0.isKind(of: AmityNewsfeedViewController.self)
@@ -106,9 +107,15 @@ open class AmityEventHandler {
     open func postTargetDidSelect(
         from source: AmityViewController,
         postTarget: AmityPostTarget,
-        postContentType: AmityPostContentType
+        postContentType: AmityPostContentType,
+        analyticsSource: CreatePostSource
     ) {
-        createPostDidTap(from: source, postTarget: postTarget, postContentType: postContentType)
+        createPostDidTap(
+            from: source,
+            postTarget: postTarget,
+            postContentType: postContentType,
+            analyticsSource: analyticsSource
+        )
     }
         
     /// Event for post creator
@@ -116,20 +123,32 @@ open class AmityEventHandler {
     ///
     /// If there is a `postTarget` passing into, immediately calls `postTargetDidSelect(:)`.
     /// If there isn't , navigate to `AmityPostTargetSelectionViewController`.
-    open func createPostBeingPrepared(from source: AmityViewController, postTarget: AmityPostTarget? = nil) {
+    open func createPostBeingPrepared(
+        from source: AmityViewController,
+        postTarget: AmityPostTarget? = nil,
+        analyticsSource: CreatePostSource
+    ) {
         let completion: ((AmityPostContentType) -> Void) = { postContentType in
             if let postTarget = postTarget {
                 // show create post
-                AmityEventHandler.shared.postTargetDidSelect(from: source, postTarget: postTarget, postContentType: postContentType)
+                AmityEventHandler.shared.postTargetDidSelect(
+                    from: source,
+                    postTarget: postTarget,
+                    postContentType: postContentType,
+                    analyticsSource: analyticsSource
+                )
             } else {
                 // show post target picker
-                let postTargetVC = AmityPostTargetPickerViewController.make(postContentType: postContentType)
+                let postTargetVC = AmityPostTargetPickerViewController.make(
+                    postContentType: postContentType,
+                    analyticsSource: analyticsSource
+                )
                 let navPostTargetVC = UINavigationController(rootViewController: postTargetVC)
                 navPostTargetVC.modalPresentationStyle = .fullScreen
                 source.present(navPostTargetVC, animated: true, completion: nil)
             }
         }
-        
+        AmityUIKitManager.track(event: .userTappedCreatePost(source: analyticsSource))
         // present bottom sheet
         let postOption = ImageItemOption(title: AmityLocalizedStringSet.General.post.localizedString, image: AmityIconSet.CreatePost.iconPost) {
             completion(.post)
@@ -138,13 +157,13 @@ open class AmityEventHandler {
             completion(.poll)
         }
         
-        let livestreamPost = ImageItemOption(
-            title: "Livestream",
-            image: UIImage(named: "icon_create_livestream_post", in: AmityUIKitManager.bundle, compatibleWith: nil)) {
-                completion(.livestream)
-            }
+//        let livestreamPost = ImageItemOption(
+//            title: "Livestream",
+//            image: UIImage(named: "icon_create_livestream_post", in: AmityUIKitManager.bundle, compatibleWith: nil)) {
+//                completion(.livestream)
+//            }
         
-        AmityBottomSheet.present(options: [livestreamPost, postOption, pollPostOption], from: source)
+        AmityBottomSheet.present(options: [/*livestreamPost,*/ postOption, pollPostOption], from: source)
     }
     
     /// Event for post creator
@@ -153,14 +172,25 @@ open class AmityEventHandler {
     /// The default behavior is presenting or navigating to post creation page, which depends on post content type.
     ///  - `AmityPostCreatorViewController` for post type
     ///  - `AmityPollCreatorViewController` for poll type
-    open func createPostDidTap(from source: AmityViewController, postTarget: AmityPostTarget, postContentType: AmityPostContentType = .post) {
+    open func createPostDidTap(
+        from source: AmityViewController,
+        postTarget: AmityPostTarget,
+        postContentType: AmityPostContentType = .post,
+        analyticsSource: CreatePostSource
+    ) {
         
         var viewController: AmityViewController
         switch postContentType {
         case .post:
-            viewController = AmityPostCreatorViewController.make(postTarget: postTarget)
+            viewController = AmityPostCreatorViewController.make(
+                postTarget: postTarget,
+                analyticsSource: analyticsSource
+            )
         case .poll:
-            viewController = AmityPollCreatorViewController.make(postTarget: postTarget)
+            viewController = AmityPollCreatorViewController.make(
+                postTarget: postTarget,
+                analyticsSource: analyticsSource
+            )
         case .livestream:
             switch postTarget {
             case .myFeed:

@@ -101,6 +101,17 @@ public class AmityCommunityProfileEditorViewController: AmityViewController {
         super.viewDidLoad()
         setupView()
     }
+
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let screen: ScreenIdentifier
+        switch viewType {
+        case .create:
+            screen = .createCommunity
+        case .edit(let communityId):
+            screen = .editCommunity
+        }
+    }
     
     init(viewType: ViewType) {
         self.viewType = viewType

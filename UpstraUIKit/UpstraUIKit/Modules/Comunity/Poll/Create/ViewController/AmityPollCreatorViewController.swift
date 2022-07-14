@@ -31,6 +31,8 @@ public final class AmityPollCreatorViewController: AmityViewController {
     private var postButton: UIBarButtonItem?
     private var screenViewModel: AmityPollCreatorScreenViewModelType?
     private var mentionManager: AmityMentionManager?
+
+    private var analyticsSource: CreatePostSource = .other
     
     // MARK: - View's lifecycle
     public override func viewDidLoad() {
@@ -44,8 +46,16 @@ public final class AmityPollCreatorViewController: AmityViewController {
         mentionManager?.delegate = self
         AmityKeyboardService.shared.delegate = self
     }
+
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AmityUIKitManager.track(event: .screenViewed(screen: .pollCreate))
+    }
     
-    public static func make(postTarget: AmityPostTarget) -> AmityPollCreatorViewController {
+    public static func make(
+        postTarget: AmityPostTarget,
+        analyticsSource: CreatePostSource
+    ) -> AmityPollCreatorViewController {
         let viewModel = AmityPollCreatorScreenViewModel(postTarget: postTarget)
         let vc = AmityPollCreatorViewController(nibName: AmityPollCreatorViewController.identifier, bundle: AmityUIKitManager.bundle)
         vc.screenViewModel = viewModel
@@ -57,6 +67,7 @@ public final class AmityPollCreatorViewController: AmityViewController {
             }
         default: break
         }
+        vc.analyticsSource = analyticsSource
         vc.mentionManager = AmityMentionManager(withType: .post(communityId: communityId))
         return vc
     }
@@ -122,15 +133,25 @@ private extension AmityPollCreatorViewController {
     @objc func onPostButtonTap() {
         let metadata = mentionManager?.getMetadata()
         let mentionees = mentionManager?.getMentionees()
-        screenViewModel?.action.createPoll(withMetadata: metadata, andMentionees: mentionees)
+        screenViewModel?.action.createPoll(
+            withMetadata: metadata,
+            andMentionees: mentionees,
+            source: analyticsSource
+        )
     }
 }
 
 // MARK: - AmityPollCreatorScreenViewModelDelegate
 extension AmityPollCreatorViewController: AmityPollCreatorScreenViewModelDelegate {
     
-    func screenViewModelDidCreatePost(_ viewModel: AmityPollCreatorScreenViewModelType, post: AmityPost?, error: Error?) {
+    func screenViewModelDidCreatePost(
+        _ viewModel: AmityPollCreatorScreenViewModelType,
+        post: AmityPost?,
+        error: Error?,
+        source: CreatePostSource
+    ) {
         if let post = post {
+            AmityUIKitManager.track(event: .userCreatedPost(source: source))
             switch post.getFeedType() {
             case .reviewing:
                 AmityAlertController.present(title: AmityLocalizedStringSet.postCreationSubmitTitle.localizedString,
