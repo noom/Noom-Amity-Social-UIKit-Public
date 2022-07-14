@@ -34,7 +34,12 @@ public class AmityNewsfeedViewController: AmityViewController, IndicatorInfoProv
         super.viewWillAppear(animated)
         headerView.retrieveCommunityList()
     }
-    
+
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AmityUIKitManager.track(event: .screenViewed(screen: .feed))
+    }
+
     public static func make() -> AmityNewsfeedViewController {
         let vc = AmityNewsfeedViewController(nibName: nil, bundle: nil)
         return vc
@@ -82,7 +87,10 @@ private extension AmityNewsfeedViewController {
         createPostButton.image = AmityIconSet.iconCreatePost
         createPostButton.actionHandler = { [weak self] _ in
             guard let strongSelf = self else { return }
-            AmityEventHandler.shared.createPostBeingPrepared(from: strongSelf)
+            AmityEventHandler.shared.createPostBeingPrepared(
+                from: strongSelf,
+                analyticsSource: .home
+            )
         }
     }
     

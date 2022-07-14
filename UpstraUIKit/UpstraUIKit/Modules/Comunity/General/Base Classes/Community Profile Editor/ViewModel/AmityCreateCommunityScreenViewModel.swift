@@ -272,6 +272,11 @@ private extension AmityCreateCommunityScreenViewModel {
             
             if let community = community {
                 strongSelf.delegate?.screenViewModel(strongSelf, state: .createSuccess(communityId: community.communityId))
+                AmityUIKitManager.track(event: .communityCreated(
+                    communityId: strongSelf.communityId,
+                    name: strongSelf.displayName,
+                    private: strongSelf.isPublic
+                ))
             } else {
                 strongSelf.delegate?.screenViewModel(strongSelf, failure: AmityError(error: error) ?? .unknown)
             }

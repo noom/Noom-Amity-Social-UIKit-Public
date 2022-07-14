@@ -56,6 +56,10 @@ public final class AmityUserProfilePageViewController: AmityProfileViewControlle
         super.viewWillDisappear(animated)
         navigationController?.reset()
     }
+
+    public override func viewDidAppear(_ animated: Bool) {
+        AmityUIKitManager.track(event: .screenViewed(screen: .userProfile))
+    }
     
     // MARK: - Private functions
     
@@ -64,7 +68,11 @@ public final class AmityUserProfilePageViewController: AmityProfileViewControlle
         postButton.add(to: view, position: .bottomRight)
         postButton.actionHandler = { [weak self] _ in
             guard let strongSelf = self else { return }
-            AmityEventHandler.shared.createPostBeingPrepared(from: strongSelf, postTarget: .myFeed)
+            AmityEventHandler.shared.createPostBeingPrepared(
+                from: strongSelf,
+                postTarget: .myFeed,
+                analyticsSource: .userProfile
+            )
         }
         postButton.isHidden = !screenViewModel.isCurrentUser
     }

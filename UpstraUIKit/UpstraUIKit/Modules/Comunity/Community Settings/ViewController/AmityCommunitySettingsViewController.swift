@@ -148,6 +148,7 @@ extension AmityCommunitySettingsViewController: AmityCommunitySettingsScreenView
     }
     
     func screenViewModelDidCloseCommunity() {
+        AmityUIKitManager.track(event: .communityClosed(communityId: screenViewModel.communityId))
         AmityHUD.hide()
         if let communityHomePage = navigationController?.viewControllers.first(where: { $0.isKind(of: AmityCommunityHomePageViewController.self) }) {
             navigationController?.popToViewController(communityHomePage, animated: true)

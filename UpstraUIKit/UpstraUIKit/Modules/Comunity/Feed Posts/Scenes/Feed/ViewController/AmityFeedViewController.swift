@@ -30,6 +30,7 @@ public final class AmityFeedViewController: AmityViewController, AmityRefreshabl
     private var postPostProtocolHandler: AmityPostProtocolHandler?
 
     private let refreshControl = UIRefreshControl()
+    private let postImpressionTracker = AmityPostImpressionTracker()
     
     // A flag represents for loading indicator visibility
     private var shouldShowLoader: Bool = true
@@ -79,6 +80,14 @@ public final class AmityFeedViewController: AmityViewController, AmityRefreshabl
         
         // this line solves issue where refresh control sticks to the top while switching tab
         resetRefreshControlStateIfNeeded()
+    }
+
+    public override func viewDidAppear(_ animated: Bool) {
+        tableView.startTrackingImpression()
+    }
+
+    public override func viewWillDisappear(_ animated: Bool) {
+        tableView.stopTracking()
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
@@ -265,6 +274,15 @@ extension AmityFeedViewController: AmityPostTableViewDelegate {
         emptyViewHandler?(bottomView)
         return bottomView
     }
+
+    func tableView(_ tableView: AmityPostTableView, didStartImpressionOn posts: [AmityPostModel]) {
+        postImpressionTracker.postsVisible(posts)
+    }
+
+    func impressionStopped(for tableView: AmityPostTableView) {
+        postImpressionTracker.stopTracking()
+    }
+    
 }
 
 // MARK: - AmityPostTableViewDataSource

@@ -10,11 +10,12 @@ import UIKit
 import AmitySDK
 
 enum AmityPostMode: Equatable {
-    case create
+    case create(source: CreatePostSource)
     case edit(postId: String)
     
     static func == (lhs: AmityPostMode, rhs: AmityPostMode) -> Bool {
-        if case .create = lhs, case .create = rhs {
+        if case .create(let lSource) = lhs, case .create(let rSource) = rhs,
+        lSource == rSource {
             return true
         }
         return false
@@ -32,12 +33,25 @@ protocol AmityPostTextEditorScreenViewModelDataSource {
 
 protocol AmityPostTextEditorScreenViewModelDelegate: AnyObject {
     func screenViewModelDidLoadPost(_ viewModel: AmityPostTextEditorScreenViewModel, post: AmityPost)
-    func screenViewModelDidCreatePost(_ viewModel: AmityPostTextEditorScreenViewModel, post: AmityPost?, error: Error?)
+    func screenViewModelDidCreatePost(
+        _ viewModel: AmityPostTextEditorScreenViewModel,
+        post: AmityPost?,
+        error: Error?,
+        source: CreatePostSource
+    )
     func screenViewModelDidUpdatePost(_ viewModel: AmityPostTextEditorScreenViewModel, error: Error?)
 }
 
 protocol AmityPostTextEditorScreenViewModelAction {
-    func createPost(text: String, medias: [AmityMedia], files: [AmityFile], communityId: String?, metadata: [String: Any]?, mentionees: AmityMentioneesBuilder?)
+    func createPost(
+        text: String,
+        medias: [AmityMedia],
+        files: [AmityFile],
+        communityId: String?,
+        metadata: [String: Any]?,
+        mentionees: AmityMentioneesBuilder?,
+        source: CreatePostSource
+    )
     func updatePost(oldPost: AmityPostModel, text: String, medias: [AmityMedia], files: [AmityFile], metadata: [String: Any]?, mentionees: AmityMentioneesBuilder?)
 }
 
