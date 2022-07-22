@@ -55,9 +55,20 @@ public final class AmityPostHeaderTableViewCell: UITableViewCell, Nibbable, Amit
         default:
             optionButton.isHidden = !(post.appearance.shouldShowOption && post.isCommentable)
         }
-        
-        if post.isModerator {
-            badgeStackView.isHidden = post.postAsModerator
+        let noomRole = post.postedUser?.noomRole
+        if post.isModerator || noomRole != nil {
+            badgeStackView.isHidden = post.postAsModerator || noomRole == nil
+            if let noomRole = noomRole {
+                badgeIconImageView.isHidden = true
+                avatarView.setEdgeColor(noomRole.color)
+                badgeLabel.textColor = noomRole.color
+                badgeLabel.text = noomRole.name + "  "
+            } else {
+                badgeIconImageView.isHidden = true
+                avatarView.setEdgeColor(nil)
+                badgeLabel.textColor = AmityColorSet.base.blend(.shade1)
+                badgeLabel.text = AmityLocalizedStringSet.General.moderator.localizedString
+            }
         } else {
             badgeStackView.isHidden = true
         }
