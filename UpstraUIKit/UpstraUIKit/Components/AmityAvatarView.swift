@@ -47,6 +47,11 @@ public final class AmityAvatarView: AmityImageView {
             updatePlaceholderConstraint()
         }
     }
+
+    public func setEdgeColor(_ color: UIColor?) {
+        layer.borderWidth = color != nil ? 2: 0
+        layer.borderColor = color?.cgColor
+    }
     
     // MARK: - View lifecycle
     public override func awakeFromNib() {
