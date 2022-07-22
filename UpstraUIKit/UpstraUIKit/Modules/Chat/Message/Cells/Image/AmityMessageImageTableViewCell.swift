@@ -42,7 +42,7 @@ class AmityMessageImageTableViewCell: AmityMessageTableViewCell {
                     // To check if the image going to assign has the correct index path.
                     if indexPath == self?.indexPath {
                         self?.messageImageView.image = image
-                        self?.messageImageView.contentMode = .scaleAspectFill
+                        self?.messageImageView.contentMode = .scaleAspectFit
                     }
                 case .failure:
                     self?.messageImageView.image = AmityIconSet.defaultMessageImage
