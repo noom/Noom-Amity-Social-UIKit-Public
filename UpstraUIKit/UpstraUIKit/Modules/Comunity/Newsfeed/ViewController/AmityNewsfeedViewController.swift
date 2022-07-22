@@ -18,21 +18,18 @@ public class AmityNewsfeedViewController: AmityViewController, IndicatorInfoProv
     var pageTitle: String?
     
     private let emptyView = AmityNewsfeedEmptyView()
-    private var headerView = AmityMyCommunityPreviewViewController.make()
     private let createPostButton: AmityFloatingButton = AmityFloatingButton()
     private let feedViewController = AmityFeedViewController.make(feedType: .globalFeed)
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupFeedView()
-        setupHeaderView()
         setupEmptyView()
         setupPostButton()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        headerView.retrieveCommunityList()
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -54,14 +51,6 @@ private extension AmityNewsfeedViewController {
         feedViewController.dataDidUpdateHandler = { [weak self] itemCount in
             self?.emptyView.setNeedsUpdateState()
         }
-        
-        feedViewController.pullRefreshHandler = { [weak self] in
-            self?.headerView.retrieveCommunityList()
-        }
-    }
-    
-    private func setupHeaderView() {
-        headerView.delegate = self
     }
     
     private func setupEmptyView() {
@@ -102,25 +91,4 @@ extension AmityNewsfeedViewController: AmityCommunityProfileEditorViewController
         AmityEventHandler.shared.communityDidTap(from: self, communityId: communityId)
     }
     
-}
-
-extension AmityNewsfeedViewController: AmityMyCommunityPreviewViewControllerDelegate {
-
-    public func viewController(_ viewController: AmityMyCommunityPreviewViewController, didPerformAction action: AmityMyCommunityPreviewViewController.ActionType) {
-        switch action {
-        case .seeAll:
-            let vc = AmityMyCommunityViewController.make()
-            navigationController?.pushViewController(vc, animated: true)
-        case .communityItem(let communityId):
-            AmityEventHandler.shared.communityDidTap(from: self, communityId: communityId)
-        }
-    }
-
-    public func viewController(_ viewController: AmityMyCommunityPreviewViewController, shouldShowMyCommunityPreview: Bool) {
-        if shouldShowMyCommunityPreview {
-            feedViewController.headerView = headerView
-        } else {
-            feedViewController.headerView = nil
-        }
-    }
 }

@@ -64,16 +64,46 @@ extension AmityPostModel {
         case feed
         case postDetail
     }
-    
+
+    public enum NoomRole: StringLiteralType, CaseIterable {
+        case coach
+        case noomWriter
+        case noomTeam
+
+        public var color: UIColor {
+            switch self {
+            case .coach:
+                return AmityThemeManager.currentTheme.avatarCoachHighlight
+            case .noomWriter:
+                return AmityThemeManager.currentTheme.avatarWriterHighlight
+            case .noomTeam:
+                return AmityThemeManager.currentTheme.secondary
+            }
+        }
+
+        public var name: String {
+            switch self {
+            case .coach:
+                return "Noom Coach"
+            case .noomWriter:
+                return "Noom Writer"
+            case .noomTeam:
+                return "Noom Team"
+            }
+        }
+    }
+
     public class Author {
         public let avatarURL: String?
         public let displayName: String?
         public let isGlobalBan: Bool
+        public let noomRole: NoomRole?
         
-        public init( avatarURL: String?, displayName: String?, isGlobalBan: Bool) {
+        public init( avatarURL: String?, displayName: String?, isGlobalBan: Bool, noomRole: NoomRole?) {
             self.avatarURL = avatarURL
             self.displayName = displayName
             self.isGlobalBan = isGlobalBan
+            self.noomRole = noomRole
         }
     }
     
@@ -295,9 +325,18 @@ public class AmityPostModel {
         targetCommunity = post.targetCommunity
         childrenPosts = post.childrenPosts ?? []
         parentPostId = post.parentPostId
+        var noomRole: NoomRole? = nil
+        if let roleString = post.postedUser?.metadata?["userTag"] as? String,
+            let role = NoomRole(rawValue: roleString) {
+            noomRole = role
+        }
         postedUser = Author(
             avatarURL: post.postedUser?.getAvatarInfo()?.fileURL,
-            displayName: post.postedUser?.displayName ?? AmityLocalizedStringSet.General.anonymous.localizedString, isGlobalBan: post.postedUser?.isGlobalBan ?? false)
+            displayName: post.postedUser?.displayName ?? AmityLocalizedStringSet.General.anonymous.localizedString,
+            isGlobalBan: post.postedUser?.isGlobalBan ?? false,
+            noomRole: noomRole
+        )
+
         subtitle = post.isEdited ? String.localizedStringWithFormat(AmityLocalizedStringSet.PostDetail.postDetailCommentEdit.localizedString, post.createdAt.relativeTime) : post.createdAt.relativeTime
         postedUserId = post.postedUserId
         sharedCount = Int(post.sharedCount)
