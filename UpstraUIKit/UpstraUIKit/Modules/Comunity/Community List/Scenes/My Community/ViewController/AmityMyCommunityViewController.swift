@@ -9,8 +9,13 @@
 import UIKit
 
 /// A view controller for providing all community list.
-public final class AmityMyCommunityViewController: AmityViewController {
+public final class AmityMyCommunityViewController: AmityViewController, IndicatorInfoProvider {
 
+    func indicatorInfo(for pagerTabStripController: AmityPagerTabViewController) -> IndicatorInfo {
+        return IndicatorInfo(title: pageTitle)
+    }
+
+    var pageTitle: String?
     // MARK: - IBOutlet Properties
     @IBOutlet private var tableView: UITableView!
     
