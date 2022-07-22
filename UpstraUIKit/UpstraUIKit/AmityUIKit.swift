@@ -162,8 +162,19 @@ public final class AmityUIKitManager {
         AmityUIKitManagerInternal.shared.set(analyticsClient: analyticsClient)
     }
 
+    public static func set(markdownProcessor: AmityMarkdownProcessor) {
+        AmityUIKitManagerInternal.shared.set(markdownProcessor: markdownProcessor)
+    }
+
     public static func track(event: AmityAnalyticsEvent) {
         AmityUIKitManagerInternal.shared.analytics?.track(event)
+    }
+
+    public static func attributedString(from markdown: String) -> NSAttributedString {
+        guard let processor = AmityUIKitManagerInternal.shared.markdownProcessor else {
+            return NSAttributedString(string: markdown)
+        }
+        return processor.attributedText(from: markdown)
     }
 }
 
@@ -174,6 +185,7 @@ final class AmityUIKitManagerInternal: NSObject {
     public static let shared = AmityUIKitManagerInternal()
     private var _client: AmityClient?
     private(set) var analytics: AmityAnalytics?
+    private(set) var markdownProcessor: AmityMarkdownProcessor?
     private var apiKey: String = ""
     private var notificationTokenMap: [String: String] = [:]
     
@@ -293,5 +305,9 @@ extension AmityUIKitManagerInternal: AmityClientErrorDelegate {
 extension AmityUIKitManagerInternal {
     func set(analyticsClient: AmityAnalytics?) {
         self.analytics = analyticsClient
+    }
+
+    func set(markdownProcessor: AmityMarkdownProcessor?) {
+        self.markdownProcessor = markdownProcessor
     }
 }

@@ -39,6 +39,10 @@ open class AmityExpandableLabel: UILabel {
     
     private let truncateText = "..."
     private var readMoreText = "Read more"
+
+    private static let fullRegex = try! NSRegularExpression(pattern: "\\[(.+?)\\]\\((.+?)\\)")
+    private static let captionRegex = try! NSRegularExpression(pattern: "\\[(.+?)\\]")
+    private static let linkTextRegex = try! NSRegularExpression(pattern: "\\((.+?)\\)")
     
     public enum TextReplacementType {
         case character
@@ -151,13 +155,15 @@ open class AmityExpandableLabel: UILabel {
     open override var text: String? {
         set(text) {
             if let text = text {
-                let attributedString = NSMutableAttributedString(string: text)
+                let sanitized = removeLinksMarkdown(text: text)
+                let attributedString = AmityUIKitManager.attributedString(from: sanitized).mutableCopy() as? NSMutableAttributedString ?? NSMutableAttributedString(string: sanitized)
+                let textToUse = attributedString.string
                 let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-                let matches = detector.matches(in: text, options: [], range: NSRange(location: 0, length: text.utf16.count))
+                let matches = detector.matches(in: textToUse, options: [], range: NSRange(location: 0, length: textToUse.utf16.count))
                 var _hyperLinkTextRange: [Hyperlink] = []
                 for match in matches {
-                    guard let textRange = Range(match.range, in: text) else { continue }
-                    let urlString = String(text[textRange])
+                    guard let textRange = Range(match.range, in: textToUse) else { continue }
+                    let urlString = String(textToUse[textRange])
                     let validUrlString = urlString.hasPrefix("http") ? urlString : "http://\(urlString)"
                     guard let formattedString = validUrlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
                         let url = URL(string: formattedString) else { continue }
@@ -285,7 +291,7 @@ extension AmityExpandableLabel {
 extension AmityExpandableLabel {
     private func commonInit() {
         isUserInteractionEnabled = true
-        lineBreakMode = .byClipping
+        lineBreakMode = .byWordWrapping
         collapsedNumberOfLines = numberOfLines
         updateReadMoreAttributes()
     }
@@ -426,12 +432,49 @@ extension AmityExpandableLabel {
     }
     
     private func check(touch: UITouch, isInRange targetRange: NSRange) -> Bool {
-        let touchPoint = touch.location(in: self)
-        
+//        let touchPoint = touch.location(in: self)
+//
+//        // if text is expandable and it doesn't expand yet, add a reserved range for "...Read More".
+//        // other cases mean text is showing at the full size and no need to a range.
+//        let unwantedRange = isExpandable && !isExpanded ? truncateText.count + readMoreText.count : 0
+//        let index = characterIndex(at: touchPoint) - unwantedRange
+//        return NSLocationInRange(index, targetRange)
+
+        // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
+        guard let attributedText = attributedText else {
+            return false
+        }
+        let layoutManager = NSLayoutManager()
+        let textContainer = NSTextContainer(size: CGSize.zero)
+        let textStorage = NSTextStorage(attributedString: attributedText)
+
+        // Configure layoutManager and textStorage
+        layoutManager.addTextContainer(textContainer)
+        textStorage.addLayoutManager(layoutManager)
+
+        // Configure textContainer
+        textContainer.lineFragmentPadding = 0.0
+        textContainer.lineBreakMode = lineBreakMode
+        textContainer.maximumNumberOfLines = numberOfLines
+        let labelSize = bounds.size
+        textContainer.size = labelSize
+
+        // Find the tapped character location and compare it to the specified range
+        let textBoundingBox = layoutManager.usedRect(for: textContainer)
+        let textContainerOffset = CGPoint(
+            x: (labelSize.width - textBoundingBox.size.width) * 0.5 - textBoundingBox.origin.x,
+            y: (labelSize.height - textBoundingBox.size.height) * 0.5 - textBoundingBox.origin.y
+        )
+        let locationOfTouch = touch.location(in: self)
+        let locationOfTouchInTextContainer = CGPoint(
+            x: locationOfTouch.x - textContainerOffset.x,
+            y: locationOfTouch.y - textContainerOffset.y
+        )
+        let indexOfCharacter = layoutManager.characterIndex(for: locationOfTouchInTextContainer, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
         // if text is expandable and it doesn't expand yet, add a reserved range for "...Read More".
         // other cases mean text is showing at the full size and no need to a range.
         let unwantedRange = isExpandable && !isExpanded ? truncateText.count + readMoreText.count : 0
-        let index = characterIndex(at: touchPoint) - unwantedRange
+        let index = indexOfCharacter - unwantedRange
         return NSLocationInRange(index, targetRange)
     }
 
@@ -610,14 +653,39 @@ extension UILabel {
 }
 
 extension AmityExpandableLabel {
+    func removeLinksMarkdown(text: String) -> String {
+        let range = NSRange(text.startIndex..., in: text)
+        let matches = AmityExpandableLabel.fullRegex.matches(in: text, range: range)
+        let results = matches.map { String(text[Range($0.range, in: text)!])  }
+
+        let urls: [String?] = results.map { result in
+            let resultRange = NSRange(result.startIndex..., in: result)
+            guard let urlMatch = AmityExpandableLabel.linkTextRegex.firstMatch (in: result, range: resultRange) else {
+                return nil
+            }
+            let urlString = String(result[Range(urlMatch.range, in: result)!])
+            let subrangeStart = urlString.index(after: urlString.startIndex)
+            let subrangeEnd = urlString.index(before: urlString.endIndex)
+            return String(urlString[subrangeStart..<subrangeEnd])
+        }
+        var mutable = text
+        for (index, item) in results.enumerated() {
+            let replacement = urls[index] ?? ""
+            mutable = mutable.replacingOccurrences(of: item, with: replacement)
+        }
+        return mutable
+    }
+
     func setText(_ text: String, withAttributes attributes: [MentionAttribute]) {
-        let attributedString = NSMutableAttributedString(string: text)
+        let sanitized = removeLinksMarkdown(text: text)
+        let attributedString = AmityUIKitManager.attributedString(from: sanitized).mutableCopy() as? NSMutableAttributedString ?? NSMutableAttributedString(string: sanitized)
+        let textToUse = attributedString.string
         let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-        let matches = detector.matches(in: text, options: [], range: NSRange(location: 0, length: text.utf16.count))
+        let matches = detector.matches(in: textToUse, options: [], range: NSRange(location: 0, length: textToUse.utf16.count))
         var _hyperLinkTextRange: [Hyperlink] = []
         for match in matches {
-            guard let textRange = Range(match.range, in: text) else { continue }
-            let urlString = String(text[textRange])
+            guard let textRange = Range(match.range, in: textToUse) else { continue }
+            let urlString = String(textToUse[textRange])
             let validUrlString = urlString.hasPrefix("http") ? urlString : "http://\(urlString)"
             guard let formattedString = validUrlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
                 let url = URL(string: formattedString) else { continue }
@@ -627,12 +695,19 @@ extension AmityExpandableLabel {
             attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: match.range)
             _hyperLinkTextRange.append(Hyperlink(range: match.range, type: .url(url: url)))
         }
-        
+
         for attribute in attributes {
-            attributedString.addAttributes(attribute.attributes, range: attribute.range)
-            _hyperLinkTextRange.append(Hyperlink(range: attribute.range, type: .mention(userId: attribute.userId)))
+            let originalAttributedString = NSMutableAttributedString(string: text)
+            if let range = Range(attribute.range, in: originalAttributedString.string) {
+                let mentionText = originalAttributedString.string[range]
+                if  let mentionRange = attributedString.string.range(of: mentionText) {
+                    let mentionNSRange = NSRange(mentionRange, in: attributedString.string)
+                    attributedString.addAttributes(attribute.attributes, range: mentionNSRange)
+                    _hyperLinkTextRange.append(Hyperlink(range: mentionNSRange, type: .mention(userId: attribute.userId)))
+                }
+            }
         }
-        
+
         hyperLinks = _hyperLinkTextRange
         self.attributedText = attributedString
     }
