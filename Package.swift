@@ -16,14 +16,15 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            name: "AmitySDK",
-            url: "https://github.com/AmityCo/Amity-Social-Cloud-SDK-iOS-SwiftPM.git",
-            from: "5.14.0")
+            url: "https://github.com/AmityCo/Amity-Social-Cloud-SDK-iOS-SwiftPM.git", .exact("5.17.0")
+        )
     ],
     targets: [
         .target(
             name: "AmityUIKit",
-            dependencies: ["AmitySDK"],
+            dependencies: [
+                .product(name: "AmitySDK", package: "Amity-Social-Cloud-SDK-iOS-SwiftPM")
+            ],
             path: "UpstraUIKit/UpstraUIKit",
             resources: [
                 .process("Localization/AmityLocalizable.strings")

@@ -153,16 +153,16 @@
 "category_selection_title_2" = "Category";
 
 // MARK: - My Community
-"my_community_title" = "My Community";
+"my_community_title" = "My Communities";
 "my_community_see_all" = "See all";
 // MARK: - Newsfeed
-"newsfeed_title" = "Newsfeed";
+"newsfeed_title" = "Feed";
 
 // MARK: - Explore
 "explore_title" = "Explore";
 
 // MARK: - Community home page
-"community_home_title" = "Community";
+"community_home_title" = "Noom Connect";
 
 // MARK: - Community detail page
 "community_detail_join_button" = "Join";
@@ -222,7 +222,7 @@
 "post_detail_edit_comment" = "Edit comment";
 "post_detail_delete_comment" = "Delete comment";
 "post_detail_delete_comment_title" = "Delete this comment";
-"post_detail_delete_comment_message" = "This comment will be permanently deleted. You’ll no longer to see and find this comment";
+"post_detail_delete_comment_message" = "This comment will be permanently deleted. You’ll no longer be able to see and find this comment";
 "post_detail_discard_comment_title" = "Discard Comment?";
 "post_detail_discard_comment_message" = "Do you want to discard your comment?";
 "post_detail_discard_edited_comment_message" = "Do you want to discard edited comment?";
@@ -294,7 +294,7 @@
 "user_settings_item_unfollow" = "Unfollow";
 "user_settings_item_report_user" = "Report user";
 "user_settings_item_unreport_user" = "Unreport user";
-"user_settings_item_edit_profile" = "Edite profile";
+"user_settings_item_edit_profile" = "Edit profile";
 "user_settings_unfollow_message" = "You’ll have to send a request again to follow %@. Continue?";
 "user_settings_unfollow_fail_title" = "Unable to unfollow %@";
 "user_settings_remove_user" = "Remove user";

@@ -81,21 +81,16 @@ final public class AmityPostTargetPickerViewController: AmityViewController {
 extension AmityPostTargetPickerViewController: UITableViewDataSource {
     
     public func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1
-        }
         return screenViewModel.numberOfItems()
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: AmityCommunityTableViewCell = tableView.dequeueReusableCell(for: indexPath)
-        if indexPath.section == 0 {
-            cell.configure(with: .myFeed)
-        } else if let item = screenViewModel.dataSource.community(at: indexPath) {
+        if let item = screenViewModel.dataSource.community(at: indexPath) {
             let model = AmityCommunityModel(object: item)
             cell.configure(with: .community(model))
         }
