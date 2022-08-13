@@ -27,7 +27,6 @@ import AmitySDK
 public enum AmityPostContentType {
     case post
     case poll
-    case livestream
 }
 
 open class AmityEventHandler {
@@ -157,12 +156,6 @@ open class AmityEventHandler {
             completion(.poll)
         }
         
-//        let livestreamPost = ImageItemOption(
-//            title: "Livestream",
-//            image: UIImage(named: "icon_create_livestream_post", in: AmityUIKitManager.bundle, compatibleWith: nil)) {
-//                completion(.livestream)
-//            }
-        
         AmityBottomSheet.present(options: [/*livestreamPost,*/ postOption, pollPostOption], from: source)
     }
     
@@ -191,14 +184,6 @@ open class AmityEventHandler {
                 postTarget: postTarget,
                 analyticsSource: analyticsSource
             )
-        case .livestream:
-            switch postTarget {
-            case .myFeed:
-                createLiveStreamPost(from: source, targetId: nil, targetType: .user, destinationToUnwindBackAfterFinish: source.presentingViewController ?? source)
-            case .community(object: let community):
-                createLiveStreamPost(from: source, targetId: community.communityId, targetType: .community, destinationToUnwindBackAfterFinish: source.presentingViewController ?? source)
-            }
-            return
         }
         
         if source.isModalPresentation {
