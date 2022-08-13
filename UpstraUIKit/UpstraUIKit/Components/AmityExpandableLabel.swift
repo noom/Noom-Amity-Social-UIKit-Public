@@ -43,6 +43,7 @@ open class AmityExpandableLabel: UILabel {
     private static let fullRegex = try! NSRegularExpression(pattern: "\\[(.+?)\\]\\((.+?)\\)")
     private static let captionRegex = try! NSRegularExpression(pattern: "\\[(.+?)\\]")
     private static let linkTextRegex = try! NSRegularExpression(pattern: "\\((.+?)\\)")
+    private static let newLineRegex = try! NSRegularExpression(pattern: " +\\n")
     
     public enum TextReplacementType {
         case character
@@ -673,7 +674,10 @@ extension AmityExpandableLabel {
             let replacement = urls[index] ?? ""
             mutable = mutable.replacingOccurrences(of: item, with: replacement)
         }
-        return mutable
+        let mutableRange = NSRange(mutable.startIndex..., in: mutable)
+
+        mutable = AmityExpandableLabel.newLineRegex.stringByReplacingMatches(in: mutable, range: mutableRange, withTemplate: "\n")
+        return mutable // mutable.replacingOccurrences(of: " \n", with: "\n")
     }
 
     func setText(_ text: String, withAttributes attributes: [MentionAttribute]) {

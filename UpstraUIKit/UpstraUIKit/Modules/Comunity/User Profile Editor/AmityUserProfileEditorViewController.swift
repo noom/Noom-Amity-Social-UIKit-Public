@@ -123,6 +123,7 @@ final public class AmityUserProfileEditorViewController: AmityViewController {
         // Update user avatar
         if let avatar = uploadingAvatarImage {
             userAvatarView.state = .loading
+            AmityHUD.show(.loading)
             screenViewModel?.action.update(avatar: avatar) { [weak self] success in
                 if success {
                     AmityHUD.show(.success(message: AmityLocalizedStringSet.HUD.successfullyUpdated.localizedString))

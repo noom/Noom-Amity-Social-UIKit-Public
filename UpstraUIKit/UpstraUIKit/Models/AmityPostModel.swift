@@ -362,7 +362,7 @@ public class AmityPostModel {
     }
     
     public var viewAllCommentSection: Int {
-        return latestComments.count > 2 ? 1 : 0
+        return allCommentCount >= 2 && allCommentCount > maximumLastestComments ? 1 : 0
     }
     
     // Comment will show below last component
