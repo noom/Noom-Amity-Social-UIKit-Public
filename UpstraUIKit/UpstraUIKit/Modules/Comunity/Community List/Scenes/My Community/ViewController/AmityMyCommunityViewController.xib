@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -11,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AmityMyCommunityViewController" customModule="AmityUIKit">
             <connections>
+                <outlet property="createButton" destination="xCt-vo-di5" id="UUq-lO-kh9"/>
                 <outlet property="tableView" destination="xxb-ae-vOf" id="Fyx-eO-Zlz"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -21,22 +23,41 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="xxb-ae-vOf">
-                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                    <rect key="frame" x="0.0" y="44" width="414" height="746"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </tableView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xCt-vo-di5">
+                    <rect key="frame" x="16" y="806" width="382" height="40"/>
+                    <color key="backgroundColor" red="0.98431372549019602" green="0.31764705882352939" blue="0.23137254901960785" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="LJf-Vr-q6t"/>
+                    </constraints>
+                    <color key="tintColor" name="White"/>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                    <state key="normal" title="Create new community"/>
+                    <connections>
+                        <action selector="createCommunityTap" destination="-1" eventType="touchUpInside" id="cNe-l3-YOT"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="xxb-ae-vOf" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="8WX-vs-ZoM"/>
+                <constraint firstItem="xCt-vo-di5" firstAttribute="top" secondItem="xxb-ae-vOf" secondAttribute="bottom" constant="16" id="Lxg-Hh-cPh"/>
                 <constraint firstItem="xxb-ae-vOf" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="Uqo-jp-oEe"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="xxb-ae-vOf" secondAttribute="trailing" id="WKD-6m-EDr"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="xxb-ae-vOf" secondAttribute="bottom" id="qMK-Nd-sUh"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="xCt-vo-di5" secondAttribute="bottom" constant="16" id="YNy-Nh-nk2"/>
+                <constraint firstItem="xCt-vo-di5" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="bLi-hy-1AC"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="xCt-vo-di5" secondAttribute="trailing" constant="16" id="ejF-Bp-vmi"/>
             </constraints>
-            <point key="canvasLocation" x="132" y="81"/>
+            <point key="canvasLocation" x="131.8840579710145" y="80.357142857142847"/>
         </view>
     </objects>
     <resources>
+        <namedColor name="White">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
