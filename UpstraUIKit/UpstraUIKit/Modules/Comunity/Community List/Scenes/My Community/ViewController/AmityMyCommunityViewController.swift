@@ -18,6 +18,7 @@ public final class AmityMyCommunityViewController: AmityViewController, Indicato
     var pageTitle: String?
     // MARK: - IBOutlet Properties
     @IBOutlet private var tableView: UITableView!
+    @IBOutlet private var createButton: UIButton!
     
     // MARK: - Properties
     private var searchController = UISearchController(searchResultsController: nil)
@@ -31,6 +32,9 @@ public final class AmityMyCommunityViewController: AmityViewController, Indicato
         setupSearchController()
         setupTableView()
         setupScreenViewModel()
+        createButton.titleLabel?.font = AmityFontSet.bodyBold
+        createButton.layer.cornerRadius = 4
+        createButton.layer.masksToBounds = true
     }
 
     public override func viewWillAppear(_ animated: Bool) {
@@ -118,7 +122,7 @@ public final class AmityMyCommunityViewController: AmityViewController, Indicato
 }
 
 private extension AmityMyCommunityViewController {
-    @objc func createCommunityTap() {
+    @IBAction @objc func createCommunityTap() {
         let vc = AmityCommunityCreatorViewController.make()
         vc.delegate = self
         let nav = UINavigationController(rootViewController: vc)

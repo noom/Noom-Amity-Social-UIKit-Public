@@ -14,6 +14,8 @@ public class AmityCommunityHomePageViewController: AmityPageViewController {
     public let newsFeedVC = AmityNewsfeedViewController.make()
     public let exploreVC = AmityCommunityExplorerViewController.make()
     public let myCommunitiesVC = AmityMyCommunityViewController.make()
+
+    private var firstAppearance = true
     
     private init() {
         super.init(nibName: AmityCommunityHomePageViewController.identifier, bundle: AmityUIKitManager.bundle)
@@ -27,8 +29,17 @@ public class AmityCommunityHomePageViewController: AmityPageViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
+
     }
-    
+
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if firstAppearance {
+            moveTo(viewController: exploreVC)
+            firstAppearance = false
+        }
+    }
+
     public static func make(analytics: AmityAnalytics) -> AmityCommunityHomePageViewController {
         AmityUIKitManager.set(analyticsClient: analytics)
         return AmityCommunityHomePageViewController()
