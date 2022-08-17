@@ -156,7 +156,7 @@ class AmityPostDetailCompostView: UIView {
         postButton.translatesAutoresizingMaskIntoConstraints = false
         postButton.setTitle(AmityLocalizedStringSet.General.post.localizedString, for: .normal)
         postButton.setTitleColor(AmityColorSet.primary, for: .normal)
-        postButton.setTitleColor(AmityColorSet.primary.blend(.shade2), for: .disabled)
+        postButton.setTitleColor(AmityThemeManager.currentTheme.buttonDisabled, for: .disabled)
         postButton.addTarget(self, action: #selector(postButtonTap), for: .touchUpInside)
         postButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         postButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
@@ -227,7 +227,8 @@ extension AmityPostDetailCompostView: AmityTextViewDelegate {
     }
     
     func textViewDidChange(_ textView: AmityTextView) {
-        postButton.isEnabled = !text.isEmpty
+        var trimmedText = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        postButton.isEnabled = !trimmedText.isEmpty
         
         let height = textView.text.height(withConstrainedWidth: textView.contentSize.width, font: textView.font ?? AmityFontSet.body)
         let verticalPadding = Constant.textViewTopPadding + Constant.textViewBottomPadding
