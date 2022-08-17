@@ -82,7 +82,8 @@ extension AmityPollCreatorScreenViewModel {
     
     func addNewOption(completion: () -> Void) {
         guard answersItem.count < 10 else { return }
-        if answersItem.last == "" {
+        let trimmed = answersItem.last?.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed == "" {
             return
         }
         answersItem.append("")
