@@ -60,6 +60,8 @@ public struct AmityTheme {
     let avatarCoachHighlight: UIColor
 
     let avatarWriterHighlight: UIColor
+
+    let buttonDisabled: UIColor
     
     public init(primary: UIColor? = nil,
                 secondary: UIColor? = nil,
@@ -74,7 +76,8 @@ public struct AmityTheme {
                 pollBackground: UIColor? = nil,
                 pollVotedOther: UIColor? = nil,
                 avatarCoachHighlight: UIColor? = nil,
-                avatarWriterHighlight: UIColor? = nil
+                avatarWriterHighlight: UIColor? = nil,
+                buttonDisabled: UIColor? = nil
             ) {
         self.primary = primary ?? UIColor(hex: "#1054DE")
         self.secondary = secondary ?? UIColor(hex: "#292B32")
@@ -90,6 +93,7 @@ public struct AmityTheme {
         self.pollVotedOther = pollVotedOther ?? UIColor(hex: "#292B32")
         self.avatarCoachHighlight = avatarCoachHighlight ?? UIColor(hex: "#292B32")
         self.avatarWriterHighlight = avatarWriterHighlight ?? UIColor(hex: "#292B32")
+        self.buttonDisabled = buttonDisabled ?? .gray
     }
     
 }

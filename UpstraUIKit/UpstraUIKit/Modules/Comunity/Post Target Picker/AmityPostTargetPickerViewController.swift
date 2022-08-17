@@ -127,17 +127,11 @@ extension AmityPostTargetPickerViewController: UITableViewDelegate {
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var postTarget: AmityPostTarget
-        if indexPath.section == 0 {
-            postTarget = .myFeed
-        } else {
-            guard let community = screenViewModel.community(at: indexPath) else { return }
-            postTarget = .community(object: community)
-        }
+        guard let community = screenViewModel.community(at: indexPath) else { return }
         
         AmityEventHandler.shared.postTargetDidSelect(
             from: self,
-            postTarget: postTarget,
+            postTarget: .community(object: community),
             postContentType: self.postContentType,
             analyticsSource: analyticsSource
         )

@@ -537,7 +537,18 @@ extension AmityCommunityProfileEditorViewController: AmityCreateCommunityScreenV
             }
         case .onDismiss(let isChange):
             if isChange {
-                let alert = UIAlertController(title: AmityLocalizedStringSet.createCommunityAlertTitle.localizedString, message: AmityLocalizedStringSet.createCommunityAlertDesc.localizedString, preferredStyle: .alert)
+                let message: String
+                switch viewType {
+                case .create:
+                    message = AmityLocalizedStringSet.createCommunityAlertDesc.localizedString
+                case .edit:
+                    message = AmityLocalizedStringSet.editCommunityAlertDesc.localizedString
+                }
+                let alert = UIAlertController(
+                    title: AmityLocalizedStringSet.createCommunityAlertTitle.localizedString,
+                    message: message,
+                    preferredStyle: .alert
+                )
                 alert.addAction(UIAlertAction(title: AmityLocalizedStringSet.General.cancel.localizedString, style: .cancel, handler: nil))
                 alert.addAction(UIAlertAction(title: AmityLocalizedStringSet.General.leave.localizedString, style: .destructive, handler: { [weak self] _ in
                     self?.generalDismiss()
