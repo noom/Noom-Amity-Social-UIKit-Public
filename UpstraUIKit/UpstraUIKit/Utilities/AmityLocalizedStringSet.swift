@@ -139,6 +139,7 @@ public struct AmityLocalizedStringSet {
     
     // MARK: - Create community
     static let editCommunityTitle = "edit_community_title"
+    static let editCommunityAlertDesc = "edit_community_alert_desc"
     static let createCommunityTitle = "create_community_title"
     static let createCommunityNameTitle = "create_community_name_title"
     static let createCommunityNamePlaceholder = "create_community_name_placeholder"

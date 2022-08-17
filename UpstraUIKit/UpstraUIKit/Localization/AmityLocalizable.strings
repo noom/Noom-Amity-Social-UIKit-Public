@@ -125,6 +125,7 @@
 
 // MARK: - Amity Create Community
 "edit_community_title" = "Edit Community";
+"edit_community_alert_desc" = "Your changes won’t be saved.";
 "create_community_title" = "Create Community";
 "create_community_name_title" = "Community name";
 "create_community_name_placeholder" = "Name your community";
@@ -227,7 +228,7 @@
 "post_detail_discard_comment_message" = "Do you want to discard your comment?";
 "post_detail_discard_edited_comment_message" = "Do you want to discard edited comment?";
 "post_detail_delete_post_title" = "Delete this post";
-"post_detail_delete_post_message" = "This post will be permanently deleted. You’ll no longer to see and find this post";
+"post_detail_delete_post_message" = "This post will be permanently deleted. You’ll no longer be able to see and find this post";
 "post_detail_banned_comment_error_message" = "Sorry, your comment has been deleted due to containing inappropriate words.\nPlease contact the administrator for more information.";
 "post_detail_comment_edited" = "%@ • Edited";
 
@@ -260,7 +261,7 @@
 "community_settings_item_title_close_community" = "Close community";
 "community_settings_item_desc_close_community" = "Closing this community will remove the community page and all its content and comments.";
 "community_settings_alert_title_leave" = "Leave community";
-"community_settings_alert_desc_leave" = "You won’t no longer be able to post and interact in this community after leaving.";
+"community_settings_alert_desc_leave" = "You will no longer be able to post and interact in this community after leaving.";
 "community_settings_alert_desc_moderator_leave" = "Leaving community, you’ll give up your moderator status and won’t no longer be able to post and interact in this community.";
 "community_settings_alert_desc_last_moderator_leave" = "As you’re the last moderator and member, leaving will also close this community. All posts shared in community will be deleted. This cannot be undone.";
 "community_settings_alert_title_close" = "Close community?";
