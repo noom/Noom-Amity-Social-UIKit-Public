@@ -175,6 +175,18 @@ public final class AmityUIKitManager {
         }
         return processor.attributedText(from: markdown)
     }
+
+    static func setRootViewController(_ viewController: AmityRootViewController) {
+        AmityUIKitManagerInternal.shared.router.rootController = viewController
+    }
+
+    static func setRoutingEnabled(_ enabled: Bool) {
+        AmityUIKitManagerInternal.shared.router.canRoute = enabled
+    }
+
+    static func route(to route: AmityRoute) {
+        AmityUIKitManagerInternal.shared.router.pendingRoute = route
+    }
 }
 
 final class AmityUIKitManagerInternal: NSObject {
@@ -189,6 +201,7 @@ final class AmityUIKitManagerInternal: NSObject {
     
     private(set) var fileService = AmityFileService()
     private(set) var messageMediaService = AmityMessageMediaService()
+    var router = AmityRouter()
     
     var currentUserId: String { return client.currentUserId ?? "" }
     
