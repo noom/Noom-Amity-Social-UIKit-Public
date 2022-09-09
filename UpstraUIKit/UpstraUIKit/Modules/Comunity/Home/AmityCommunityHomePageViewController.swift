@@ -8,18 +8,17 @@
 
 import UIKit
 
-public class AmityCommunityHomePageViewController: AmityPageViewController {
+public class AmityCommunityHomePageViewController: AmityPageViewController, AmityRootViewController {
     
     // MARK: - Properties
     public let newsFeedVC = AmityNewsfeedViewController.make()
     public let exploreVC = AmityCommunityExplorerViewController.make()
     public let myCommunitiesVC = AmityMyCommunityViewController.make()
 
-    private var firstAppearance = true
-    
     private init() {
         super.init(nibName: AmityCommunityHomePageViewController.identifier, bundle: AmityUIKitManager.bundle)
         title = AmityLocalizedStringSet.communityHomeTitle.localizedString
+        AmityUIKitManager.setRootViewController(self)
     }
     
     required init?(coder: NSCoder) {
@@ -29,20 +28,23 @@ public class AmityCommunityHomePageViewController: AmityPageViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
-
     }
 
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if firstAppearance {
-            moveTo(viewController: exploreVC)
-            firstAppearance = false
-        }
+        AmityUIKitManager.setRoutingEnabled(true)
     }
 
-    public static func make(analytics: AmityAnalytics) -> AmityCommunityHomePageViewController {
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        AmityUIKitManager.setRoutingEnabled(false)
+    }
+
+    public static func make(analytics: AmityAnalytics, initialRouting: AmityRoute = .none) -> AmityCommunityHomePageViewController {
         AmityUIKitManager.set(analyticsClient: analytics)
-        return AmityCommunityHomePageViewController()
+        let viewController = AmityCommunityHomePageViewController()
+        AmityUIKitManager.route(to: initialRouting)
+        return viewController
     }
     
     override func viewControllers(for pagerTabStripController: AmityPagerTabViewController) -> [UIViewController] {
@@ -88,3 +90,12 @@ private extension AmityCommunityHomePageViewController {
     }
 }
 
+private extension AmityCommunityHomePageViewController {
+    internal func canShowExplore() -> Bool {
+        return true
+    }
+
+    internal func showExplore() {
+        moveTo(viewController: exploreVC)
+    }
+}
