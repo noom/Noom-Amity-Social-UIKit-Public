@@ -23,15 +23,17 @@ final class AmityCommunityCategoryController: AmityCommunityCategoryControllerPr
     func retrieve(_ completion: ((Result<[AmityCommunityCategoryModel], AmityError>) -> Void)?) {
         collection = repository.getCategories(sortBy: .displayName, includeDeleted: false)
         token = collection?.observe { [weak self] (collection, change, error) in
-            if collection.dataStatus == .fresh {
-                guard let strongSelf = self else { return }
-                if let error = AmityError(error: error) {
-                    completion?(.failure(error))
+            DispatchQueue.main.async {
+                if collection.dataStatus == .fresh {
+                    guard let strongSelf = self else { return }
+                    if let error = AmityError(error: error) {
+                        completion?(.failure(error))
+                    } else {
+                        completion?(.success(strongSelf.prepareDataSource()))
+                    }
                 } else {
-                    completion?(.success(strongSelf.prepareDataSource()))
+                    completion?(.failure(AmityError(error: error) ?? .unknown))
                 }
-            } else {
-                completion?(.failure(AmityError(error: error) ?? .unknown))
             }
         }
     }
