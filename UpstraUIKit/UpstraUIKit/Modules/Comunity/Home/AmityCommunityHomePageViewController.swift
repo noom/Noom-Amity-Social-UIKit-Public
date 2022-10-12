@@ -9,7 +9,8 @@
 import UIKit
 
 public class AmityCommunityHomePageViewController: AmityPageViewController, AmityRootViewController {
-    
+
+    internal var exitClosure: (() -> Void)? = nil
     // MARK: - Properties
     public let newsFeedVC = AmityNewsfeedViewController.make()
     public let exploreVC = AmityCommunityExplorerViewController.make()
@@ -40,9 +41,21 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
         AmityUIKitManager.setRoutingEnabled(false)
     }
 
-    public static func make(analytics: AmityAnalytics, initialRouting: AmityRoute = .none) -> AmityCommunityHomePageViewController {
+    public override func willMove(toParent parent: UIViewController?) {
+        if parent == nil {
+            exitClosure?()
+        }
+        super.willMove(toParent: parent)
+    }
+
+    public static func make(
+        analytics: AmityAnalytics,
+        initialRouting: AmityRoute = .none,
+        exitClosure: @escaping () -> Void
+    ) -> AmityCommunityHomePageViewController {
         AmityUIKitManager.set(analyticsClient: analytics)
         let viewController = AmityCommunityHomePageViewController()
+        viewController.exitClosure = exitClosure
         AmityUIKitManager.route(to: initialRouting)
         return viewController
     }
@@ -90,12 +103,12 @@ private extension AmityCommunityHomePageViewController {
     }
 }
 
-private extension AmityCommunityHomePageViewController {
-    internal func canShowExplore() -> Bool {
+internal extension AmityCommunityHomePageViewController {
+    func canShowExplore() -> Bool {
         return true
     }
 
-    internal func showExplore() {
+    func showExplore() {
         moveTo(viewController: exploreVC)
     }
 }
