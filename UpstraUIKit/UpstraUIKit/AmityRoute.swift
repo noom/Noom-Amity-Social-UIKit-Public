@@ -50,6 +50,8 @@ class AmityRouter {
             }
         case .post(let id):
             AmityEventHandler.shared.postDidtap(from: rootController, postId: id)
+        case .community(let id):
+            AmityEventHandler.shared.communityDidTap(from: rootController, communityId: id)
         case .none:
             return
         }
