@@ -51,7 +51,7 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     public static func make(
         analytics: AmityAnalytics,
         initialRouting: AmityRoute = .none,
-        exitClosure: @escaping () -> Void
+        exitClosure: (@escaping () -> Void) = {}
     ) -> AmityCommunityHomePageViewController {
         AmityUIKitManager.set(analyticsClient: analytics)
         let viewController = AmityCommunityHomePageViewController()
