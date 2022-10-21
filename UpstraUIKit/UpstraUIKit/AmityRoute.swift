@@ -11,6 +11,7 @@ import UIKit
 public enum AmityRoute: Equatable {
     case explore
     case post(id: String)
+    case community(id: String)
     case none
 }
 
