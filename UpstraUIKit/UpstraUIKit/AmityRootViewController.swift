@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol AmityRootViewController: AmityViewController {
+public protocol AmityRootViewController: AmityViewController {
     func canShowExplore() -> Bool
     func showExplore()
     var exitClosure: (() -> Void)? { get }
