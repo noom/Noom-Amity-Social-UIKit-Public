@@ -185,7 +185,7 @@ public final class AmityUIKitManager {
         AmityUIKitManagerInternal.shared.router.canRoute = enabled
     }
 
-    static func route(to route: AmityRoute) {
+    public static func route(to route: AmityRoute) {
         AmityUIKitManagerInternal.shared.router.pendingRoute = route
     }
 }
