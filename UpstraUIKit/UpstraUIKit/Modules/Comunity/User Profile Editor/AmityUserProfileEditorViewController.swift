@@ -22,6 +22,9 @@ final public class AmityUserProfileEditorViewController: AmityViewController {
     @IBOutlet private weak var aboutTextView: AmityTextView!
     @IBOutlet private weak var aboutSeparatorView: UIView!
     @IBOutlet private weak var displaynameSeparatorView: UIView!
+    @IBOutlet private weak var connectSettingsLabel: UILabel!
+    @IBOutlet private weak var connectSettingsArrow: UIImageView!
+    @IBOutlet private weak var connectSettingsButton: UIButton!
     private var saveBarButtonItem: UIBarButtonItem!
     
     private var screenViewModel: AmityUserProfileEditorScreenViewModelType?
@@ -110,7 +113,12 @@ final public class AmityUserProfileEditorViewController: AmityViewController {
         // separator
         aboutSeparatorView.backgroundColor = AmityColorSet.secondary.blend(.shade4)
         displaynameSeparatorView.backgroundColor = AmityColorSet.secondary.blend(.shade4)
-        
+
+        connectSettingsLabel.text = AmityLocalizedStringSet.editUserProfileConnectNotificationsTitle.localizedString
+        connectSettingsLabel.font = AmityFontSet.title
+        connectSettingsLabel.textColor = AmityColorSet.base
+
+        connectSettingsButton.setTitle(nil, for: .normal)
         updateViewState()
     }
     
@@ -141,7 +149,10 @@ final public class AmityUserProfileEditorViewController: AmityViewController {
             AmityHUD.show(.success(message: AmityLocalizedStringSet.HUD.successfullyUpdated.localizedString))
         }
     }
-    
+    @IBAction private func settingsButtonTap(_ sender: Any) {
+        //show settings
+    }
+
     @IBAction private func avatarButtonTap(_ sender: Any) {
         view.endEditing(true)
         // Show camera

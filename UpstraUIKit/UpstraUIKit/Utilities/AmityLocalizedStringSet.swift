@@ -359,6 +359,8 @@ public struct AmityLocalizedStringSet {
     static let editUserProfileEmailTitle = "edit_user_profile_email_title"
     static let editUserProfilePhoneNumberTitle = "edit_user_profile_phone_number_title"
     static let editUserProfileDescriptionTitle = "edit_user_profile_description_title"
+    static let editUserProfileConnectNotificationsTitle = "edit_user_profile_connect_notifications"
+
     
     // MARK: - Profile Option
     static let profileOptionTitle = "profile_option_title"
@@ -505,5 +507,10 @@ public struct AmityLocalizedStringSet {
         public static let unableToMentionPostDescription = "mention_unable_to_mention_post_description"
         public static let unableToMentionCommentDescription = "mention_unable_to_mention_comment_description"
         public static let unableToMentionReplyDescription = "mention_unable_to_mention_reply_description"
+    }
+
+    public enum Home {
+        public static let homeMe = "home_me"
+        public static let homeMyProfile = "home_my_profile"
     }
 }
