@@ -6,6 +6,8 @@
 //  Copyright © 2564 BE Amity. All rights reserved.
 //
 
+import AmitySDK
+import SnapKit
 import UIKit
 
 /// A view controller for providing all community list.
@@ -21,25 +23,41 @@ public final class AmityMyCommunityViewController: AmityViewController, Indicato
     @IBOutlet private var createButton: UIButton!
     
     // MARK: - Properties
-    private var searchController = UISearchController(searchResultsController: nil)
     private var emptyView = AmitySearchEmptyView()
     private var screenViewModel: AmityMyCommunityScreenViewModelType!
+    private var userViewModel: AmityUserProfileHeaderScreenViewModel!
+    private var userModel: AmityUserModel? {
+        didSet {
+            self.tableView.reloadData()
+        }
+    }
+    private var followInfo: AmityFollowInfo? {
+        didSet {
+            self.tableView.reloadData()
+        }
+    }
+
+    private enum TableSections: Int {
+        case user = 0
+        case communities = 1
+    }
     
     // MARK: - View lifecycle
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        setupSearchController()
         setupTableView()
         setupScreenViewModel()
         createButton.titleLabel?.font = AmityFontSet.bodyBold
         createButton.layer.cornerRadius = 4
         createButton.layer.masksToBounds = true
+        userViewModel.delegate = self
     }
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        searchController.searchBar.text = screenViewModel.dataSource.searchText
+        userViewModel.fetchUserData()
+        userViewModel.fetchFollowInfo()
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -50,8 +68,10 @@ public final class AmityMyCommunityViewController: AmityViewController, Indicato
     public static func make() -> AmityMyCommunityViewController {
         let communityListRepositoryManager = AmityCommunityListRepositoryManager()
         let viewModel = AmityMyCommunityScreenViewModel(communityListRepositoryManager: communityListRepositoryManager)
+        let profileViewModel = AmityUserProfileHeaderScreenViewModel(userId: AmityUIKitManagerInternal.shared.currentUserId)
         let vc = AmityMyCommunityViewController(nibName: AmityMyCommunityViewController.identifier, bundle: AmityUIKitManager.bundle)
         vc.screenViewModel = viewModel
+        vc.userViewModel = profileViewModel
         return vc
     }
     
@@ -63,7 +83,7 @@ public final class AmityMyCommunityViewController: AmityViewController, Indicato
     
     // MARK: - Setup views
     private func setupView() {
-        title = AmityLocalizedStringSet.myCommunityTitle.localizedString
+        title = AmityLocalizedStringSet.Home.homeMe.localizedString
         if communityCreationButtonVisible() {
             let rightItem = UIBarButtonItem(image: AmityIconSet.iconAdd, style: .plain, target: self, action: #selector(createCommunityTap))
             rightItem.tintColor = AmityColorSet.base
@@ -81,41 +101,17 @@ public final class AmityMyCommunityViewController: AmityViewController, Indicato
         return visible
     }
     
-    private func setupSearchController() {
-        searchController.searchBar.delegate = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = AmityLocalizedStringSet.General.search.localizedString
-        searchController.searchBar.tintColor = AmityColorSet.base
-        searchController.searchBar.returnKeyType = .done
-        searchController.searchBar.backgroundImage = UIImage()
-        searchController.searchBar.barTintColor = AmityColorSet.backgroundColor
-        
-        (searchController.searchBar.value(forKey: "cancelButton") as? UIButton)?.tintColor = AmityColorSet.base
-        
-        if #available(iOS 13, *) {
-            searchController.searchBar.searchTextField.backgroundColor = AmityColorSet.secondary.blend(.shade4)
-            searchController.searchBar.searchTextField.textColor = AmityColorSet.base
-            searchController.searchBar.searchTextField.leftView?.tintColor = AmityColorSet.base.blend(.shade2)
-        } else {
-            if let textField = (searchController.searchBar.value(forKey: "searchField") as? UITextField) {
-                textField.backgroundColor = AmityColorSet.secondary.blend(.shade4)
-                textField.tintColor = AmityColorSet.base
-                textField.textColor = AmityColorSet.base
-                textField.leftView?.tintColor = AmityColorSet.base.blend(.shade2)
-            }
-        }
-    }
-    
     private func setupTableView() {
-        tableView.tableHeaderView = searchController.searchBar
-        tableView.setContentOffset(CGPoint(x: 0, y: 50), animated: true)
         tableView.register(cell: AmityMyCommunityTableViewCell.self)
+        tableView.register(
+            AmityMeProfileHeaderTableViewCell.self,
+            forCellReuseIdentifier: AmityMeProfileHeaderTableViewCell.amityIdentifier
+        )
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView()
         tableView.keyboardDismissMode = .onDrag
         tableView.separatorColor = .clear
-        
         emptyView.topMargin = 100
     }
     
@@ -134,11 +130,17 @@ private extension AmityMyCommunityViewController {
 extension AmityMyCommunityViewController: UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        searchController.isActive = false
-        searchController.searchBar.setShowsCancelButton(false, animated: true)
-        searchController.searchBar.text = screenViewModel.dataSource.searchText
-        guard let communityId = screenViewModel.dataSource.item(at: indexPath)?.communityId else { return }
-        AmityEventHandler.shared.communityDidTap(from: self, communityId: communityId)
+        guard let section = TableSections(rawValue: indexPath.section) else { return }
+        switch section {
+        case .user:
+            AmityEventHandler.shared.userDidTap(
+                from: self,
+                userId: AmityUIKitManagerInternal.shared.currentUserId
+            )
+        case .communities:
+            guard let communityId = screenViewModel.dataSource.item(at: indexPath)?.communityId else { return }
+            AmityEventHandler.shared.communityDidTap(from: self, communityId: communityId)
+        }
     }
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -146,20 +148,50 @@ extension AmityMyCommunityViewController: UITableViewDelegate {
             screenViewModel.action.loadMore()
         }
     }
-    
 }
 
 extension AmityMyCommunityViewController: UITableViewDataSource {
+
+    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let section = TableSections(rawValue: section) else { return nil }
+        switch section {
+            case .user:
+                return MeHeaderView(title: AmityLocalizedStringSet.Home.homeMyProfile.localizedString)
+            case .communities:
+                return MeHeaderView(title: AmityLocalizedStringSet.myCommunityTitle.localizedString)
+        }
+    }
+
+    public func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return screenViewModel.dataSource.numberOfCommunity()
+        guard let section = TableSections(rawValue: section) else { return 0 }
+        switch section {
+        case .user:
+            return 1
+        case .communities:
+            return screenViewModel.dataSource.numberOfCommunity()
+        }
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: AmityMyCommunityTableViewCell = tableView.dequeueReusableCell(for: indexPath)
-        guard let community = screenViewModel.dataSource.item(at: indexPath) else { return UITableViewCell() }
-        cell.display(with: community)
-        cell.delegate = self
-        return cell
+        guard let section = TableSections(rawValue: indexPath.section) else { return UITableViewCell() }
+        switch section {
+        case .user:
+            let cell: AmityMeProfileHeaderTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+            cell.update(with: self.userModel, followInfo: self.followInfo)
+            cell.delegate = self
+            return cell
+        case .communities:
+            let cell: AmityMyCommunityTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+            guard let community = screenViewModel.dataSource.item(at: indexPath) else { return UITableViewCell() }
+            cell.display(with: community)
+            cell.delegate = self
+            return cell
+        }
+
     }
 }
 
@@ -167,36 +199,10 @@ extension AmityMyCommunityViewController: AmityMyCommunityTableViewCellDelegate 
     
     func cellDidTapOnAvatar(_ cell: AmityMyCommunityTableViewCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        searchController.isActive = false
-        searchController.searchBar.setShowsCancelButton(false, animated: true)
-        searchController.searchBar.text = screenViewModel.dataSource.searchText
         guard let community = screenViewModel.dataSource.item(at: indexPath) else { return }
         AmityEventHandler.shared.communityDidTap(from: self, communityId: community.communityId)
     }
     
-}
-
-extension AmityMyCommunityViewController: UISearchBarDelegate {
-    
-    public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        screenViewModel.action.search(withText: searchText)
-    }
-    
-    public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        screenViewModel.action.searchCancel()
-        screenViewModel.action.retrieveAllCommunity()
-        searchBar.setShowsCancelButton(false, animated: true)
-    }
-    
-    public func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        searchBar.setShowsCancelButton(true, animated: true)
-        return true
-    }
-    
-    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        screenViewModel.action.search(withText: searchBar.text)
-        searchBar.resignFirstResponder()
-    }
 }
 
 extension AmityMyCommunityViewController: AmityMyCommunityScreenViewModelDelegate {
@@ -238,4 +244,78 @@ extension AmityMyCommunityViewController: AmityCommunityProfileEditorViewControl
         AmityEventHandler.shared.communityDidTap(from: self, communityId: communityId)
     }
     
+}
+
+extension AmityMyCommunityViewController: AmityMeProfileHeaderTableViewCellDelegate {
+    func handleTapAction(isFollowersSelected: Bool) {
+        let vc = AmityUserFollowersViewController.make(
+            withUserId: AmityUIKitManagerInternal.shared.currentUserId,
+            isFollowersSelected: isFollowersSelected
+        )
+        navigationController?.pushViewController(vc, animated: true)
+    }
+}
+
+private class MeHeaderView: UIView {
+    private let label = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = AmityColorSet.base
+        label.font = AmityFontSet.title
+        return label
+    }()
+
+    init(title: String) {
+        super.init(frame: .zero)
+        setup()
+        self.label.text = title
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setup() {
+        addSubview(label)
+        label.snp.makeConstraints { make in
+            make.top.bottom.trailing.equalToSuperview()
+            make.leading.equalToSuperview().offset(16)
+        }
+    }
+}
+
+extension AmityMyCommunityViewController: AmityUserProfileHeaderScreenViewModelDelegate {
+    func screenViewModelDidFollowFail() {
+        // do nothing
+    }
+
+    func screenViewModelDidUnfollowFail() {
+        // do nothing
+    }
+
+    func screenViewModel(_ viewModel: AmityUserProfileHeaderScreenViewModelType, didGetUser user: AmityUserModel) {
+        self.userModel = user
+    }
+
+    func screenViewModel(_ viewModel: AmityUserProfileHeaderScreenViewModelType, didGetFollowInfo followInfo: AmityFollowInfo) {
+        self.followInfo = followInfo
+    }
+
+    func screenViewModel(_ viewModel: AmityUserProfileHeaderScreenViewModelType, didCreateChannel channel: AmityChannel) {
+        // do nothing
+    }
+
+    func screenViewModel(_ viewModel: AmityUserProfileHeaderScreenViewModelType, didFollowSuccess status: AmityFollowStatus) {
+        // do nothing
+    }
+
+    func screenViewModel(_ viewModel: AmityUserProfileHeaderScreenViewModelType, didUnfollowSuccess status: AmityFollowStatus) {
+        // do nothing
+    }
+
+    func screenViewModel(_ viewModel: AmityUserProfileHeaderScreenViewModelType, failure error: AmityError) {
+        // do nothing
+    }
+
 }

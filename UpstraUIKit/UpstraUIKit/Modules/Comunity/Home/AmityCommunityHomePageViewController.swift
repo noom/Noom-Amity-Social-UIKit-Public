@@ -64,7 +64,7 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     override func viewControllers(for pagerTabStripController: AmityPagerTabViewController) -> [UIViewController] {
         newsFeedVC.pageTitle = AmityLocalizedStringSet.newsfeedTitle.localizedString
         exploreVC.pageTitle = AmityLocalizedStringSet.exploreTitle.localizedString
-        myCommunitiesVC.pageTitle = AmityLocalizedStringSet.myCommunityTitle.localizedString
+        myCommunitiesVC.pageTitle = AmityLocalizedStringSet.Home.homeMe.localizedString
         return [newsFeedVC, exploreVC, myCommunitiesVC]
     }
     

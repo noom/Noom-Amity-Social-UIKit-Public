@@ -328,6 +328,7 @@
 "edit_user_profile_email_title" = "Email";
 "edit_user_profile_phone_number_title" = "Phone number";
 "edit_user_profile_description_title" = "About";
+"edit_user_profile_connect_notifications" = "Connect notifications";
 
 // MARK: - Profile Option
 "profile_option_title" = "Profile Settings";
@@ -452,3 +453,8 @@
 "mention_unable_to_mention_post_description" = "You have reached maximum 30 mentioned users in a post.";
 "mention_unable_to_mention_comment_description" = "You have reached maximum 30 mentioned users in a comment.";
 "mention_unable_to_mention_reply_description" = "You have reached maximum 30 mentioned users in a reply.";
+
+
+// MARK: - Home
+"home_me" = "Me";
+"home_my_profile" = "My Profile";
