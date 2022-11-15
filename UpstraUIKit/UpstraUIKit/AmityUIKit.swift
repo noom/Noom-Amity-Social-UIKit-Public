@@ -188,6 +188,10 @@ public final class AmityUIKitManager {
     public static func route(to route: AmityRoute) {
         AmityUIKitManagerInternal.shared.router.pendingRoute = route
     }
+
+    public static func setNoomAmityBridgingService(_ service: NoomAmityBridgingService) {
+        AmityUIKitManagerInternal.shared.noomAmityBridgingService = service
+    }
 }
 
 final class AmityUIKitManagerInternal: NSObject {
@@ -203,6 +207,7 @@ final class AmityUIKitManagerInternal: NSObject {
     
     private(set) var fileService = AmityFileService()
     private(set) var messageMediaService = AmityMessageMediaService()
+    var noomAmityBridgingService: NoomAmityBridgingService? = nil
     var router = AmityRouter()
     
     var currentUserId: String { return client.currentUserId ?? "" }

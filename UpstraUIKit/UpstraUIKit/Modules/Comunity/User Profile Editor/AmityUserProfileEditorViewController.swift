@@ -119,6 +119,10 @@ final public class AmityUserProfileEditorViewController: AmityViewController {
         connectSettingsLabel.textColor = AmityColorSet.base
 
         connectSettingsButton.setTitle(nil, for: .normal)
+        let notificationsEnabled = AmityUIKitManagerInternal.shared.noomAmityBridgingService?.notificationSettingsEnabled == true
+        connectSettingsLabel.isHidden = !notificationsEnabled
+        connectSettingsArrow.isHidden = !notificationsEnabled
+        connectSettingsButton.isHidden = !notificationsEnabled
         updateViewState()
     }
     
@@ -150,7 +154,21 @@ final public class AmityUserProfileEditorViewController: AmityViewController {
         }
     }
     @IBAction private func settingsButtonTap(_ sender: Any) {
-        //show settings
+        guard let viewController =  AmityUIKitManagerInternal
+            .shared
+            .noomAmityBridgingService?
+            .makeConnectNotificationsSettingsViewController() else { return }
+        let holder = AmityViewController()
+        holder.addChild(viewController)
+        holder.view.addSubview(viewController.view)
+        viewController.view.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        viewController.didMove(toParent: holder)
+
+        self.navigationController?.pushViewController(holder, animated: true)
+        holder.title = AmityLocalizedStringSet.editUserProfileConnectNotificationsTitle.localizedString
+        holder.navigationBarType = .push
     }
 
     @IBAction private func avatarButtonTap(_ sender: Any) {
