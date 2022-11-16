@@ -10,7 +10,7 @@ import UIKit
 
 public class AmityCommunityHomePageViewController: AmityPageViewController, AmityRootViewController {
 
-    internal var exitClosure: (() -> Void)? = nil
+    public var exitClosure: (() -> Void)? = nil
     // MARK: - Properties
     public let newsFeedVC = AmityNewsfeedViewController.make()
     public let exploreVC = AmityCommunityExplorerViewController.make()
@@ -38,10 +38,11 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        AmityUIKitManager.setRoutingEnabled(false)
+
     }
 
     public override func willMove(toParent parent: UIViewController?) {
+        AmityUIKitManager.setRoutingEnabled(false)
         if parent == nil {
             exitClosure?()
         }
@@ -63,7 +64,7 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     override func viewControllers(for pagerTabStripController: AmityPagerTabViewController) -> [UIViewController] {
         newsFeedVC.pageTitle = AmityLocalizedStringSet.newsfeedTitle.localizedString
         exploreVC.pageTitle = AmityLocalizedStringSet.exploreTitle.localizedString
-        myCommunitiesVC.pageTitle = AmityLocalizedStringSet.myCommunityTitle.localizedString
+        myCommunitiesVC.pageTitle = AmityLocalizedStringSet.Home.homeMe.localizedString
         return [newsFeedVC, exploreVC, myCommunitiesVC]
     }
     
@@ -103,7 +104,7 @@ private extension AmityCommunityHomePageViewController {
     }
 }
 
-internal extension AmityCommunityHomePageViewController {
+public extension AmityCommunityHomePageViewController {
     func canShowExplore() -> Bool {
         return true
     }

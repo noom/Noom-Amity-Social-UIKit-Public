@@ -46,10 +46,18 @@ class AmityRouter {
         switch pendingRoute {
         case .explore:
             if rootController.canShowExplore() {
+                rootController.navigationController?.popToViewController(rootController, animated: true)
                 rootController.showExplore()
             }
         case .post(let id):
-            AmityEventHandler.shared.postDidtap(from: rootController, postId: id)
+            if let postVC =  rootController.navigationController?.viewControllers.first(where: { vc in
+                    (vc as? AmityPostDetailViewController)?.postId
+                        .map({ $0 == id }) ?? false
+                }) {
+                rootController.navigationController?.popToViewController(postVC, animated: true)
+            } else {
+                AmityEventHandler.shared.postDidtap(from: rootController, postId: id)
+            }
         case .community(let id):
             AmityEventHandler.shared.communityDidTap(from: rootController, communityId: id)
         case .none:

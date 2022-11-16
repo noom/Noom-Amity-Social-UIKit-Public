@@ -39,6 +39,10 @@ open class AmityPostDetailViewController: AmityViewController {
             commentComposeBarView.replyingUsername = parentComment?.displayName
         }
     }
+
+    public var postId: String? {
+        return screenViewModel.post?.postId
+    }
     
     // MARK: - Initializer
     required public init(withPostId postId: String) {

@@ -1,4 +1,4 @@
-// swift-tools-version: 5.5
+// swift-tools-version: 5.6
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "AmityUIKit",
     platforms: [
-            .iOS(.v13)
+            .iOS(.v14)
         ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -16,13 +16,16 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/AmityCo/Amity-Social-Cloud-SDK-iOS-SwiftPM.git", .upToNextMajor(from: Version(5, 28, 0)))
+            url: "https://github.com/AmityCo/Amity-Social-Cloud-SDK-iOS-SwiftPM.git", .upToNextMajor(from: Version(5, 28, 0))),
+        .package(url: "https://github.com/SnapKit/SnapKit.git", exact: "5.0.1")
     ],
     targets: [
         .target(
             name: "AmityUIKit",
             dependencies: [
-                .product(name: "AmitySDK", package: "Amity-Social-Cloud-SDK-iOS-SwiftPM")
+                .product(name: "AmitySDK", package: "Amity-Social-Cloud-SDK-iOS-SwiftPM"),
+                .product(name: "SnapKit", package: "SnapKit")
+
             ],
             path: "UpstraUIKit/UpstraUIKit",
             resources: [
