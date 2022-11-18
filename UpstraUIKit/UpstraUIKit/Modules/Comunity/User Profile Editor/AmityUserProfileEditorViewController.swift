@@ -27,7 +27,7 @@ final public class AmityUserProfileEditorViewController: AmityViewController {
     @IBOutlet private weak var connectSettingsButton: UIButton!
     private var saveBarButtonItem: UIBarButtonItem!
     
-    private var screenViewModel: AmityUserProfileEditorScreenViewModelType?
+    private var screenViewModel: AmityUserProfileEditorScreenViewModel?
     
     // To support reuploading image
     // use this variable to store a new image
@@ -68,6 +68,11 @@ final public class AmityUserProfileEditorViewController: AmityViewController {
         super.viewDidLoad()
         setupNavigationBar()
         setupView()
+    }
+
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        screenViewModel?.loadData()
     }
 
     public override func viewDidAppear(_ animated: Bool) {
