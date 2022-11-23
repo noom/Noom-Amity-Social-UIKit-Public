@@ -328,7 +328,7 @@
 "edit_user_profile_email_title" = "Email";
 "edit_user_profile_phone_number_title" = "Phone number";
 "edit_user_profile_description_title" = "About";
-"edit_user_profile_connect_notifications" = "Circle notifications";
+"edit_user_profile_connect_notifications" = "Circles notifications";
 
 // MARK: - Profile Option
 "profile_option_title" = "Profile Settings";
