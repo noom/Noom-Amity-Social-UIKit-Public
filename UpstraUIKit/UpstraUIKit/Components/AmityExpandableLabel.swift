@@ -241,7 +241,7 @@ extension AmityExpandableLabel {
         if let hyperLink = hyperLinks.first(where: { check(touch: touch, isInRange: $0.range) }) {
             switch hyperLink.type {
             case .url(let url):
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                _ = UIApplication.shared.delegate?.application?(UIApplication.shared, open: url)
             case .mention(let userId):
                 delegate?.didTapOnMention(self, withUserId: userId)
             }
