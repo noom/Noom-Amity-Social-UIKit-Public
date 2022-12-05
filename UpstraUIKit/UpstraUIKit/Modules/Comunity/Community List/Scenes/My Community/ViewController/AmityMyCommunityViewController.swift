@@ -269,6 +269,7 @@ private class MeHeaderView: UIView {
         super.init(frame: .zero)
         setup()
         self.label.text = title
+        self.backgroundColor = .white
     }
 
     @available(*, unavailable)
