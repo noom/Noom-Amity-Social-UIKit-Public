@@ -326,7 +326,7 @@ public class AmityPostModel {
         childrenPosts = post.childrenPosts ?? []
         parentPostId = post.parentPostId
         var noomRole: NoomRole? = nil
-        if let roleString = post.postedUser?.metadata?["userTag"] as? String,
+        if let roleString = post.postedUser?.metadata?["userType"] as? String,
             let role = NoomRole(rawValue: roleString) {
             noomRole = role
         }

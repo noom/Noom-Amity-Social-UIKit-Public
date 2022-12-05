@@ -27,7 +27,7 @@ public final class AmitySelectMemberModel: Equatable {
     
     init(object: AmityUser) {
         self.userId = object.userId
-        self.displayName = object.displayName
+        self.displayName = object.displayName == object.userId ? "Noomer" : object.displayName
         if let metadata = object.metadata {
             self.email = metadata["email"] as? String ?? ""
         }

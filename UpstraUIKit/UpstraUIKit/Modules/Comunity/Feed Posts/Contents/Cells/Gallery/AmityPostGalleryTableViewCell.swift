@@ -19,6 +19,8 @@ public final class AmityPostGalleryTableViewCell: UITableViewCell, Nibbable, Ami
     // MARK: - IBOutlet Properties
     @IBOutlet private var galleryCollectionView: AmityGalleryCollectionView!
     @IBOutlet private var contentLabel: AmityExpandableLabel!
+    @IBOutlet private var ratioConstraint: NSLayoutConstraint!
+    @IBOutlet private var ratioConstraint2: NSLayoutConstraint!
     
     // MARK: - Properties
     public private(set) var post: AmityPostModel?
@@ -43,6 +45,13 @@ public final class AmityPostGalleryTableViewCell: UITableViewCell, Nibbable, Ami
     public func display(post: AmityPostModel, indexPath: IndexPath) {
         self.post = post
         self.indexPath = indexPath
+        if post.medias.count == 1 {
+            ratioConstraint.isActive = false
+            ratioConstraint2.isActive = true
+        } else {
+            ratioConstraint.isActive = true
+            ratioConstraint2.isActive = false
+        }
         galleryCollectionView.configure(medias: post.medias)
         
         if let metadata = post.metadata, let mentionees = post.mentionees {
