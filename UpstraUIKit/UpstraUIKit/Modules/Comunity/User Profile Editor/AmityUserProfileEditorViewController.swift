@@ -234,7 +234,8 @@ final public class AmityUserProfileEditorViewController: AmityViewController {
     }
     
     private func updateViewState() {
-        saveBarButtonItem?.isEnabled = isValueChanged
+        let shouldEnable = isValueChanged && !(displayNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? false)
+        saveBarButtonItem?.isEnabled = shouldEnable
         displayNameCounterLabel?.text = "\(displayNameTextField.text?.count ?? 0)/\(displayNameTextField.maxLength)"
         aboutCounterLabel?.text = "\(aboutTextView.text.utf16.count)/\(aboutTextView.maxCharacters)"
     }
