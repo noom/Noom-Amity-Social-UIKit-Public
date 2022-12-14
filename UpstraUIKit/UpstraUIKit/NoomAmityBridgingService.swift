@@ -9,4 +9,5 @@ import UIKit
 public protocol NoomAmityBridgingService: AnyObject {
     func makeConnectNotificationsSettingsViewController() -> UIViewController
     var notificationSettingsEnabled: Bool { get }
+    var createCommunityButtonDisabled: Bool { get }
 }
