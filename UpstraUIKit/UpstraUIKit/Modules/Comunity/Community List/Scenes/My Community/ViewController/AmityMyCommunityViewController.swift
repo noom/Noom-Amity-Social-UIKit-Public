@@ -51,6 +51,9 @@ public final class AmityMyCommunityViewController: AmityViewController, Indicato
         createButton.titleLabel?.font = AmityFontSet.bodyBold
         createButton.layer.cornerRadius = 4
         createButton.layer.masksToBounds = true
+        if AmityUIKitManagerInternal.shared.noomAmityBridgingService?.createCommunityButtonDisabled != false {
+            createButton.removeFromSuperview()
+        }
         userViewModel.delegate = self
     }
 
