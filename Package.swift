@@ -16,7 +16,7 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/AmityCo/Amity-Social-Cloud-SDK-iOS-SwiftPM.git", .exactItem(Version(5, 29, 1))),
+            url: "https://github.com/AmityCo/Amity-Social-Cloud-SDK-iOS-SwiftPM.git", .exactItem(Version(5, 31, 0))),
         .package(url: "https://github.com/SnapKit/SnapKit.git", exact: "5.0.1")
     ],
     targets: [
