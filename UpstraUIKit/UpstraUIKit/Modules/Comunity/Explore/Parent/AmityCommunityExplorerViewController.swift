@@ -14,7 +14,7 @@ public final class AmityCommunityExplorerViewController: AmityViewController, In
     var pageTitle: String?
     
     func indicatorInfo(for pagerTabStripController: AmityPagerTabViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: pageTitle)
+        return IndicatorInfo(title: pageTitle, accessibilityIdentier: "home_screen_tab_explore")
     }
     
     // MARK: - Properties

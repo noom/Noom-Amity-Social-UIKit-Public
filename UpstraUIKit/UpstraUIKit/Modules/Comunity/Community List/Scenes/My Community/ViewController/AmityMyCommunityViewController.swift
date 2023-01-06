@@ -14,7 +14,7 @@ import UIKit
 public final class AmityMyCommunityViewController: AmityViewController, IndicatorInfoProvider {
 
     func indicatorInfo(for pagerTabStripController: AmityPagerTabViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: pageTitle)
+        return IndicatorInfo(title: pageTitle, accessibilityIdentier: "home_screen_tab_me")
     }
 
     var pageTitle: String?
@@ -51,9 +51,6 @@ public final class AmityMyCommunityViewController: AmityViewController, Indicato
         createButton.titleLabel?.font = AmityFontSet.bodyBold
         createButton.layer.cornerRadius = 4
         createButton.layer.masksToBounds = true
-        if AmityUIKitManagerInternal.shared.noomAmityBridgingService?.createCommunityButtonDisabled != false {
-            createButton.removeFromSuperview()
-        }
         userViewModel.delegate = self
     }
 

@@ -54,7 +54,7 @@ class AmityCommentView: AmityView {
             strongSelf.delegate?.commentView(strongSelf, didTapAction: .avatar)
         }
         titleLabel.textColor = AmityColorSet.base
-        titleLabel.font = AmityFontSet.bodyBold
+        titleLabel.font = AmityFontSet.captionBold
         timeLabel.textColor = AmityColorSet.base.blend(.shade1)
         timeLabel.font = AmityFontSet.caption
         contentLabel.textColor = AmityColorSet.base
@@ -106,7 +106,15 @@ class AmityCommentView: AmityView {
             timeLabel.text = comment.createdAt.relativeTime
         }
         avatarView.setImage(withImageURL: comment.fileURL, placeholder: AmityIconSet.defaultAvatar)
-        titleLabel.text = comment.displayName
+
+        if let role = comment.noomRole {
+            titleLabel.text = "\(comment.displayName) - \(role.name)"
+            titleLabel.textColor = AmityThemeManager.currentTheme.primary
+        } else {
+            titleLabel.text = comment.displayName
+            titleLabel.textColor = AmityThemeManager.currentTheme.base
+        }
+
         
         if comment.isAuthorGlobalBanned {
             bannedImageView.isHidden = false

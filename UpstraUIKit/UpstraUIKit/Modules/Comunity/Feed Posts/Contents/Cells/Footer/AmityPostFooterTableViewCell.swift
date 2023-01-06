@@ -24,6 +24,7 @@ public final class AmityPostFooterTableViewCell: UITableViewCell, Nibbable, Amit
     @IBOutlet private var shareButton: AmityButton!
     @IBOutlet private var separatorView: [UIView]!
     @IBOutlet private var warningLabel: UILabel!
+    @IBOutlet private var bottomDivider: UIView!
     
     // MARK: - Properties
     private(set) public var post: AmityPostModel?
@@ -60,6 +61,11 @@ public final class AmityPostFooterTableViewCell: UITableViewCell, Nibbable, Amit
         let sharePrefix = post.sharedCount > 1 ? AmityLocalizedStringSet.Unit.sharesPlural.localizedString :
             AmityLocalizedStringSet.Unit.sharesSingular.localizedString
         shareLabel.text = String.localizedStringWithFormat(sharePrefix, post.sharedCount)
+        if let role = post.postedUser?.noomRole {
+            bottomDivider.backgroundColor = AmityColorSet.primary
+        } else {
+            bottomDivider.backgroundColor = AmityThemeManager.currentTheme.pollBackground
+        }
     }
     
     // MARK: - Setup views
@@ -68,7 +74,7 @@ public final class AmityPostFooterTableViewCell: UITableViewCell, Nibbable, Amit
         backgroundColor = AmityColorSet.backgroundColor
         contentView.backgroundColor = AmityColorSet.backgroundColor
         // separator
-        separatorView.forEach { $0.backgroundColor = AmityColorSet.secondary.blend(.shade4) }
+        separatorView.forEach { $0.backgroundColor = AmityThemeManager.currentTheme.pollBackground }
     }
     
     private func setupWarningLabel() {

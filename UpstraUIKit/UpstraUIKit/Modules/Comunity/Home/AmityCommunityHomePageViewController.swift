@@ -73,8 +73,7 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     private func setupNavigationBar() {
         let searchItem = UIBarButtonItem(image: AmityIconSet.iconSearch, style: .plain, target: self, action: #selector(searchTap))
         searchItem.tintColor = AmityColorSet.base
-        navigationItem.rightBarButtonItem = searchItem
-        searchItem.tintColor = AmityColorSet.base
+        searchItem.accessibilityIdentifier = "home_search_button"
         navigationItem.rightBarButtonItem = searchItem
         let closeItem = UIBarButtonItem(
             image: AmityIconSet.iconClose,
@@ -82,6 +81,7 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
             target: self,
             action: #selector(closeTapped)
         )
+        closeItem.accessibilityIdentifier = "home_close_button"
         navigationItem.leftBarButtonItem = closeItem
     }
 }

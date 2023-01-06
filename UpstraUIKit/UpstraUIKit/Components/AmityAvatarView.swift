@@ -34,6 +34,8 @@ public enum AmityAvatarPosition {
 public final class AmityAvatarView: AmityImageView {
     
     @IBOutlet private var placeHolderWidthConstraint: NSLayoutConstraint!
+    @IBOutlet private var initialsContainer: UIView!
+    @IBOutlet private var initialsLabel: UILabel!
     
     /// A shape of imageView
     public var avatarShape: AmityAvatarShape = .circle {
@@ -79,7 +81,10 @@ public final class AmityAvatarView: AmityImageView {
         // We'll hardcode to set background color of avatar
         backgroundColor = UIColor(hex: "#D9E5FC")
         avatarShape = .circle
-        
+        initialsContainer.isHidden = true
+        initialsLabel.font = AmityFontSet.title
+        initialsLabel.textColor = .white
+        initialsLabel.text = nil
         updateAvatarShape()
         updatePlaceholderConstraint()
     }
@@ -107,6 +112,28 @@ public final class AmityAvatarView: AmityImageView {
         case .fullSize:
             placeHolderWidthConstraint.isActive = true
         }
+    }
+
+    public override func setImage(
+        withImageURL imageURL: String?,
+        size: AmityMediaSize = .small,
+        placeholder: UIImage? = AmityIconSet.defaultAvatar,
+        completion: (() -> Void)? = nil
+    ) {
+        self.initialsContainer.isHidden = true
+        super.setImage(
+            withImageURL: imageURL,
+            size: size,
+            placeholder: placeholder,
+            completion: completion
+        )
+    }
+
+    public func displayInitials(for name: String) {
+        self.initialsContainer.isHidden = false
+        self.image = nil
+        self.initialsLabel.text = AmityUIKitManager.initials(for: name)
+        self.initialsContainer.backgroundColor = AmityUIKitManager.randomColor(for: name)
     }
     
 }

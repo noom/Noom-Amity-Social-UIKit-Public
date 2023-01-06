@@ -27,6 +27,7 @@ public struct AmityCommentModel {
     private let myReactions: [String]
     let metadata: [String: Any]?
     let mentionees: [AmityMentionees]?
+    let noomRole: AmityPostModel.NoomRole?
     
     // Due to AmityChat 4.0.0 requires comment object for editing and deleting
     // So, this is a workaroud for passing the original object.
@@ -50,6 +51,12 @@ public struct AmityCommentModel {
         isAuthorGlobalBanned = comment.user?.isGlobalBan ?? false
         metadata = comment.metadata
         mentionees = comment.mentionees
+        if let roleString = comment.user?.metadata?["userType"] as? String,
+           let role = AmityPostModel.NoomRole(rawValue: roleString) {
+            noomRole = role
+        } else {
+            noomRole = nil
+        }
     }
     
     var isChildrenExisted: Bool {

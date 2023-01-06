@@ -192,6 +192,34 @@ public final class AmityUIKitManager {
     public static func setNoomAmityBridgingService(_ service: NoomAmityBridgingService) {
         AmityUIKitManagerInternal.shared.noomAmityBridgingService = service
     }
+
+    public static func initials(for name: String) -> String {
+        let names = name.components(separatedBy: .whitespaces)
+        if names.count > 1, !names[0].isEmpty, !names[1].isEmpty {
+            return String("\(names[0].first!)\(names[1].first!)")
+        } else if names.count > 0, !names[0].isEmpty {
+            return String("\(names[0].first!)")
+        }
+        return ""
+    }
+
+    public static func randomColor(for name: String) -> UIColor {
+        var total: Int = 0
+        for u in name.unicodeScalars {
+            total += Int(UInt32(u))
+        }
+
+        srand48(total * 200)
+        let r = CGFloat(drand48())
+
+        srand48(total)
+        let g = CGFloat(drand48())
+
+        srand48(total / 200)
+        let b = CGFloat(drand48())
+
+        return UIColor(red: r, green: g, blue: b, alpha: 1)
+    }
 }
 
 final class AmityUIKitManagerInternal: NSObject {

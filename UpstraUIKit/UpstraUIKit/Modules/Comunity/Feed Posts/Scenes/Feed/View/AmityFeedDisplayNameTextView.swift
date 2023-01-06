@@ -33,13 +33,35 @@ class AmityFeedDisplayNameLabel: UILabel {
         addGestureRecognizer(tap)
     }
     
-    func configure(displayName: String, communityName: String?, isOfficial: Bool, shouldShowCommunityName: Bool, shouldShowBannedSymbol: Bool) {
+    func configure(displayName: String,
+                   communityName: String?,
+                   isOfficial: Bool,
+                   shouldShowCommunityName: Bool,
+                   shouldShowBannedSymbol: Bool,
+                   noomRole: AmityPostModel.NoomRole?
+    ) {
         self.displayName = displayName
         self.communityName = communityName
         
         let attributeString = NSMutableAttributedString()
-        attributeString.append(NSAttributedString(string: displayName))
-        
+        if let role = noomRole {
+            attributeString.append(NSAttributedString(
+                string: displayName + " - " + role.name,
+                attributes: [
+                    NSAttributedString.Key.font: AmityFontSet.captionBold,
+                    NSAttributedString.Key.foregroundColor: AmityThemeManager.currentTheme.primary
+                ]
+            ))
+        } else {
+            attributeString.append(NSAttributedString(
+                string: displayName,
+                attributes: [
+                    NSAttributedString.Key.font: AmityFontSet.captionBold,
+                    NSAttributedString.Key.foregroundColor: AmityThemeManager.currentTheme.base
+                ]
+            ))
+        }
+
         if shouldShowBannedSymbol {
             let imageRightAttachment = NSTextAttachment()
             imageRightAttachment.image = AmityIconSet.CommunitySettings.iconCommunitySettingBanned?.setTintColor(AmityColorSet.base.blend(.shade3))
@@ -47,15 +69,25 @@ class AmityFeedDisplayNameLabel: UILabel {
             let attachmentRightString = NSAttributedString(attachment: imageRightAttachment)
             attributeString.append(attachmentRightString)
         }
-        
         // configure community displayname
         if shouldShowCommunityName, let communityName = communityName {
-            attributeString.append(NSAttributedString(string: " ‣ "))
-            attributeString.append(NSAttributedString(string: communityName))
+            attributeString.append(NSAttributedString(string: "\n"))
+            attributeString.append(NSAttributedString(
+                string: "Posted in: ",
+                attributes: [
+                    NSAttributedString.Key.font: AmityFontSet.postHeaderAuxiliary,
+                    NSAttributedString.Key.foregroundColor: AmityThemeManager.currentTheme.postHeaderAuxiliary
+                ]
+            ))
+            attributeString.append(NSAttributedString(
+                string: communityName,
+                attributes: [
+                    NSAttributedString.Key.font: AmityFontSet.postHeaderCommunityName,
+                    NSAttributedString.Key.foregroundColor: AmityThemeManager.currentTheme.base
+                ]
+            ))
         }
-        
-        let attributes: [NSAttributedString.Key : Any] = [.foregroundColor: AmityColorSet.base, .font: AmityFontSet.bodyBold]
-        attributeString.addAttributes(attributes, range: NSRange(location: 0, length: attributeString.string.utf16.count) )
+
         attributedText = attributeString
         
         // configure official badge

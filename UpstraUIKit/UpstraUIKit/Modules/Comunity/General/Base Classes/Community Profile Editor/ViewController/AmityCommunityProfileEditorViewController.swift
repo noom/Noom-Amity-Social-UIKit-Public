@@ -88,6 +88,9 @@ public class AmityCommunityProfileEditorViewController: AmityViewController {
     @IBOutlet private var communityTypeLineView: UIView!
     @IBOutlet private var addMemberLineView: UIView!
     @IBOutlet private var seperatorLineView: UIView!
+
+    @IBOutlet private var publicCommunityStackView: UIStackView!
+    @IBOutlet private var publicCommunityButton: UIButton!
     
     // MARK: - Properties
     private var screenViewModel: AmityCreateCommunityScreenViewModelType = AmityCreateCommunityScreenViewModel()
@@ -110,6 +113,10 @@ public class AmityCommunityProfileEditorViewController: AmityViewController {
             screen = .createCommunity
         case .edit(let communityId):
             screen = .editCommunity
+        }
+        if AmityUIKitManagerInternal.shared.noomAmityBridgingService?.createCommunityButtonDisabled != false {
+            // 1 is the rawvalue for private, very ugly way to do this IMO
+            screenViewModel.action.selectCommunityType(1)
         }
     }
     
@@ -291,6 +298,10 @@ public class AmityCommunityProfileEditorViewController: AmityViewController {
         communityTypeBackgroundView.forEach {
             $0.backgroundColor = AmityColorSet.secondary.blend(.shade4)
             $0.layer.cornerRadius = $0.frame.height / 2
+        }
+        if AmityUIKitManagerInternal.shared.noomAmityBridgingService?.createCommunityButtonDisabled != false {
+            publicCommunityStackView.removeFromSuperview()
+            publicCommunityButton.removeFromSuperview()
         }
     }
     

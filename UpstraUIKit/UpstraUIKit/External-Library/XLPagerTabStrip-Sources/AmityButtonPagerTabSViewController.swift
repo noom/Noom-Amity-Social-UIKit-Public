@@ -370,6 +370,7 @@ public class AmityButtonPagerTabSViewController: AmityPagerTabViewController, Pa
         }
         cell.isAccessibilityElement = true
         cell.accessibilityLabel = indicatorInfo.accessibilityLabel ?? cell.label.text
+        cell.accessibilityIdentifier = indicatorInfo.accessibilityIdentier
         cell.accessibilityTraits.insert([.button, .header])
         return cell
     }

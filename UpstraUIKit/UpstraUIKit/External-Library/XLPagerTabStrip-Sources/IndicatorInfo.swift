@@ -31,7 +31,13 @@ struct IndicatorInfo {
     var highlightedImage: UIImage?
     var accessibilityLabel: String?
     var userInfo: Any?
-    
+    var accessibilityIdentier: String?
+
+    init(title: String?, accessibilityIdentier: String?) {
+        self.title = title
+        self.accessibilityLabel = title
+        self.accessibilityIdentier = accessibilityIdentier
+    }
     init(title: String?) {
         self.title = title
         self.accessibilityLabel = title
