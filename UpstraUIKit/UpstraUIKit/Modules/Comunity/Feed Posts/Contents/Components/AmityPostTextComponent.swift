@@ -38,29 +38,36 @@ public struct AmityPostTextComponent: AmityPostComposable {
         case 0:
             let cell: AmityPostHeaderTableViewCell = tableView.dequeueReusableCell(for: indexPath)
             cell.display(post: post)
+            cell.layoutIfNeeded()
             return cell
         case 1:
             let cell: AmityPostTextTableViewCell = tableView.dequeueReusableCell(for: indexPath)
             cell.display(post: post, indexPath: indexPath)
+            cell.layoutIfNeeded()
             return cell
         case 2:
             let cell: AmityPostFooterTableViewCell = tableView.dequeueReusableCell(for: indexPath)
             cell.display(post: post)
+            cell.layoutIfNeeded()
             return cell
         case AmityPostConstant.defaultNumberComponent + post.maximumLastestComments:
             if post.allCommentCount > post.maximumLastestComments {
                 let cell: AmityPostViewAllCommentsTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+                cell.layoutIfNeeded()
                 return cell
             } else {
                 let cell: AmityPostSeparatorTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+                cell.layoutIfNeeded()
                 return cell
             }
         case AmityPostConstant.defaultNumberComponent + post.maximumLastestComments + AmityPostConstant.separator:
             if post.allCommentCount > post.maximumLastestComments {
                 let cell: AmityPostSeparatorTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+                cell.layoutIfNeeded()
                 return cell
             } else {
                 let cell: AmityPostViewAllCommentsTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+                cell.layoutIfNeeded()
                 return cell
             }
         default:
@@ -69,7 +76,7 @@ public struct AmityPostTextComponent: AmityPostComposable {
             let isExpanded = post.commentExpandedIds.contains(comment?.id ?? "absolutely-cannot-found-xc")
             cell.setIsExpanded(isExpanded)
             cell.display(post: post, comment: comment)
-            return cell
+            cell.layoutIfNeeded()
             return cell
         }
     }

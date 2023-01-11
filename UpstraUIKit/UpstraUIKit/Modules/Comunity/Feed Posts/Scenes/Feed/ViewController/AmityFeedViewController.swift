@@ -314,11 +314,15 @@ extension AmityFeedViewController: AmityPostTableViewDataSource {
         let singleComponent = screenViewModel.dataSource.postComponents(in: indexPath.section)
         
         if let clientComponent = tableView.feedDataSource?.getUIComponentForPost(post: singleComponent._composable.post, at: indexPath.section) {
-            return clientComponent.getComponentCell(tableView, at: indexPath)
+            let cell = clientComponent.getComponentCell(tableView, at: indexPath)
+            cell.layoutIfNeeded()
+            return cell
         } else {
             // HACK: inject commentExpandedIds before configuring cell
             singleComponent._composable.post.commentExpandedIds = expandedIds
-            return singleComponent.getComponentCell(tableView, at: indexPath)
+            let cell =  singleComponent.getComponentCell(tableView, at: indexPath)
+            cell.layoutIfNeeded()
+            return cell
         }
     }
 }

@@ -295,6 +295,7 @@ extension AmityPostDetailViewController: AmityPostTableViewDelegate {
             if comment.isDeleted {
                 let _cell = cell as! AmityPostDetailDeletedTableViewCell
                 _cell.configure(deletedAt: comment.updatedAt)
+                _cell.layoutIfNeeded()
             } else {
                 let _cell = cell as! AmityCommentTableViewCell
                 let layout = AmityCommentView.Layout(
@@ -306,6 +307,7 @@ extension AmityPostDetailViewController: AmityPostTableViewDelegate {
                 _cell.configure(with: comment, layout: layout)
                 _cell.labelDelegate = self
                 _cell.actionDelegate = self
+                _cell.layoutIfNeeded()
             }
             
         case .replyComment(let comment):
@@ -322,6 +324,7 @@ extension AmityPostDetailViewController: AmityPostTableViewDelegate {
             _cell.configure(with: comment, layout: layout)
             _cell.labelDelegate = self
             _cell.actionDelegate = self
+            _cell.layoutIfNeeded()
             
         case .loadMoreReply:
             break
@@ -394,14 +397,17 @@ extension AmityPostDetailViewController: AmityPostTableViewDataSource {
             } else {
                 cell = postComponent.getComponentCell(tableView, at: indexPath)
             }
+            cell.layoutIfNeeded()
             return cell
         case .comment(let comment):
             if comment.isDeleted {
                 let cell: AmityPostDetailDeletedTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+                cell.layoutIfNeeded()
                 return cell
             }
             
             let cell: AmityCommentTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+            cell.layoutIfNeeded()
             return cell
         case .replyComment(let comment):
             if comment.isDeleted {
@@ -409,6 +415,7 @@ extension AmityPostDetailViewController: AmityPostTableViewDataSource {
                 return cell
             }
             let cell: AmityCommentTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+            cell.layoutIfNeeded()
             return cell
         case .loadMoreReply:
             let cell: AmityViewMoreReplyTableViewCell = tableView.dequeueReusableCell(for: indexPath)

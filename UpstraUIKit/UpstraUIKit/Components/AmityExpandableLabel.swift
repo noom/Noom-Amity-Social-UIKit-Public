@@ -179,6 +179,7 @@ open class AmityExpandableLabel: UILabel {
             } else {
                 self.attributedText = nil
             }
+            self.invalidateIntrinsicContentSize()
         }
         get {
             return self.attributedText?.string
@@ -225,7 +226,8 @@ open class AmityExpandableLabel: UILabel {
     }
     
     open class func height(for text: String, font: UIFont, boundingWidth: CGFloat, maximumLines: Int) -> CGFloat {
-        let attributedString = NSAttributedString(string: text, attributes: [NSAttributedString.Key.font: font])
+        let attributedString = AmityUIKitManagerInternal.shared.markdownProcessor?.attributedText(from: text)
+        ?? NSAttributedString(string: text, attributes: [NSAttributedString.Key.font: font])
         let linesCount = attributedString.lines(for: boundingWidth).count
         let actualHeight = attributedString.boundingRect(for: boundingWidth).height
         

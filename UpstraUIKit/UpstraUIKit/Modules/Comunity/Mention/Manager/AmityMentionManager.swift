@@ -570,7 +570,7 @@ extension AmityMentionManager {
             
             let range = NSRange(location: mention.index + shift, length: mention.length )
             if shouldMention, range.location != NSNotFound && (range.location + range.length) <= text.count {
-                attributes.append(MentionAttribute(attributes: [.foregroundColor: highlightColor, .font: highlightFont], range: range, userId: mention.userId ?? ""))
+                attributes.append(MentionAttribute(attributes: [.foregroundColor: highlightColor], range: range, userId: mention.userId ?? ""))
             }
         }
 
