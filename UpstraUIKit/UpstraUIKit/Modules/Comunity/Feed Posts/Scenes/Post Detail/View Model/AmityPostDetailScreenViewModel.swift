@@ -116,52 +116,55 @@ extension AmityPostDetailScreenViewModel {
             let component = prepareComponents(post: post)
             viewModels.append([.post(component)])
         }
-        
-        // prepare comments
-        for model in comments {
-            var commentsModels = [PostDetailViewModel]()
-            
-            // parent comment
-            commentsModels.append(.comment(model))
-            
-            // if parent is deleted, don't show its children.
-            guard !model.isDeleted else {
+
+        if let post = self.post,
+              !post.commentsHidden {
+            // prepare comments
+            for model in comments {
+                var commentsModels = [PostDetailViewModel]()
+
+                // parent comment
+                commentsModels.append(.comment(model))
+
+                // if parent is deleted, don't show its children.
+                guard !model.isDeleted else {
+                    viewModels.append(commentsModels)
+                    continue
+                }
+
+                // child comments
+                let parentId = model.id
+                var loadedItems = childrenController.childrenComments(for: parentId)
+                let itemToDisplay = childrenController.numberOfDisplayingItem(for: parentId)
+                let deletedItemCount = childrenController.numberOfDeletedChildren(for: parentId)
+
+                // loadedItems will be empty on the first load.
+                // set childrenComment directly to reduce number of server request.
+                if loadedItems.isEmpty {
+                    loadedItems = model.childrenComment.reversed()
+                }
+
+                // model.childrenNumber doesn't include deleted children.
+                // so, add it directly to correct the total count.
+                let totalItemCount = model.childrenNumber + deletedItemCount
+                let shouldShowLoadmore = itemToDisplay < totalItemCount
+                let isReadyToShow = itemToDisplay <= loadedItems.count
+                let isAllLoaded = loadedItems.count == totalItemCount
+
+                // visible items are limited by itemToDisplay.
+                // see more: AmityCommentChildrenController.swift
+                let postDetailViewModels: [PostDetailViewModel] = loadedItems.map({ PostDetailViewModel.replyComment($0) })
+                commentsModels += Array(postDetailViewModels.prefix(itemToDisplay))
+
+                if shouldShowLoadmore {
+                    commentsModels.append(.loadMoreReply)
+                }
+                if !(isReadyToShow || isAllLoaded) {
+                    loadChild(commentId: model.id)
+                }
+
                 viewModels.append(commentsModels)
-                continue
             }
-            
-            // child comments
-            let parentId = model.id
-            var loadedItems = childrenController.childrenComments(for: parentId)
-            let itemToDisplay = childrenController.numberOfDisplayingItem(for: parentId)
-            let deletedItemCount = childrenController.numberOfDeletedChildren(for: parentId)
-            
-            // loadedItems will be empty on the first load.
-            // set childrenComment directly to reduce number of server request.
-            if loadedItems.isEmpty {
-                loadedItems = model.childrenComment.reversed()
-            }
-            
-            // model.childrenNumber doesn't include deleted children.
-            // so, add it directly to correct the total count.
-            let totalItemCount = model.childrenNumber + deletedItemCount
-            let shouldShowLoadmore = itemToDisplay < totalItemCount
-            let isReadyToShow = itemToDisplay <= loadedItems.count
-            let isAllLoaded = loadedItems.count == totalItemCount
-            
-            // visible items are limited by itemToDisplay.
-            // see more: AmityCommentChildrenController.swift
-            let postDetailViewModels: [PostDetailViewModel] = loadedItems.map({ PostDetailViewModel.replyComment($0) })
-            commentsModels += Array(postDetailViewModels.prefix(itemToDisplay))
-            
-            if shouldShowLoadmore {
-                commentsModels.append(.loadMoreReply)
-            }
-            if !(isReadyToShow || isAllLoaded) {
-                loadChild(commentId: model.id)
-            }
-            
-            viewModels.append(commentsModels)
         }
         
         self.viewModelArrays = viewModels
@@ -200,7 +203,15 @@ extension AmityPostDetailScreenViewModel {
     }
     
     func fetchComments() {
-        commentController.getCommentsForPostId(withReferenceId: postId, referenceType: .post, filterByParentId: true, parentId: nil, orderBy: .descending, includeDeleted: true) { [weak self] (result) in
+
+        commentController.getCommentsForPostId(
+            withReferenceId: postId,
+            referenceType: .post,
+            filterByParentId: true,
+            parentId: nil,
+            orderBy: .descending,
+            includeDeleted: true
+        ) { [weak self] (result) in
             switch result {
             case .success(let comments):
                 self?.comments = comments
@@ -291,6 +302,8 @@ extension AmityPostDetailScreenViewModel {
                     // if containts, delete the particular comment
                     strongSelf.delegate?.screenViewModel(strongSelf, didFinishWithError: .bannedWord)
                 } else if let comment = comment {
+                    let commentsEnabled = self?.post?.canComment ?? true
+                    AmityUIKitManagerInternal.shared.analytics?.track(.userCreatedComment(isReply: parentId != nil, isDisabled: !commentsEnabled))
                     strongSelf.delegate?.screenViewModelDidCreateComment(strongSelf, comment: AmityCommentModel(comment: comment))
                 } else {
                     strongSelf.delegate?.screenViewModel(strongSelf, didFinishWithError: .unknown)

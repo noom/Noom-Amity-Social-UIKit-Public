@@ -28,8 +28,9 @@ final class AmityCommentCreateController: AmityCommentCreateControllerProtocol {
             object = repository.createComment(forReferenceId: postId, referenceType: referenceType, parentId: parentId, text: text)
         }
         
-        token = object?.observe { commentObject, error in
+        token = object?.observe { [weak self] commentObject, error in
             completion?(commentObject.object, error)
+            self?.token?.invalidate()
         }
     }
 }

@@ -36,7 +36,7 @@ public final class AmityPostPreviewCommentTableViewCell: UITableViewCell, Nibbab
             shouldActionShow: post.isCommentable,
             shouldLineShow: false
         )
-        commentView.configure(with: comment, layout: layout)
+        commentView.configure(with: comment, layout: layout, replyEnabled: post.canComment)
         commentView.delegate = self
         commentView.contentLabel.delegate = self
     }

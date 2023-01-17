@@ -181,6 +181,7 @@
                 <outlet property="likeLabel" destination="9dt-rK-9df" id="MFL-Fn-iy6"/>
                 <outlet property="shareButton" destination="lYA-ML-TDz" id="18S-lS-94N"/>
                 <outlet property="shareLabel" destination="iQB-8p-SU5" id="crm-Zw-eKG"/>
+                <outlet property="stackView" destination="ldZ-XR-Qlt" id="B7s-rm-QZP"/>
                 <outlet property="topContainerView" destination="MWG-0g-I4O" id="ekK-Cy-Zg9"/>
                 <outlet property="warningLabel" destination="Kp8-xl-VFI" id="EaO-0D-9GC"/>
                 <outletCollection property="separatorView" destination="9ua-2n-eX2" collectionClass="NSMutableArray" id="aq6-7c-k6g"/>

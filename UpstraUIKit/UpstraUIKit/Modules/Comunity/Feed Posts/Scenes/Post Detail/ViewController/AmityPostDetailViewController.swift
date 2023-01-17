@@ -50,11 +50,13 @@ open class AmityPostDetailViewController: AmityViewController {
         let commentController = AmityCommentController()
         let reactionController = AmityReactionController()
         let childrenController = AmityCommentChildrenController(postId: postId)
-        screenViewModel = AmityPostDetailScreenViewModel(withPostId: postId,
-                                                             postController: postController,
-                                                             commentController: commentController,
-                                                             reactionController: reactionController,
-                                                             childrenController: childrenController)
+        screenViewModel = AmityPostDetailScreenViewModel(
+            withPostId: postId,
+            postController: postController,
+            commentController: commentController,
+            reactionController: reactionController,
+            childrenController: childrenController
+        )
         super.init(nibName: AmityPostDetailViewController.identifier, bundle: AmityUIKitManager.bundle)
     }
     
@@ -304,7 +306,7 @@ extension AmityPostDetailViewController: AmityPostTableViewDelegate {
                     shouldActionShow: screenViewModel.post?.isCommentable ?? false,
                     shouldLineShow: viewModel.isReplyType
                 )
-                _cell.configure(with: comment, layout: layout)
+                _cell.configure(with: comment, layout: layout, replyEnabled: self.screenViewModel.post?.canComment ?? false)
                 _cell.labelDelegate = self
                 _cell.actionDelegate = self
                 _cell.layoutIfNeeded()
@@ -321,7 +323,7 @@ extension AmityPostDetailViewController: AmityPostTableViewDelegate {
                 shouldActionShow: screenViewModel.post?.isCommentable ?? false,
                 shouldLineShow: viewModel.isReplyType
             )
-            _cell.configure(with: comment, layout: layout)
+            _cell.configure(with: comment, layout: layout, replyEnabled: self.screenViewModel.post?.canComment ?? false)
             _cell.labelDelegate = self
             _cell.actionDelegate = self
             _cell.layoutIfNeeded()
@@ -441,7 +443,8 @@ extension AmityPostDetailViewController: AmityPostDetailScreenViewModelDelegate 
     // MARK: - Post
     func screenViewModelDidUpdateData(_ viewModel: AmityPostDetailScreenViewModelType) {
         tableView.reloadData()
-        if let post = screenViewModel.post {
+        if let post = screenViewModel.post,
+           post.canComment {
             commentComposeBarView.configure(with: post)
         }
         

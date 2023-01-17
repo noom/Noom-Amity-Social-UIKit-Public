@@ -5,7 +5,7 @@
 //  Created by sarawoot khunsri on 2/5/21.
 //  Copyright © 2021 Amity. All rights reserved.
 //
-
+import SnapKit
 import UIKit
 
 /// `AmityPostFooterTableViewCell` for providing a footer of `Post`
@@ -25,10 +25,12 @@ public final class AmityPostFooterTableViewCell: UITableViewCell, Nibbable, Amit
     @IBOutlet private var separatorView: [UIView]!
     @IBOutlet private var warningLabel: UILabel!
     @IBOutlet private var bottomDivider: UIView!
+    @IBOutlet private var stackView: UIStackView!
     
     // MARK: - Properties
     private(set) public var post: AmityPostModel?
     public var indexPath: IndexPath?
+    private var commentsDisabledView = CommentsDisabledView()
     
     public override func awakeFromNib() {
         super.awakeFromNib()
@@ -46,7 +48,7 @@ public final class AmityPostFooterTableViewCell: UITableViewCell, Nibbable, Amit
         let reactionsPrefix = post.reactionsCount == 1 ? AmityLocalizedStringSet.Unit.likeSingular.localizedString : AmityLocalizedStringSet.Unit.likePlural.localizedString
         likeLabel.text = String.localizedStringWithFormat(reactionsPrefix,
                                                           post.reactionsCount.formatUsingAbbrevation())
-        commentLabel.isHidden = post.allCommentCount == 0
+        commentLabel.isHidden = post.allCommentCount == 0 || post.commentsHidden
         let commentPrefix = post.allCommentCount == 1 ? AmityLocalizedStringSet.Unit.commentSingular.localizedString : AmityLocalizedStringSet.Unit.commentPlural.localizedString
         commentLabel.text = String.localizedStringWithFormat(commentPrefix,
                                                              post.allCommentCount.formatUsingAbbrevation())
@@ -65,6 +67,15 @@ public final class AmityPostFooterTableViewCell: UITableViewCell, Nibbable, Amit
             bottomDivider.backgroundColor = AmityColorSet.primary
         } else {
             bottomDivider.backgroundColor = AmityThemeManager.currentTheme.pollBackground
+        }
+
+        commentButton.isHidden = !post.canComment
+        if !post.canComment {
+            if self.commentsDisabledView.superview == nil {
+                self.stackView.addArrangedSubview(commentsDisabledView)
+            }
+        } else {
+            self.commentsDisabledView.removeFromSuperview()
         }
     }
     
@@ -151,4 +162,32 @@ private extension AmityPostFooterTableViewCell {
         performAction(action: .tapComment)
     }
     
+}
+
+private class CommentsDisabledView: UIView {
+    lazy var label: UILabel = {
+        let label = UILabel()
+        label.text = "Comments are turned off"
+        label.font = AmityFontSet.bodyBold
+        label.textColor = AmityThemeManager.currentTheme.base
+        return label
+    }()
+
+    init() {
+        super.init(frame: .zero)
+        setup()
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setup() {
+        self.addSubview(label)
+        label.snp.makeConstraints{ make in
+            make.top.bottom.equalToSuperview().inset(8)
+            make.leading.trailing.equalToSuperview().inset(8)
+        }
+    }
 }

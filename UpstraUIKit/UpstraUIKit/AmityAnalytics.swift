@@ -20,6 +20,7 @@ public enum AmityAnalyticsEvent {
     case userTappedCreatePost(source: CreatePostSource)
     case userCreatedPost(source: CreatePostSource)
     case postImpression(postId: String)
+    case userCreatedComment(isReply: Bool, isDisabled: Bool)
 }
 
 public enum CreatePostSource: String {

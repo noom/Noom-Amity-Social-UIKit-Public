@@ -97,7 +97,7 @@ class AmityCommentView: AmityView {
         viewReplyButton.addTarget(self, action: #selector(viewReplyButtonTap), for: .touchUpInside)
     }
     
-    func configure(with comment: AmityCommentModel, layout: AmityCommentView.Layout) {
+    func configure(with comment: AmityCommentModel, layout: AmityCommentView.Layout, replyEnabled: Bool) {
         self.comment = comment
         
         if comment.isEdited {
@@ -143,6 +143,8 @@ class AmityCommentView: AmityView {
         viewReplyButton.isHidden = !layout.shouldShowViewReplyButton(for: comment)
         leadingAvatarImageViewConstraint.constant = layout.space.avatarLeading
         topAvatarImageViewConstraint.constant = layout.space.aboveAvatar
+
+        replyButton.isHidden = !replyEnabled
         
     }
 

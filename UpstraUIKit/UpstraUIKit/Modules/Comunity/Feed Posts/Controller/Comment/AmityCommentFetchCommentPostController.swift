@@ -13,7 +13,15 @@ protocol AmityCommentFetchCommentPostControllerProtocol {
     
     var hasMoreComments: Bool { get }
     
-    func getCommentsForPostId(withReferenceId postId: String, referenceType: AmityCommentReferenceType, filterByParentId isParent: Bool, parentId: String?, orderBy: AmityOrderBy, includeDeleted: Bool, completion: ((Result<[AmityCommentModel], AmityError>) -> Void)?)
+    func getCommentsForPostId(
+        withReferenceId postId: String,
+        referenceType: AmityCommentReferenceType,
+        filterByParentId isParent: Bool,
+        parentId: String?,
+        orderBy: AmityOrderBy,
+        includeDeleted: Bool,
+        completion: ((Result<[AmityCommentModel], AmityError>) -> Void)?
+    )
     func loadMoreComments()
 }
 
@@ -27,10 +35,24 @@ class AmityCommentFetchCommentPostController: AmityCommentFetchCommentPostContro
         return collection?.hasPrevious ?? false
     }
     
-    func getCommentsForPostId(withReferenceId postId: String, referenceType: AmityCommentReferenceType, filterByParentId isParent: Bool, parentId: String?, orderBy: AmityOrderBy, includeDeleted: Bool, completion: ((Result<[AmityCommentModel], AmityError>) -> Void)?) {
-        
+    func getCommentsForPostId(
+        withReferenceId postId: String,
+        referenceType: AmityCommentReferenceType,
+        filterByParentId isParent: Bool,
+        parentId: String?,
+        orderBy: AmityOrderBy,
+        includeDeleted: Bool,
+        completion: ((Result<[AmityCommentModel], AmityError>) -> Void)?
+    ) {
         token?.invalidate()
-        collection = repository.getCommentsWithReferenceId(postId, referenceType: referenceType, filterByParentId: isParent, parentId: parentId, orderBy: orderBy, includeDeleted: includeDeleted)
+        collection = repository.getCommentsWithReferenceId(
+            postId,
+            referenceType: referenceType,
+            filterByParentId: isParent,
+            parentId: parentId,
+            orderBy: orderBy,
+            includeDeleted: includeDeleted
+        )
         
         token = collection?.observe { [weak self] (commentCollection, _, error) in
             guard let strongSelf = self else { return }

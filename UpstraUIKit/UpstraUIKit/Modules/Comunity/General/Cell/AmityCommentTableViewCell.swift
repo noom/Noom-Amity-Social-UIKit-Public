@@ -31,8 +31,12 @@ class AmityCommentTableViewCell: UITableViewCell, Nibbable {
         }
     }
     
-    func configure(with comment: AmityCommentModel, layout: AmityCommentView.Layout) {
-        commentView.configure(with: comment, layout: layout)
+    func configure(
+        with comment: AmityCommentModel,
+        layout: AmityCommentView.Layout,
+        replyEnabled: Bool
+    ) {
+        commentView.configure(with: comment, layout: layout, replyEnabled: replyEnabled)
         commentView.delegate = self
     }
     

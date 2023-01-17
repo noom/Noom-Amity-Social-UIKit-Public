@@ -292,6 +292,14 @@ public class AmityPostModel {
     public var poll: Poll?
     
     var commentExpandedIds: Set<String> = []
+
+    public let commentingDisabled: Bool
+
+    public let commentsHidden: Bool
+
+    public var canComment: Bool {
+        return !commentsHidden && !commentingDisabled
+    }
     
     // MARK: - Internal variables
     
@@ -320,8 +328,13 @@ public class AmityPostModel {
     
     public init(post: AmityPost) {
         self.post = post
+        self.commentingDisabled = (post.targetCommunity?.metadata?[AmityCommunityModel.commentsDisabledKey] as? Bool) ?? false || (post.metadata?[AmityCommunityModel.commentsDisabledKey] as? Bool) ?? false
+
+        let commentsHidden = (post.targetCommunity?.metadata?[AmityCommunityModel.commentsHiddenKey] as? Bool) ?? false ||
+            (post.metadata?[AmityCommunityModel.commentsHiddenKey] as? Bool) ?? false
+
+        self.commentsHidden = commentsHidden
         postId = post.postId
-        latestComments = post.latestComments.map(AmityCommentModel.init)
         dataType = post.dataType
         targetId = post.targetId
         targetCommunity = post.targetCommunity
@@ -343,7 +356,7 @@ public class AmityPostModel {
         postedUserId = post.postedUserId
         sharedCount = Int(post.sharedCount)
         reactionsCount = Int(post.reactionsCount)
-        allCommentCount = Int(post.commentsCount)
+        allCommentCount = self.commentsHidden ? 0 : Int(post.commentsCount)
         allReactions = post.myReactions
         myReactions = allReactions.compactMap(AmityReactionType.init)
         feedType = post.getFeedType()
@@ -352,6 +365,16 @@ public class AmityPostModel {
         poll = post.getPollInfo().map(Poll.init)
         metadata = post.metadata
         mentionees = post.mentionees
+
+        if !commentsHidden {
+            latestComments = post.latestComments.map {
+                AmityCommentModel(
+                    comment: $0
+                )
+            }
+        } else {
+            latestComments = []
+        }
         extractPostData()
     }
     

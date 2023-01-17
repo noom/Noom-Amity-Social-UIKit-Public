@@ -30,8 +30,24 @@ extension AmityCommentController {
         fetchCommentPostController.hasMoreComments
     }
     
-    func getCommentsForPostId(withReferenceId postId: String, referenceType: AmityCommentReferenceType, filterByParentId isParent: Bool, parentId: String?, orderBy: AmityOrderBy, includeDeleted: Bool, completion: ((Result<[AmityCommentModel], AmityError>) -> Void)?) {
-        fetchCommentPostController.getCommentsForPostId(withReferenceId: postId, referenceType: referenceType, filterByParentId: isParent, parentId: parentId, orderBy: orderBy, includeDeleted: includeDeleted, completion: completion)
+    func getCommentsForPostId(
+        withReferenceId postId: String,
+        referenceType: AmityCommentReferenceType,
+        filterByParentId isParent: Bool,
+        parentId: String?,
+        orderBy: AmityOrderBy,
+        includeDeleted: Bool,
+        completion: ((Result<[AmityCommentModel], AmityError>) -> Void)?
+    ) {
+        fetchCommentPostController.getCommentsForPostId(
+            withReferenceId: postId,
+            referenceType: referenceType,
+            filterByParentId: isParent,
+            parentId: parentId,
+            orderBy: orderBy,
+            includeDeleted: includeDeleted,
+            completion: completion
+        )
     }
     
     func loadMoreComments() {
