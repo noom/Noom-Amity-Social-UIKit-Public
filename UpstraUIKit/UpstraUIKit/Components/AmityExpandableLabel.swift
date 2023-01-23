@@ -156,7 +156,24 @@ open class AmityExpandableLabel: UILabel {
     open override var text: String? {
         set(text) {
             if let text = text {
-                self.attributedText = removeLinksMarkdown(text: text, attributes: [])
+                var attributedText = removeLinksMarkdown(text: text, attributes: [])
+                let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+                let matches = detector.matches(in: attributedText.string, options: [], range: NSRange(location: 0, length: attributedText.string.utf16.count))
+                var _hyperLinkTextRange: [Hyperlink] = []
+                for match in matches {
+                    guard let textRange = Range(match.range, in: attributedText.string) else { continue }
+                    let urlString = String(attributedText.string[textRange])
+                    let validUrlString = urlString.hasPrefix("http") ? urlString : "http://\(urlString)"
+                    guard let formattedString = validUrlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+                        let url = URL(string: formattedString) else { continue }
+                    attributedText.addAttributes([
+                        .foregroundColor: AmityColorSet.highlight,
+                        .attachment: url], range: match.range)
+                    attributedText.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: match.range)
+                    _hyperLinkTextRange.append(Hyperlink(range: match.range, type: .url(url: url)))
+                }
+                hyperLinks = _hyperLinkTextRange
+                self.attributedText = attributedText
             } else {
                 self.attributedText = nil
             }
@@ -234,7 +251,17 @@ extension AmityExpandableLabel {
         guard let touch = touches.first else {
             return
         }
-        if let hyperLink = hyperLinks.first(where: { check(touch: touch, isInRange: $0.range) }) {
+        guard let attributedText = attributedText else {
+            return
+        }
+        let index = check(touch: touch, in: attributedText)
+        if let attribute = attributedText.attribute(.amityCustomLink, at: index, effectiveRange: nil),
+           let stringURL = attribute as? String,
+           let url = URL(string: stringURL) {
+            if !(UIApplication.shared.delegate?.application?(UIApplication.shared, open: url) ?? false) {
+                UIApplication.shared.openURL(url)
+             }
+        } else if let hyperLink = hyperLinks.first(where: { NSLocationInRange(index, $0.range) }) {
             switch hyperLink.type {
             case .url(let url):
                  if !(UIApplication.shared.delegate?.application?(UIApplication.shared, open: url) ?? false) {
@@ -243,7 +270,6 @@ extension AmityExpandableLabel {
             case .mention(let userId):
                 delegate?.didTapOnMention(self, withUserId: userId)
             }
-            
         } else {
             guard isExpandable else {
                 delegate?.expandableLabeldidTap(self)
@@ -267,7 +293,6 @@ extension AmityExpandableLabel {
                 }
             }
         }
-        
     }
 
 }
@@ -417,7 +442,7 @@ extension AmityExpandableLabel {
         return collapsedNumberOfLines > 0 && collapsedNumberOfLines < lines.count
     }
     
-    private func check(touch: UITouch, isInRange targetRange: NSRange) -> Bool {
+    private func check(touch: UITouch, in attributedText: NSAttributedString) -> Int {
 //        let touchPoint = touch.location(in: self)
 //
 //        // if text is expandable and it doesn't expand yet, add a reserved range for "...Read More".
@@ -427,9 +452,6 @@ extension AmityExpandableLabel {
 //        return NSLocationInRange(index, targetRange)
 
         // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
-        guard let attributedText = attributedText else {
-            return false
-        }
         let layoutManager = NSLayoutManager()
         let textContainer = NSTextContainer(size: CGSize.zero)
         let textStorage = NSTextStorage(attributedString: attributedText)
@@ -461,7 +483,7 @@ extension AmityExpandableLabel {
         // other cases mean text is showing at the full size and no need to a range.
         let unwantedRange = isExpandable && !isExpanded ? truncateText.count + readMoreText.count : 0
         let index = indexOfCharacter - unwantedRange
-        return NSLocationInRange(index, targetRange)
+        return index
     }
 
     @discardableResult private func setLinkHighlighted(_ touches: Set<UITouch>?, event: UIEvent?, highlighted: Bool) -> Bool {
@@ -640,7 +662,7 @@ extension UILabel {
 
 extension AmityExpandableLabel {
 
-    func removeLinksMarkdown(text: String, attributes: [MentionAttribute]) -> NSAttributedString {
+    func removeLinksMarkdown(text: String, attributes: [MentionAttribute]) -> NSMutableAttributedString {
         guard text.count > 0 else {
             return AmityUIKitManager.attributedString(from: text).mutableCopy() as? NSMutableAttributedString ?? NSMutableAttributedString(string: text)
         }
@@ -667,14 +689,14 @@ extension AmityExpandableLabel {
         testAttributedString.enumerateAttributes(in: testRange) { attributes, range, _ in
             attributes.keys.forEach { key in
                 if key == .link {
-                    if let urlString = attributes[key] as? String,
-                       let url = URL(string: urlString) {
-                        var hyperlinks = self.hyperLinks
-                        hyperlinks.append(Hyperlink(range: range, type: .url(url: url)))
-                        self.hyperLinks = hyperlinks
+                    guard let urlString = attributes[key] as? String else {
+                        return
                     }
                     testAttributedString.removeAttribute(.link, range: range)
-                    testAttributedString.addAttributes([.foregroundColor: AmityColorSet.highlight], range: range)
+                    testAttributedString.addAttributes([
+                        .foregroundColor: AmityColorSet.highlight,
+                        .amityCustomLink : urlString
+                    ], range: range)
                 }
             }
 
@@ -683,7 +705,24 @@ extension AmityExpandableLabel {
     }
 
     func setText(_ text: String, withAttributes attributes: [MentionAttribute]) {
-        self.attributedText = removeLinksMarkdown(text: text, attributes: attributes)
+        var text = removeLinksMarkdown(text: text, attributes: attributes)
+        let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        let matches = detector.matches(in: text.string, options: [], range: NSRange(location: 0, length: text.string.utf16.count))
+        var _hyperLinkTextRange: [Hyperlink] = []
+        for match in matches {
+            guard let textRange = Range(match.range, in: text.string) else { continue }
+            let urlString = String(text.string[textRange])
+            let validUrlString = urlString.hasPrefix("http") ? urlString : "http://\(urlString)"
+            guard let formattedString = validUrlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+                let url = URL(string: formattedString) else { continue }
+            text.addAttributes([
+                .foregroundColor: AmityColorSet.highlight,
+                .attachment: url], range: match.range)
+            text.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: match.range)
+            _hyperLinkTextRange.append(Hyperlink(range: match.range, type: .url(url: url)))
+        }
+        self.hyperLinks = _hyperLinkTextRange
+        self.attributedText = text
     }
 }
 
@@ -691,4 +730,8 @@ struct MentionAttribute {
     let attributes: [NSAttributedString.Key: Any]
     let range: NSRange
     let userId: String
+}
+
+extension NSAttributedString.Key {
+    static let amityCustomLink: NSAttributedString.Key = .init("amityCustomLink")
 }
