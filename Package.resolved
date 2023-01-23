@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/AmityCo/Amity-Social-Cloud-SDK-iOS-SwiftPM.git",
       "state" : {
-        "revision" : "6c546713a46abfdd4a1c23afc7e89d721849ae2e",
-        "version" : "5.31.0"
+        "revision" : "608e1e36d4947f0f1b13ed410041a260c402bfb6",
+        "version" : "5.32.0"
       }
     },
     {

@@ -156,26 +156,7 @@ open class AmityExpandableLabel: UILabel {
     open override var text: String? {
         set(text) {
             if let text = text {
-                let sanitized = removeLinksMarkdown(text: text)
-                let attributedString = AmityUIKitManager.attributedString(from: sanitized).mutableCopy() as? NSMutableAttributedString ?? NSMutableAttributedString(string: sanitized)
-                let textToUse = attributedString.string
-                let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-                let matches = detector.matches(in: textToUse, options: [], range: NSRange(location: 0, length: textToUse.utf16.count))
-                var _hyperLinkTextRange: [Hyperlink] = []
-                for match in matches {
-                    guard let textRange = Range(match.range, in: textToUse) else { continue }
-                    let urlString = String(textToUse[textRange])
-                    let validUrlString = urlString.hasPrefix("http") ? urlString : "http://\(urlString)"
-                    guard let formattedString = validUrlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                        let url = URL(string: formattedString) else { continue }
-                    attributedString.addAttributes([
-                        .foregroundColor: AmityColorSet.highlight,
-                        .attachment: url], range: match.range)
-                    attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: match.range)
-                    _hyperLinkTextRange.append(Hyperlink(range: match.range, type: .url(url: url)))
-                }
-                hyperLinks = _hyperLinkTextRange
-                self.attributedText = attributedString
+                self.attributedText = removeLinksMarkdown(text: text, attributes: [])
             } else {
                 self.attributedText = nil
             }
@@ -658,66 +639,51 @@ extension UILabel {
 }
 
 extension AmityExpandableLabel {
-    func removeLinksMarkdown(text: String) -> String {
-        let range = NSRange(text.startIndex..., in: text)
-        let matches = AmityExpandableLabel.fullRegex.matches(in: text, range: range)
-        let results = matches.map { String(text[Range($0.range, in: text)!])  }
 
-        let urls: [String?] = results.map { result in
-            let resultRange = NSRange(result.startIndex..., in: result)
-            guard let urlMatch = AmityExpandableLabel.linkTextRegex.firstMatch (in: result, range: resultRange) else {
-                return nil
+    func removeLinksMarkdown(text: String, attributes: [MentionAttribute]) -> NSAttributedString {
+        guard text.count > 0 else {
+            return AmityUIKitManager.attributedString(from: text).mutableCopy() as? NSMutableAttributedString ?? NSMutableAttributedString(string: text)
+        }
+        let copyRange = NSRange(text.startIndex..., in: text)
+        var copy = AmityExpandableLabel.newLineRegex.stringByReplacingMatches(
+            in: text,
+            range: copyRange,
+            withTemplate: "\n"
+        )
+
+        attributes.reversed().makeIterator().forEach { attribute in
+            let movedRange = NSRange(location: attribute.range.location, length: attribute.range.length + 1)
+
+            guard let range = Range(movedRange, in: text),
+                  let url = AmityUIKitManagerInternal.shared.noomAmityBridgingService?.urlForUser(userId: attribute.userId) else {
+                return
             }
-            let urlString = String(result[Range(urlMatch.range, in: result)!])
-            let subrangeStart = urlString.index(after: urlString.startIndex)
-            let subrangeEnd = urlString.index(before: urlString.endIndex)
-            return String(urlString[subrangeStart..<subrangeEnd])
+            let userName = copy[range]
+            copy.replaceSubrange(range, with: "[\(userName)](\(url.absoluteString))")
         }
-        var mutable = text
-        for (index, item) in results.enumerated() {
-            let replacement = urls[index] ?? ""
-            mutable = mutable.replacingOccurrences(of: item, with: replacement)
-        }
-        let mutableRange = NSRange(mutable.startIndex..., in: mutable)
+        let testAttributedString = AmityUIKitManager.attributedString(from: copy).mutableCopy() as? NSMutableAttributedString ?? NSMutableAttributedString(string: copy)
+        let testAttributes = testAttributedString.attributes(at: 0, effectiveRange: nil)
+        let testRange = NSRange(testAttributedString.string.startIndex..., in: testAttributedString.string)
+        testAttributedString.enumerateAttributes(in: testRange) { attributes, range, _ in
+            attributes.keys.forEach { key in
+                if key == .link {
+                    if let urlString = attributes[key] as? String,
+                       let url = URL(string: urlString) {
+                        var hyperlinks = self.hyperLinks
+                        hyperlinks.append(Hyperlink(range: range, type: .url(url: url)))
+                        self.hyperLinks = hyperlinks
+                    }
+                    testAttributedString.removeAttribute(.link, range: range)
+                    testAttributedString.addAttributes([.foregroundColor: AmityColorSet.highlight], range: range)
+                }
+            }
 
-        mutable = AmityExpandableLabel.newLineRegex.stringByReplacingMatches(in: mutable, range: mutableRange, withTemplate: "\n")
-        return mutable // mutable.replacingOccurrences(of: " \n", with: "\n")
+        }
+        return testAttributedString
     }
 
     func setText(_ text: String, withAttributes attributes: [MentionAttribute]) {
-        let sanitized = removeLinksMarkdown(text: text)
-        let attributedString = AmityUIKitManager.attributedString(from: sanitized).mutableCopy() as? NSMutableAttributedString ?? NSMutableAttributedString(string: sanitized)
-        let textToUse = attributedString.string
-        let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-        let matches = detector.matches(in: textToUse, options: [], range: NSRange(location: 0, length: textToUse.utf16.count))
-        var _hyperLinkTextRange: [Hyperlink] = []
-        for match in matches {
-            guard let textRange = Range(match.range, in: textToUse) else { continue }
-            let urlString = String(textToUse[textRange])
-            let validUrlString = urlString.hasPrefix("http") ? urlString : "http://\(urlString)"
-            guard let formattedString = validUrlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                let url = URL(string: formattedString) else { continue }
-            attributedString.addAttributes([
-                .foregroundColor: AmityColorSet.highlight,
-                .attachment: url], range: match.range)
-            attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: match.range)
-            _hyperLinkTextRange.append(Hyperlink(range: match.range, type: .url(url: url)))
-        }
-
-        for attribute in attributes {
-            let originalAttributedString = NSMutableAttributedString(string: text)
-            if let range = Range(attribute.range, in: originalAttributedString.string) {
-                let mentionText = originalAttributedString.string[range]
-                if  let mentionRange = attributedString.string.range(of: mentionText) {
-                    let mentionNSRange = NSRange(mentionRange, in: attributedString.string)
-                    attributedString.addAttributes(attribute.attributes, range: mentionNSRange)
-                    _hyperLinkTextRange.append(Hyperlink(range: mentionNSRange, type: .mention(userId: attribute.userId)))
-                }
-            }
-        }
-
-        hyperLinks = _hyperLinkTextRange
-        self.attributedText = attributedString
+        self.attributedText = removeLinksMarkdown(text: text, attributes: attributes)
     }
 }
 

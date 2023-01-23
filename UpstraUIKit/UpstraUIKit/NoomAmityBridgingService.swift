@@ -8,6 +8,7 @@ import UIKit
 
 public protocol NoomAmityBridgingService: AnyObject {
     func makeConnectNotificationsSettingsViewController() -> UIViewController
+    func urlForUser(userId: String) -> URL?
     var notificationSettingsEnabled: Bool { get }
     var createCommunityButtonDisabled: Bool { get }
 }
