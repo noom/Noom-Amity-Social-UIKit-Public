@@ -115,6 +115,7 @@ private extension AmityCommunityHomePageViewController {
     }
     
     @objc func notificationsTapped() {
+        print(AmityUIKitManagerInternal.shared.currentUserId, "current user access code")
         guard let notificationsItem = notificationsItem else { return }
         presentNavbarTooltip(anchorItem: notificationsItem, title: "Notifications", description: "list of notifications")
     }
@@ -127,17 +128,5 @@ public extension AmityCommunityHomePageViewController {
 
     func showExplore() {
         moveTo(viewController: exploreVC)
-    }
-}
-
-extension UIPopoverPresentationController {
-    func adaptiveSourceFrame(insets: UIEdgeInsets) -> CGRect {
-        if let sourceView = sourceView {
-            return sourceView.frameInWindow().inset(by: insets)
-        } else if let barButtonItem = barButtonItem {
-            return barButtonItem.frameInWindow().inset(by: insets)
-        } else {
-            return .zero
-        }
     }
 }

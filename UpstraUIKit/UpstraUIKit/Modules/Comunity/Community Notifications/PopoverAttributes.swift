@@ -3,7 +3,7 @@
 // Copyright ® 2023 Noom, Inc. All Rights Reserved
 //
 
-import Foundation
+import UIKit
 
 struct PopoverAttributes {
     var allowTapOutsideToDismiss: Bool = true

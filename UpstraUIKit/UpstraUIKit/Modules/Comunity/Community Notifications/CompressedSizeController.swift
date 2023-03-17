@@ -22,7 +22,7 @@ final class CompressedSizeController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.translatesAutoresizingMaskIntoConstraints = false
-        //self.noom.addChildFittingSuperview(contentViewController)
+        self.addChildFittingSuperview(contentViewController)
 
         self.preferredContentSize = self.view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         self.view.setNeedsLayout()

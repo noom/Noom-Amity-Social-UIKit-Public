@@ -61,9 +61,9 @@ extension UIViewController {
             let popover = controller.popoverPresentationController
         else { return }
         popover.barButtonItem = anchorItem
-    //    if attributes.sourceRectInsets != .zero {
-    //        popover.sourceRect = anchorItem.noom.frameInWindow().inset(by: attributes.sourceRectInsets)
-    //    }
+        if attributes.sourceRectInsets != .zero {
+            popover.sourceRect = anchorItem.frameInWindow().inset(by: attributes.sourceRectInsets)
+        }
         present(controller, animated: true, completion: nil)
     }
     

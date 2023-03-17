@@ -35,3 +35,24 @@ extension UIBarButtonItem {
         return view.frameInWindow()
     }
 }
+
+extension UIViewController {
+    func addChildFittingSuperview(_ child: UIViewController) {
+        addChildFittingSuperview(child, to: view)
+    }
+
+    func addChildFittingSuperview(_ child: UIViewController, to containerView: UIView) {
+        addChild(child)
+        containerView.addSubview(child.view)
+        child.view.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            child.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            child.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            child.view.topAnchor.constraint(equalTo: containerView.topAnchor),
+            child.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+        ])
+
+        child.didMove(toParent: self)
+    }
+}

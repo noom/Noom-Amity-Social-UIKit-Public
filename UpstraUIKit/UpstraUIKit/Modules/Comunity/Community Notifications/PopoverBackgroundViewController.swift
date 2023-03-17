@@ -3,7 +3,7 @@
 // Copyright ® 2023 Noom, Inc. All Rights Reserved
 //
 
-import UIKit
+import SwiftUI
 
 final class PopoverBackgroundViewController<Background: View>: PopoverPresentationDelegate {
 

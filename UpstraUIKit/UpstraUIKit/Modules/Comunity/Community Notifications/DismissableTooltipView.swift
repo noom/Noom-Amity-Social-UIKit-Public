@@ -30,15 +30,14 @@ extension DismissableTooltipView: View {
             VStack(alignment: .leading, spacing: textSpacing) {
                 if !title.isEmpty {
                     Text(title)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .font(.subheadline)
+                        .font(.headline)
                         .foregroundColor(.black)
                 }
-
-                Text(description)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .font(.body)
-                    .foregroundColor(.black)
+                
+        
+                ForEach(CommunityNotification.mockData) { item in
+                    NotificationonContentView(viewModel: .init(notification: item))
+                }
             }
 
             Button(action: closeAction) {
