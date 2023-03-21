@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 struct NotificationContentViewModel {
     
@@ -47,6 +48,8 @@ extension NotificationContentViewModel {
 struct NotificationonContentView: View {
     
     let viewModel: NotificationContentViewModel
+    
+    //let store: Store<CommunityNotification, NotificationAction>
         
     var body: some View {
         HStack(spacing: 4) {
@@ -57,14 +60,22 @@ struct NotificationonContentView: View {
             }
             Spacer()
             Circle()
+                .foregroundColor(.orange)
                 .opacity(viewModel.hasRead ? 0 : 1)
                 .frame(width: 10, height: 10)
         }
     }
 }
 
-struct SwiftUIView_Previews: PreviewProvider {
-    static var previews: some View {
-        NotificationonContentView(viewModel: .init(notification: .mock()))
-    }
+//struct SwiftUIView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NotificationonContentView(viewModel: .init(notification: .mock()))
+//    }
+//}
+
+
+enum NotificationAction: Equatable {
+    case notificationTapped
 }
+
+struct TodoEnvironment {}

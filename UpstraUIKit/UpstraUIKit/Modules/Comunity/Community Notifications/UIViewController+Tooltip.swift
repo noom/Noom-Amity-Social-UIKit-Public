@@ -30,7 +30,11 @@ extension UIViewController {
                     description: description,
                     closeAction: { [weak self] in
                         self?.presentedViewController?.dismiss(animated: true, completion: onDidClose)
-                    }
+                    },
+                    store: .init(
+                        initialState: .init(),
+                        /// does not compile
+                        reducer: InternalNotificationTray(client: .live()))
                 )
             },
             background: { sourceRect in

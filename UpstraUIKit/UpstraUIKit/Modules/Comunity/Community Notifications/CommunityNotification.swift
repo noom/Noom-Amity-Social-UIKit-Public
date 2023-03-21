@@ -5,29 +5,27 @@
 
 import Foundation
 
-struct CommunityNotification: Identifiable {
+public struct CommunityNotification: Identifiable {
     
-    struct Actor {
-        let id: String
+    public struct Actor {
         let name: String
         let imageUrl: String
     }
     
-    let id = UUID().uuidString
-    let description: String
-    let networkId: String
-    let userId: String
-    let verb: Verb
-    let targetType: TargetType
-    let targetId: String
-    let targetGroup: Int
-    let imageUrl: String
-    let hasRead: Bool
-    let lastUpdate: Date
-    let actors: [Actor]
+    public let id = UUID().uuidString
+    public let description: String
+    public let userAccessCode: String
+    public let verb: Verb
+    public let targetType: TargetType
+    public let path: String
+    public let sourceId: String
+    public let imageUrl: String
+    public let hasRead: Bool
+    public let lastUpdate: Date
+    public let actors: [Actor]
 }
 
-extension CommunityNotification {
+public extension CommunityNotification {
     enum Verb {
         case post, comment, like
         
@@ -44,34 +42,33 @@ extension CommunityNotification {
     }
 }
 
-extension CommunityNotification.Actor {
-    static func mock(name: String = "France",
+public extension CommunityNotification.Actor {
+    static func mock(name: String = "London",
                      imageUrl: String = "") -> CommunityNotification.Actor {
-        return CommunityNotification.Actor(id: "id", name: name, imageUrl: imageUrl)
+        return CommunityNotification.Actor(name: name, imageUrl: imageUrl)
     }
 }
 
 extension CommunityNotification {
     static func mock(description: String = "",
-                     networkId: String = "",
-                     userId: String = "",
+                     userAccessCode: String = "",
                      verb: Verb = .like,
                      targetType: TargetType = .community,
-                     targetId: String = "",
-                     targetGroup: Int = 1,
+                     path: String = "",
+                     sourceId: String = "",
                      imageUrl: String = "",
                      hasRead: Bool = false,
                      lastUpdate: Date = Date(),
-                     actors: [Actor] = [.mock(name: "france"), .mock(name: "spain")]) -> CommunityNotification {
-        return CommunityNotification(description: description, networkId: networkId, userId: userId, verb: verb, targetType: targetType, targetId: targetId, targetGroup: targetGroup, imageUrl: imageUrl, hasRead: hasRead, lastUpdate: lastUpdate, actors: actors)
+                     actors: [Actor] = [.mock(), .mock(name: "New York"), .mock(name: "Tokyo")]) -> CommunityNotification {
+        return CommunityNotification(description: description, userAccessCode: userAccessCode, verb: verb, targetType: targetType, path: path, sourceId: sourceId, imageUrl: imageUrl, hasRead: hasRead, lastUpdate: lastUpdate, actors: actors)
     }
     
-    static var mockData: [CommunityNotification] = [.mock(verb: .comment, actors: [.mock(), .mock(), .mock()]),
+    static var mockData: [CommunityNotification] = [.mock(verb: .comment),
                                                     .mock(actors: [.mock()]),
                                                     .mock(),
+                                                    .mock(verb: .comment, actors: [.mock(name: "Bangkok"), .mock(name: "Sydney")]),
+                                                    .mock(actors: [.mock(name: "Cairo"), .mock(name: "Los Angeles"), .mock(name: "Bogota"), .mock(name: "Buenos Aires"), .mock(name: "Rome")]),
                                                     .mock(),
-                                                    .mock(actors: [.mock(), .mock(), .mock(), .mock(), .mock()]),
-                                                    .mock(),
-                                                    .mock()]
+                                                    .mock(verb: .comment)]
     
 }
