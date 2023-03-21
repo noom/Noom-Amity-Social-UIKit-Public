@@ -78,4 +78,3 @@ enum NotificationAction: Equatable {
     case notificationTapped
 }
 
-struct TodoEnvironment {}
