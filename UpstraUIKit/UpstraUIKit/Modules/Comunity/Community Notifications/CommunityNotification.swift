@@ -43,32 +43,41 @@ public extension CommunityNotification {
 }
 
 public extension CommunityNotification.Actor {
-    static func mock(name: String = "London",
-                     imageUrl: String = "") -> CommunityNotification.Actor {
+    static func mock(
+        name: String = "London",
+        imageUrl: String = ""
+    ) -> CommunityNotification.Actor {
         return CommunityNotification.Actor(name: name, imageUrl: imageUrl)
     }
 }
 
 extension CommunityNotification {
-    static func mock(description: String = "",
-                     userAccessCode: String = "",
-                     verb: Verb = .like,
-                     targetType: TargetType = .community,
-                     path: String = "",
-                     sourceId: String = "",
-                     imageUrl: String = "",
-                     hasRead: Bool = false,
-                     lastUpdate: Date = Date(),
-                     actors: [Actor] = [.mock(), .mock(name: "New York"), .mock(name: "Tokyo")]) -> CommunityNotification {
+    static func mock(
+        description: String = "",
+        userAccessCode: String = "",
+        verb: Verb = .like,
+        targetType: TargetType = .community,
+        path: String = "",
+        sourceId: String = "",
+        imageUrl: String = "",
+        hasRead: Bool = false,
+        lastUpdate: Date = Date(),
+        actors: [Actor] = [.mock(), .mock(name: "New York"), .mock(name: "Tokyo")]) -> CommunityNotification {
         return CommunityNotification(description: description, userAccessCode: userAccessCode, verb: verb, targetType: targetType, path: path, sourceId: sourceId, imageUrl: imageUrl, hasRead: hasRead, lastUpdate: lastUpdate, actors: actors)
     }
     
-    static var mockData: [CommunityNotification] = [.mock(verb: .comment),
-                                                    .mock(actors: [.mock()]),
-                                                    .mock(),
-                                                    .mock(verb: .comment, actors: [.mock(name: "Bangkok"), .mock(name: "Sydney")]),
-                                                    .mock(actors: [.mock(name: "Cairo"), .mock(name: "Los Angeles"), .mock(name: "Bogota"), .mock(name: "Buenos Aires"), .mock(name: "Rome")]),
-                                                    .mock(),
-                                                    .mock(verb: .comment)]
-    
+    static var mockData: [CommunityNotification] = [
+        .mock(verb: .comment),
+        .mock(actors: [.mock()]),
+        .mock(),
+        .mock(verb: .comment, actors: [.mock(name: "Bangkok"), .mock(name: "Sydney")]),
+        .mock(actors: [
+            .mock(name: "Cairo"),
+            .mock(name: "Los Angeles"),
+            .mock(name: "Bogota"),
+            .mock(name: "Buenos Aires"),
+            .mock(name: "Rome")]),
+        .mock(),
+        .mock(verb: .comment)
+    ]
 }

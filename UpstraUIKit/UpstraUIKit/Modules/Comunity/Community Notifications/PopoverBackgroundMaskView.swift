@@ -10,10 +10,6 @@ struct PopoverBackgroundMaskView<Mask: View> {
     @ViewBuilder let mask: () -> Mask
 }
 
-extension PopoverBackgroundMaskView {
-    var color: Color { .black.opacity(0.3) }
-}
-
 extension PopoverBackgroundMaskView where Mask == EmptyView {
 
     init() {
@@ -25,7 +21,7 @@ extension PopoverBackgroundMaskView where Mask == EmptyView {
 extension PopoverBackgroundMaskView: View {
 
     var body: some View {
-        color
+        Color.black.opacity(0.3)
             .reverseMask {
                 mask()
                     .frame(width: sourceRect.width, height: sourceRect.height)

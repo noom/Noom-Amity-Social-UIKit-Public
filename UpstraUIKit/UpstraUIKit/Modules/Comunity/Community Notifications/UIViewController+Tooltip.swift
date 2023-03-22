@@ -11,14 +11,13 @@ extension UIViewController {
     ///   - theme: Used to theme the tooltip and the background overlay.
     ///   - anchorItem: The BarButtonItem from which the popover will anchor itself. The arrow of the popover will touch the view at any of the permitted arrow direction points.
     ///   - title: An optional title for the tooltip. If nil, the tooltips height will adjust by removing this element.
-    ///   - description: Used to describe the anchor view.
     ///   - popoverAttributes: Popover attributes are used to customise the popover's properties.
     ///   - onDidClose: This block is triggered after the tooltip is dismissed by the user.
     func presentNavbarTooltip(
         anchorItem: UIBarButtonItem,
         title: String = "",
-        description: String,
         popoverAttributes: PopoverAttributes = .init(),
+        internalNotificationClient: InternalNotificationTray.Client,
         onDidClose: @escaping () -> Void = {}
     ) {
         presentPopover(
@@ -27,14 +26,15 @@ extension UIViewController {
             content: {
                 DismissableTooltipView(
                     title: title,
-                    description: description,
                     closeAction: { [weak self] in
                         self?.presentedViewController?.dismiss(animated: true, completion: onDidClose)
                     },
                     store: .init(
                         initialState: .init(),
-                        /// does not compile
-                        reducer: InternalNotificationTray(client: .live()))
+                        reducer: InternalNotificationTray(
+                            client: internalNotificationClient
+                        )
+                    )
                 )
             },
             background: { sourceRect in

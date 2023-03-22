@@ -9,16 +9,14 @@ import ComposableArchitecture
 struct DismissableTooltipView: View {
     
     var title: String = ""
-    var description: String
     var closeAction: () -> Void
     
-    var closeIcon: Image { Image(systemName: "xmark") }
-    var closeIconSize: CGSize { CGSize(width: 10, height: 10) }
-    var closeIconTopPadding: CGFloat { 7 }
-    var closeButtonSize: CGSize { CGSize(width: 44, height: 44) }
-    var horizontalContentPadding: CGFloat { 16 }
-    var verticalContentPadding: CGFloat { 8 }
-    var textSpacing: CGFloat { 8 }
+    private let closeIconSize: CGSize = CGSize(width: 10, height: 10)
+    private let closeIconTopPadding: CGFloat =  7
+    private let closeButtonSize: CGSize = CGSize(width: 44, height: 44)
+    private let horizontalContentPadding: CGFloat = 16
+    private let verticalContentPadding: CGFloat = 8
+    private let textSpacing: CGFloat = 8
     
     let store: InternalNotificationTray.Store
 
@@ -37,6 +35,8 @@ struct DismissableTooltipView: View {
                     ForEach(CommunityNotification.mockData) { item in
                         NotificationonContentView(viewModel: .init(notification: item))
                     }
+                }.onAppear {
+                    viewstore.send(.screenAppeared)
                 }
 
                 Button(action: closeAction) {
@@ -44,7 +44,7 @@ struct DismissableTooltipView: View {
                         Color.clear
                             .frame(width: closeButtonSize.width, height: closeButtonSize.height)
 
-                        closeIcon
+                        Image(systemName: "xmark")
                             .renderingMode(.template)
                             .resizable()
                             .foregroundColor(.black)

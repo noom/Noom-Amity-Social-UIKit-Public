@@ -12,6 +12,8 @@ import SwiftUI
 public class AmityCommunityHomePageViewController: AmityPageViewController, AmityRootViewController {
 
     public var exitClosure: (() -> Void)? = nil
+    public var internalNotificationClient: InternalNotificationTray.Client?
+    
     // MARK: - Properties
     public let newsFeedVC = AmityNewsfeedViewController.make()
     public let exploreVC = AmityCommunityExplorerViewController.make()
@@ -54,11 +56,13 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     public static func make(
         analytics: AmityAnalytics,
         initialRouting: AmityRoute = .none,
+        internalNotificationClient: InternalNotificationTray.Client,
         exitClosure: (@escaping () -> Void) = {}
     ) -> AmityCommunityHomePageViewController {
         AmityUIKitManager.set(analyticsClient: analytics)
         let viewController = AmityCommunityHomePageViewController()
         viewController.exitClosure = exitClosure
+        viewController.internalNotificationClient = internalNotificationClient
         AmityUIKitManager.route(to: initialRouting)
         return viewController
     }
@@ -116,8 +120,8 @@ private extension AmityCommunityHomePageViewController {
     
     @objc func notificationsTapped() {
         print(AmityUIKitManagerInternal.shared.currentUserId, "current user access code")
-        guard let notificationsItem = notificationsItem else { return }
-        presentNavbarTooltip(anchorItem: notificationsItem, title: "Notifications", description: "list of notifications")
+        guard let notificationsItem = notificationsItem, let internalNotificationClient = internalNotificationClient else { return }
+        presentNavbarTooltip(anchorItem: notificationsItem, title: "Notifications", internalNotificationClient: internalNotificationClient)
     }
 }
 
