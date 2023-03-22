@@ -6,64 +6,35 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct NotificationContentViewModel {
-    
-    private let notification: CommunityNotification
-    let hasRead: Bool
-    
-    init(notification: CommunityNotification) {
-        self.notification = notification
-        self.hasRead = notification.hasRead
+struct NotificationContentView: View {
+        
+    let store: ComposableArchitecture.Store<CommunityNotification, NotificationAction>
+
+    var body: some View {
+        WithViewStore(store) { viewStore in
+            HStack(spacing: 4) {
+                Image(systemName: "person.fill")
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(viewStore.description)
+                    Text(dateDesription(date:viewStore.lastUpdate))
+                }
+                Spacer()
+                Circle()
+                    .foregroundColor(.orange)
+                    .opacity(viewStore.hasRead ? 0 : 1)
+                    .frame(width: 10, height: 10)
+            }
+        }
     }
     
-    var dateDesription: String {
+    private func dateDesription(date: Date) -> String {
         let dateFormatter = DateFormatter()
 
         // Set Date Format
         dateFormatter.dateFormat = "YY/MM/dd"
 
         // Convert Date to String
-        return dateFormatter.string(from: notification.lastUpdate)
-    }
-    
-    var summary: String {
-        guard !notification.actors.isEmpty else { return "" }
-        let actors: String
-        switch notification.actors.count {
-        case 1: actors = notification.actors[0].name
-        case 2: actors = "\(notification.actors[0].name) and \(notification.actors[1].name)"
-        case 3: actors = "\(notification.actors[0].name), \(notification.actors[1].name) and \(notification.actors[2].name)"
-        default: actors = "\(notification.actors[0].name), \(notification.actors[1].name) and \(notification.actors.count - 2) others"
-        }
-        return actors + " \(notification.verb.action)" + " your post"
-    }
-}
-
-extension NotificationContentViewModel {
-    static func mock() -> NotificationContentViewModel {
-        return .init(notification: .mock())
-    }
-}
-
-struct NotificationonContentView: View {
-    
-    let viewModel: NotificationContentViewModel
-    
-    //let store: Store<CommunityNotification, NotificationAction>
-        
-    var body: some View {
-        HStack(spacing: 4) {
-            Image(systemName: "person.fill")
-            VStack(alignment: .leading, spacing: 4) {
-                Text(viewModel.summary)
-                Text(viewModel.dateDesription)
-            }
-            Spacer()
-            Circle()
-                .foregroundColor(.orange)
-                .opacity(viewModel.hasRead ? 0 : 1)
-                .frame(width: 10, height: 10)
-        }
+        return dateFormatter.string(from: date)
     }
 }
 
@@ -73,8 +44,6 @@ struct NotificationonContentView: View {
 //    }
 //}
 
-
-enum NotificationAction: Equatable {
+public enum NotificationAction: Equatable {
     case notificationTapped
 }
-

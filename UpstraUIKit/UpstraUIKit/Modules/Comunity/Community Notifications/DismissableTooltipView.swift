@@ -31,10 +31,16 @@ struct DismissableTooltipView: View {
                             .foregroundColor(.black)
                     }
                     
-            
-                    ForEach(CommunityNotification.mockData) { item in
-                        NotificationonContentView(viewModel: .init(notification: item))
-                    }
+                    ForEachStore(
+                        self.store.scope(
+                            state: \.notifications,
+                            action: InternalNotificationTray.Action.notification(index:action:)
+                        ),
+                        content: NotificationContentView.init(store:)
+                    )
+//                    ForEachStore(CommunityNotification.mockData) { item in
+//                        NotificationContentView(viewModel: .init(notification: item))
+//                    }
                 }.onAppear {
                     viewstore.send(.screenAppeared)
                 }

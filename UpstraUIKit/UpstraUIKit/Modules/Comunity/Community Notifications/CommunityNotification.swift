@@ -5,9 +5,9 @@
 
 import Foundation
 
-public struct CommunityNotification: Identifiable {
+public struct CommunityNotification: Equatable, Identifiable {
     
-    public struct Actor {
+    public struct Actor: Equatable {
         let name: String
         let imageUrl: String
     }
