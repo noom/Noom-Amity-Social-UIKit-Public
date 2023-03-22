@@ -19,6 +19,7 @@ extension UIViewController {
         title: String = "",
         description: String,
         popoverAttributes: PopoverAttributes = .init(),
+        internalNotificationTrayClient: InternalNotificationTray.Client,
         onDidClose: @escaping () -> Void = {}
     ) {
         presentPopover(
@@ -34,7 +35,7 @@ extension UIViewController {
                     store: .init(
                         initialState: .init(),
                         /// does not compile
-                        reducer: InternalNotificationTray(client: .live()))
+                        reducer: InternalNotificationTray(client: internalNotificationTrayClient))
                 )
             },
             background: { sourceRect in

@@ -10,6 +10,8 @@ import UIKit
 import SwiftUI
 
 public class AmityCommunityHomePageViewController: AmityPageViewController, AmityRootViewController {
+    // Dependencies
+    private let internalNotificationTrayClient: InternalNotificationTray.Client
 
     public var exitClosure: (() -> Void)? = nil
     // MARK: - Properties
@@ -18,7 +20,10 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     public let myCommunitiesVC = AmityMyCommunityViewController.make()
     private var notificationsItem: UIBarButtonItem?
 
-    private init() {
+    private init(
+        internalNotificationTrayClient: InternalNotificationTray.Client
+    ) {
+        self.internalNotificationTrayClient = internalNotificationTrayClient
         super.init(nibName: AmityCommunityHomePageViewController.identifier, bundle: AmityUIKitManager.bundle)
         title = AmityLocalizedStringSet.communityHomeTitle.localizedString
         AmityUIKitManager.setRootViewController(self)
@@ -53,11 +58,14 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
 
     public static func make(
         analytics: AmityAnalytics,
+        internalNotificationTrayClient: InternalNotificationTray.Client,
         initialRouting: AmityRoute = .none,
         exitClosure: (@escaping () -> Void) = {}
     ) -> AmityCommunityHomePageViewController {
         AmityUIKitManager.set(analyticsClient: analytics)
-        let viewController = AmityCommunityHomePageViewController()
+        let viewController = AmityCommunityHomePageViewController(
+            internalNotificationTrayClient: internalNotificationTrayClient
+        )
         viewController.exitClosure = exitClosure
         AmityUIKitManager.route(to: initialRouting)
         return viewController
@@ -117,7 +125,12 @@ private extension AmityCommunityHomePageViewController {
     @objc func notificationsTapped() {
         print(AmityUIKitManagerInternal.shared.currentUserId, "current user access code")
         guard let notificationsItem = notificationsItem else { return }
-        presentNavbarTooltip(anchorItem: notificationsItem, title: "Notifications", description: "list of notifications")
+        presentNavbarTooltip(
+            anchorItem: notificationsItem,
+            title: "Notifications",
+            description: "list of notifications",
+            internalNotificationTrayClient: internalNotificationTrayClient
+        )
     }
 }
 
