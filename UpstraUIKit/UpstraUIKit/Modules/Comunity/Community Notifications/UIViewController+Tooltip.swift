@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 extension UIViewController {
     /// Presents a tooltip with a close action.
@@ -30,7 +31,7 @@ extension UIViewController {
                         self?.presentedViewController?.dismiss(animated: true, completion: onDidClose)
                     },
                     store: .init(
-                        initialState: .init(),
+                        initialState: .init(notifications: IdentifiedArrayOf<CommunityNotification>()),
                         reducer: InternalNotificationTray(
                             client: internalNotificationClient
                         )

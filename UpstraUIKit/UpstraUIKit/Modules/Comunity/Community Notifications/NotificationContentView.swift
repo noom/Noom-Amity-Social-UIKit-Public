@@ -45,5 +45,5 @@ struct NotificationContentView: View {
 //}
 
 public enum NotificationAction: Equatable {
-    case notificationTapped
+    case didTap
 }

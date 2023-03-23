@@ -12,7 +12,7 @@ public struct CommunityNotification: Equatable, Identifiable {
         let imageUrl: String
     }
     
-    public let id = UUID().uuidString
+    public let id: String
     public let description: String
     public let userAccessCode: String
     public let verb: Verb
@@ -28,15 +28,8 @@ public struct CommunityNotification: Equatable, Identifiable {
 public extension CommunityNotification {
     enum Verb {
         case post, comment, like
-        
-        var action: String {
-            switch self {
-            case .like: return "liked"
-            case .comment: return "commented on"
-            case .post: return "posted in"
-            }
-        }
     }
+    
     enum TargetType {
         case community
     }
@@ -47,12 +40,16 @@ public extension CommunityNotification.Actor {
         name: String = "London",
         imageUrl: String = ""
     ) -> CommunityNotification.Actor {
-        return CommunityNotification.Actor(name: name, imageUrl: imageUrl)
+        return CommunityNotification.Actor(
+            name: name,
+            imageUrl: imageUrl
+        )
     }
 }
 
 extension CommunityNotification {
     static func mock(
+        id: String = UUID().uuidString,
         description: String = "",
         userAccessCode: String = "",
         verb: Verb = .like,
@@ -62,15 +59,38 @@ extension CommunityNotification {
         imageUrl: String = "",
         hasRead: Bool = false,
         lastUpdate: Date = Date(),
-        actors: [Actor] = [.mock(), .mock(name: "New York"), .mock(name: "Tokyo")]) -> CommunityNotification {
-        return CommunityNotification(description: description, userAccessCode: userAccessCode, verb: verb, targetType: targetType, path: path, sourceId: sourceId, imageUrl: imageUrl, hasRead: hasRead, lastUpdate: lastUpdate, actors: actors)
+        actors: [Actor] = [
+            .mock(),
+            .mock(name: "New York"),
+            .mock(name: "Tokyo")
+        ]
+    ) -> CommunityNotification {
+        return CommunityNotification(
+            id: id,
+            description: description,
+            userAccessCode: userAccessCode,
+            verb: verb,
+            targetType: targetType,
+            path: path,
+            sourceId: sourceId,
+            imageUrl: imageUrl,
+            hasRead: hasRead,
+            lastUpdate: lastUpdate,
+            actors: actors
+        )
     }
     
     static var mockData: [CommunityNotification] = [
         .mock(verb: .comment),
         .mock(actors: [.mock()]),
         .mock(),
-        .mock(verb: .comment, actors: [.mock(name: "Bangkok"), .mock(name: "Sydney")]),
+        .mock(
+            verb: .comment,
+            actors: [
+                .mock(name: "Bangkok"),
+                .mock(name: "Sydney")
+            ]
+        ),
         .mock(actors: [
             .mock(name: "Cairo"),
             .mock(name: "Los Angeles"),

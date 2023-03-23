@@ -11,12 +11,12 @@ struct DismissableTooltipView: View {
     var title: String = ""
     var closeAction: () -> Void
     
-    private let closeIconSize: CGSize = CGSize(width: 10, height: 10)
-    private let closeIconTopPadding: CGFloat =  7
-    private let closeButtonSize: CGSize = CGSize(width: 44, height: 44)
-    private let horizontalContentPadding: CGFloat = 16
-    private let verticalContentPadding: CGFloat = 8
-    private let textSpacing: CGFloat = 8
+    private static let closeIconSize: CGSize = CGSize(width: 10, height: 10)
+    private static let closeIconTopPadding: CGFloat =  7
+    private static let closeButtonSize: CGSize = CGSize(width: 44, height: 44)
+    private static let horizontalContentPadding: CGFloat = 16
+    private static let verticalContentPadding: CGFloat = 8
+    private static let textSpacing: CGFloat = 8
     
     let store: InternalNotificationTray.Store
 
@@ -24,7 +24,7 @@ struct DismissableTooltipView: View {
         WithViewStore(store) { viewstore in
             HStack(alignment: .top, spacing: 0) {
 
-                VStack(alignment: .leading, spacing: textSpacing) {
+                VStack(alignment: .leading, spacing: DismissableTooltipView.textSpacing) {
                     if !title.isEmpty {
                         Text(title)
                             .font(.headline)
@@ -34,33 +34,36 @@ struct DismissableTooltipView: View {
                     ForEachStore(
                         self.store.scope(
                             state: \.notifications,
-                            action: InternalNotificationTray.Action.notification(index:action:)
+                            action: InternalNotificationTray.Action.notification(id:action:)
                         ),
                         content: NotificationContentView.init(store:)
                     )
-//                    ForEachStore(CommunityNotification.mockData) { item in
-//                        NotificationContentView(viewModel: .init(notification: item))
-//                    }
                 }.onAppear {
-                    viewstore.send(.screenAppeared)
+                    viewstore.send(.notificationsListAppeared)
                 }
 
                 Button(action: closeAction) {
                     ZStack(alignment: .top) {
                         Color.clear
-                            .frame(width: closeButtonSize.width, height: closeButtonSize.height)
-
+                            .frame(
+                                width: DismissableTooltipView.closeButtonSize.width,
+                                height: DismissableTooltipView.closeButtonSize.height
+                            )
+                        
                         Image(systemName: "xmark")
                             .renderingMode(.template)
                             .resizable()
                             .foregroundColor(.black)
-                            .frame(width: closeIconSize.width, height: closeIconSize.height)
-                            .padding(.top, closeIconTopPadding)
+                            .frame(
+                                width: DismissableTooltipView.closeIconSize.width,
+                                height: DismissableTooltipView.closeIconSize.height
+                            )
+                            .padding(.top, DismissableTooltipView.closeIconTopPadding)
                     }
                 }
             }
-            .padding(.leading, horizontalContentPadding)
-            .padding([.top, .bottom], verticalContentPadding)
+            .padding(.leading, DismissableTooltipView.horizontalContentPadding)
+            .padding([.top, .bottom], DismissableTooltipView.verticalContentPadding)
         }
     }
 }

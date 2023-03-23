@@ -10,11 +10,11 @@ import RxSwift
 public struct InternalNotificationTray: ReducerProtocol {
     public struct Client {
         public init(
-            getNotifications: @escaping () -> Effect<Action, Never>,
-            markAllNotificationsAsRead: @escaping () -> Void,
-            markNotificationAsRead: @escaping (String) -> Void,
-            updateNotificationTrayUser: @escaping () -> Void,
-            getNotificationTrayUser: @escaping () -> Void
+            getNotifications: @escaping () -> EffectTask<Action>,
+            markAllNotificationsAsRead: @escaping () -> EffectTask<Action>,
+            markNotificationAsRead: @escaping (String) -> EffectTask<Action>,
+            updateNotificationTrayUser: @escaping () -> EffectTask<Action>,
+            getNotificationTrayUser: @escaping () -> EffectTask<Action>
         ) {
             self.getNotifications = getNotifications
             self.markAllNotificationsAsRead = markAllNotificationsAsRead
@@ -23,28 +23,28 @@ public struct InternalNotificationTray: ReducerProtocol {
             self.getNotificationTrayUser = getNotificationTrayUser
         }
         
-        public var getNotifications: () -> Effect<Action, Never>
-        public var markAllNotificationsAsRead: () -> Void
-        public var markNotificationAsRead: (String) -> Void
-        public var updateNotificationTrayUser: () -> Void
-        public var getNotificationTrayUser: () -> Void
+        public var getNotifications: () -> EffectTask<Action>
+        public var markAllNotificationsAsRead: () -> EffectTask<Action>
+        public var markNotificationAsRead: (String) -> EffectTask<Action>
+        public var updateNotificationTrayUser: () -> EffectTask<Action>
+        public var getNotificationTrayUser: () -> EffectTask<Action>
     }
     
     public struct State: Equatable {
-        public var notifications: [CommunityNotification]
+        public var notifications: IdentifiedArrayOf<CommunityNotification>
     }
     
     public enum Action {
-        case screenAppeared
+        case notificationsListAppeared
         case markAllNotificationsAsRead
         case updateNotificationTrayUser
         case notificationsResponse(Result<Void, Error>)
-        case notification(index: Int, action: NotificationAction)
+        case notification(id: CommunityNotification.ID, action: NotificationAction)
     }
     
     public func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
         switch action {
-        case .screenAppeared:
+        case .notificationsListAppeared:
             return client.getNotifications()
         case .notificationsResponse:
             return .none
