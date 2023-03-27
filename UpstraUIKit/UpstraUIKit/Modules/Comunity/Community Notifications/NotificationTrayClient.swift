@@ -32,31 +32,55 @@ public struct InternalNotificationTray: ReducerProtocol {
     
     public struct State: Equatable {
         public var notifications: IdentifiedArrayOf<CommunityNotification>
+        public var title: String
     }
     
     public enum Action {
         case notificationsListAppeared
         case markAllNotificationsAsRead
         case updateNotificationTrayUser
-        case notificationsResponse(Result<Void, Error>)
+        case didTapClose
+        case notificationsClientResponse(Result<Void, Error>)
+        case getNotificationsResponse(Result<[CommunityNotification], Error>)
+        case getNotificationUserResponse(Result<NotificationTrayUser,Error>)
         case notification(id: CommunityNotification.ID, action: NotificationAction)
     }
     
     public func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
         switch action {
         case .notificationsListAppeared:
+            client.updateNotificationTrayUser()
             return client.getNotifications()
-        case .notificationsResponse:
+        case .markAllNotificationsAsRead:
+            return client.markAllNotificationsAsRead()
+        case .notification(let id, let action):
+            guard let notification = state.notifications[id: id] else { return .none }
+            state.notifications[id: id]?.hasRead = true
+            return client.markNotificationAsRead(id)
+        case .didTapClose:
+            return .fireAndForget {
+                closeAction()
+            }
+        case .updateNotificationTrayUser:
+            return client.updateNotificationTrayUser()
+        case .getNotificationsResponse(let result):
+            if case .success(let notifications) = result {
+                state.notifications = IdentifiedArray(uniqueElements: notifications)
+            }
             return .none
-        default:
+        case .getNotificationUserResponse(let response):
+            return .none
+        case .notificationsClientResponse:
             return .none
         }
     }
     
     let client: Client
+    let closeAction: () -> Void
 
-    public init(client: Client) {
+    public init(client: Client, closeAction: @escaping () -> Void) {
         self.client = client
+        self.closeAction = closeAction
     }
     
     public typealias Store = ComposableArchitecture.Store<State, Action>

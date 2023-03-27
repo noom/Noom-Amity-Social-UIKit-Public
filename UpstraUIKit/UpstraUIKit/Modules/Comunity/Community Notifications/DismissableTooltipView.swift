@@ -7,10 +7,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct DismissableTooltipView: View {
-    
-    var title: String = ""
-    var closeAction: () -> Void
-    
+        
     private static let closeIconSize: CGSize = CGSize(width: 10, height: 10)
     private static let closeIconTopPadding: CGFloat =  7
     private static let closeButtonSize: CGSize = CGSize(width: 44, height: 44)
@@ -25,8 +22,8 @@ struct DismissableTooltipView: View {
             HStack(alignment: .top, spacing: 0) {
 
                 VStack(alignment: .leading, spacing: DismissableTooltipView.textSpacing) {
-                    if !title.isEmpty {
-                        Text(title)
+                    if !viewstore.title.isEmpty {
+                        Text(viewstore.title)
                             .font(.headline)
                             .foregroundColor(.black)
                     }
@@ -38,11 +35,20 @@ struct DismissableTooltipView: View {
                         ),
                         content: NotificationContentView.init(store:)
                     )
+                    
+                    Button {
+                        viewstore.send(.markAllNotificationsAsRead)
+                    } label: {
+                        Text("mark all notifications as read")
+                    }
+
                 }.onAppear {
                     viewstore.send(.notificationsListAppeared)
                 }
 
-                Button(action: closeAction) {
+                Button(action: {
+                    viewstore.send(.didTapClose)
+                }) {
                     ZStack(alignment: .top) {
                         Color.clear
                             .frame(

@@ -26,14 +26,13 @@ extension UIViewController {
             attributes: popoverAttributes,
             content: {
                 DismissableTooltipView(
-                    title: title,
-                    closeAction: { [weak self] in
-                        self?.presentedViewController?.dismiss(animated: true, completion: onDidClose)
-                    },
                     store: .init(
-                        initialState: .init(notifications: IdentifiedArrayOf<CommunityNotification>()),
+                        initialState: .init(notifications: IdentifiedArrayOf<CommunityNotification>(), title: title),
                         reducer: InternalNotificationTray(
-                            client: internalNotificationClient
+                            client: internalNotificationClient,
+                            closeAction: { [weak self] in
+                                self?.presentedViewController?.dismiss(animated: true, completion: onDidClose)
+                            }
                         )
                     )
                 )

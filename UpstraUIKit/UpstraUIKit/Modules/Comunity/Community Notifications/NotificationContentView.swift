@@ -23,6 +23,8 @@ struct NotificationContentView: View {
                     .foregroundColor(.orange)
                     .opacity(viewStore.hasRead ? 0 : 1)
                     .frame(width: 10, height: 10)
+            }.onTapGesture {
+                viewStore.send(.didTap)
             }
         }
     }

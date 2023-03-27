@@ -5,44 +5,42 @@
 
 import Foundation
 
-public struct CommunityNotification: Equatable, Identifiable {
+public struct CommunityNotification: Equatable, Identifiable, Codable {
     
-    public struct Actor: Equatable {
+    public struct Actor: Equatable, Codable {
         let name: String
         let imageUrl: String
+        let userAccessCode: String
     }
     
     public let id: String
     public let description: String
     public let userAccessCode: String
-    public let verb: Verb
-    public let targetType: TargetType
+    public let sourceType: SourceType
     public let path: String
     public let sourceId: String
     public let imageUrl: String
-    public let hasRead: Bool
+    public var hasRead: Bool
     public let lastUpdate: Date
     public let actors: [Actor]
 }
 
 public extension CommunityNotification {
-    enum Verb {
-        case post, comment, like
-    }
-    
-    enum TargetType {
-        case community
+    enum SourceType: Codable {
+        case post, comment, community
     }
 }
 
 public extension CommunityNotification.Actor {
     static func mock(
         name: String = "London",
-        imageUrl: String = ""
+        imageUrl: String = "",
+        userAccessCode: String = ""
     ) -> CommunityNotification.Actor {
         return CommunityNotification.Actor(
             name: name,
-            imageUrl: imageUrl
+            imageUrl: imageUrl,
+            userAccessCode: userAccessCode
         )
     }
 }
@@ -52,8 +50,7 @@ extension CommunityNotification {
         id: String = UUID().uuidString,
         description: String = "",
         userAccessCode: String = "",
-        verb: Verb = .like,
-        targetType: TargetType = .community,
+        sourceType: SourceType = .community,
         path: String = "",
         sourceId: String = "",
         imageUrl: String = "",
@@ -69,8 +66,7 @@ extension CommunityNotification {
             id: id,
             description: description,
             userAccessCode: userAccessCode,
-            verb: verb,
-            targetType: targetType,
+            sourceType: sourceType,
             path: path,
             sourceId: sourceId,
             imageUrl: imageUrl,
@@ -81,11 +77,11 @@ extension CommunityNotification {
     }
     
     static var mockData: [CommunityNotification] = [
-        .mock(verb: .comment),
+        .mock(sourceType: .comment),
         .mock(actors: [.mock()]),
         .mock(),
         .mock(
-            verb: .comment,
+            sourceType: .comment,
             actors: [
                 .mock(name: "Bangkok"),
                 .mock(name: "Sydney")
@@ -98,6 +94,12 @@ extension CommunityNotification {
             .mock(name: "Buenos Aires"),
             .mock(name: "Rome")]),
         .mock(),
-        .mock(verb: .comment)
+        .mock(sourceType: .comment)
     ]
 }
+
+public struct NotificationTrayUser: Codable {
+    let userAccessCode: String
+    let lastViewed: String
+}
+
