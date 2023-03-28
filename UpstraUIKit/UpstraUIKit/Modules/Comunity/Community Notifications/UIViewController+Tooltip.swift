@@ -27,7 +27,7 @@ extension UIViewController {
             content: {
                 DismissableTooltipView(
                     store: .init(
-                        initialState: .init(notifications: IdentifiedArrayOf<CommunityNotification>(), title: title),
+                        initialState: .init(notifications: .init(), title: title),
                         reducer: InternalNotificationTray(
                             client: internalNotificationClient,
                             closeAction: { [weak self] in
@@ -37,7 +37,7 @@ extension UIViewController {
                     )
                 )
             },
-            background: { sourceRect in
+            background: { _ in
                 PopoverBackgroundMaskView()
             }
         )

@@ -5,15 +5,15 @@
 
 import Foundation
 
-public struct CommunityNotification: Equatable, Identifiable, Codable {
+public struct CommunityNotification: Equatable, Identifiable {
     
     public struct Actor: Equatable, Codable {
         let name: String
-        let imageUrl: String
+        let avatarUrl: String
         let userAccessCode: String
     }
     
-    public let id: String
+    public var id: String
     public let description: String
     public let userAccessCode: String
     public let sourceType: SourceType
@@ -25,21 +25,64 @@ public struct CommunityNotification: Equatable, Identifiable, Codable {
     public let actors: [Actor]
 }
 
+extension CommunityNotification: Codable {
+    enum CodingKeys: String, CodingKey {
+        case id, description, userAccessCode, imageUrl, sourceType, path, sourceId, actors
+        case hasRead = "read"
+        case lastUpdate = "serverTimeUpdated"
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        description = try container.decode(String.self, forKey: .description)
+        userAccessCode = try container.decode(String.self, forKey: .userAccessCode)
+        path = try container.decode(String.self, forKey: .path)
+        sourceId = try container.decode(String.self, forKey: .sourceId)
+        id = try container.decode(String.self, forKey: .id)
+        hasRead = try container.decode(Bool.self, forKey: .hasRead)
+        actors = try container.decode([Actor].self, forKey: .actors)
+        sourceType = try container.decode(SourceType.self, forKey: .sourceType)
+        let lastUpdateString = try container.decode(String.self, forKey: .lastUpdate)
+        lastUpdate = DateFormatter.iso8601Full.date(from: lastUpdateString) ?? Date()
+        do {
+            imageUrl = try container.decode(String.self, forKey: .imageUrl)
+        } catch {
+            guard try container.decode(String.self, forKey: .imageUrl) == "" else { throw error }
+            imageUrl = "defaultString"
+        }
+    }
+}
+
 public extension CommunityNotification {
-    enum SourceType: Codable {
-        case post, comment, community
+    enum SourceType: String, Codable {
+        case post = "POST"
+        case comment = "COMMENT"
+        case community = "COMMUNITY"
+        
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.singleValueContainer()
+            let rawString = try container.decode(String.self)
+            if let sourceType = SourceType(rawValue: rawString) {
+                self = sourceType
+            } else {
+                throw DecodingError.dataCorruptedError(
+                    in: container,
+                    debugDescription: "Cannot initialize UserType from invalid String value \(rawString)")
+            }
+        }
     }
 }
 
 public extension CommunityNotification.Actor {
     static func mock(
         name: String = "London",
-        imageUrl: String = "",
+        avatarUrl: String = "",
         userAccessCode: String = ""
     ) -> CommunityNotification.Actor {
         return CommunityNotification.Actor(
             name: name,
-            imageUrl: imageUrl,
+            avatarUrl: avatarUrl,
             userAccessCode: userAccessCode
         )
     }
@@ -55,7 +98,7 @@ extension CommunityNotification {
         sourceId: String = "",
         imageUrl: String = "",
         hasRead: Bool = false,
-        lastUpdate: Date = Date(),
+        lastUpdate: String = "2023-03-27T16:07:02.299474Z",
         actors: [Actor] = [
             .mock(),
             .mock(name: "New York"),
@@ -71,17 +114,17 @@ extension CommunityNotification {
             sourceId: sourceId,
             imageUrl: imageUrl,
             hasRead: hasRead,
-            lastUpdate: lastUpdate,
+            lastUpdate: DateFormatter.iso8601Full.date(from: lastUpdate) ?? Date(),
             actors: actors
         )
     }
     
     static var mockData: [CommunityNotification] = [
-        .mock(sourceType: .comment),
+        .mock(sourceType: .post),
         .mock(actors: [.mock()]),
         .mock(),
         .mock(
-            sourceType: .comment,
+            sourceType: .post,
             actors: [
                 .mock(name: "Bangkok"),
                 .mock(name: "Sydney")
@@ -94,12 +137,14 @@ extension CommunityNotification {
             .mock(name: "Buenos Aires"),
             .mock(name: "Rome")]),
         .mock(),
-        .mock(sourceType: .comment)
+        .mock(sourceType: .post)
     ]
 }
 
-public struct NotificationTrayUser: Codable {
-    let userAccessCode: String
-    let lastViewed: String
+public extension DateFormatter {
+  static let iso8601Full: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
+    return formatter
+  }()
 }
-

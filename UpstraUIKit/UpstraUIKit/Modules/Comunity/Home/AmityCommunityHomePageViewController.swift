@@ -119,8 +119,7 @@ private extension AmityCommunityHomePageViewController {
     }
     
     @objc func notificationsTapped() {
-        print(AmityUIKitManagerInternal.shared.currentUserId, "current user access code")
-        guard let notificationsItem = notificationsItem, let internalNotificationClient = internalNotificationClient else { return }
+         guard let notificationsItem = notificationsItem, let internalNotificationClient = internalNotificationClient else { return }
         presentNavbarTooltip(anchorItem: notificationsItem, title: "Notifications", internalNotificationClient: internalNotificationClient)
     }
 }

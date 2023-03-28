@@ -16,7 +16,7 @@ struct NotificationContentView: View {
                 Image(systemName: "person.fill")
                 VStack(alignment: .leading, spacing: 4) {
                     Text(viewStore.description)
-                    Text(dateDesription(date:viewStore.lastUpdate))
+                    Text(dateDesription(date: viewStore.lastUpdate))
                 }
                 Spacer()
                 Circle()

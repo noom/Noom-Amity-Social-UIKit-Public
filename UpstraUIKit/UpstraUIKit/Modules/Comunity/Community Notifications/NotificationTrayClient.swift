@@ -58,15 +58,14 @@ public struct InternalNotificationTray: ReducerProtocol {
             state.notifications[id: id]?.hasRead = true
             return client.markNotificationAsRead(id)
         case .didTapClose:
-            return .fireAndForget {
-                closeAction()
-            }
+            return .fireAndForget(closeAction)
         case .updateNotificationTrayUser:
             return client.updateNotificationTrayUser()
-        case .getNotificationsResponse(let result):
-            if case .success(let notifications) = result {
+        case .getNotificationsResponse(.failure(let error)):
+            print(error)
+            return .none
+        case .getNotificationsResponse(.success(let notifications)):
                 state.notifications = IdentifiedArray(uniqueElements: notifications)
-            }
             return .none
         case .getNotificationUserResponse(let response):
             return .none
