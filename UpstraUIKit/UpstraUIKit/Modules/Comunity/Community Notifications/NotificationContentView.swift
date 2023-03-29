@@ -12,40 +12,30 @@ struct NotificationContentView: View {
 
     var body: some View {
         WithViewStore(store) { viewStore in
-            HStack(spacing: 4) {
-                Image(systemName: "person.fill")
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(viewStore.description)
-                    Text(dateDesription(date: viewStore.lastUpdate))
-                }
-                Spacer()
-                Circle()
-                    .foregroundColor(.orange)
-                    .opacity(viewStore.hasRead ? 0 : 1)
-                    .frame(width: 10, height: 10)
-            }.onTapGesture {
+            Button {
                 viewStore.send(.didTap)
-            }
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "person.fill")
+                        .frame(width: 20, height: 20)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(viewStore.description)
+                            .multilineTextAlignment(.leading)
+                        Text(DateFormatter.yyyymmdd.string(from: viewStore.lastUpdate))
+                    }
+                    Spacer()
+                    Circle()
+                        .foregroundColor(.orange)
+                        .opacity(viewStore.hasRead ? 0 : 1)
+                        .frame(width: 10, height: 10)
+                }
+            }.buttonStyle(.plain)
         }
-    }
-    
-    private func dateDesription(date: Date) -> String {
-        let dateFormatter = DateFormatter()
-
-        // Set Date Format
-        dateFormatter.dateFormat = "YY/MM/dd"
-
-        // Convert Date to String
-        return dateFormatter.string(from: date)
     }
 }
 
 //struct SwiftUIView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        NotificationonContentView(viewModel: .init(notification: .mock()))
+//        NotificationContentView(store: .init(initialState: .mock(), reducer: ReducerProtocol))
 //    }
 //}
-
-public enum NotificationAction: Equatable {
-    case didTap
-}

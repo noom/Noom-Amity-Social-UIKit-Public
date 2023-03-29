@@ -7,22 +7,16 @@ import Foundation
 
 public struct CommunityNotification: Equatable, Identifiable {
     
-    public struct Actor: Equatable, Codable {
-        let name: String
-        let avatarUrl: String
-        let userAccessCode: String
-    }
-    
     public var id: String
-    public let description: String
-    public let userAccessCode: String
-    public let sourceType: SourceType
-    public let path: String
-    public let sourceId: String
-    public let imageUrl: String
-    public var hasRead: Bool
-    public let lastUpdate: Date
-    public let actors: [Actor]
+    let description: String
+    let userAccessCode: String
+    let sourceType: SourceType
+    let path: String
+    let sourceId: String
+    let imageUrl: String
+    var hasRead: Bool
+    let lastUpdate: Date
+    let actors: [Actor]
 }
 
 extension CommunityNotification: Codable {
@@ -55,6 +49,13 @@ extension CommunityNotification: Codable {
 }
 
 public extension CommunityNotification {
+    
+    struct Actor: Equatable, Codable {
+        let name: String
+        let avatarUrl: String
+        let userAccessCode: String
+    }
+    
     enum SourceType: String, Codable {
         case post = "POST"
         case comment = "COMMENT"
@@ -74,6 +75,7 @@ public extension CommunityNotification {
     }
 }
 
+#if DEBUG
 public extension CommunityNotification.Actor {
     static func mock(
         name: String = "London",
@@ -140,11 +142,4 @@ extension CommunityNotification {
         .mock(sourceType: .post)
     ]
 }
-
-public extension DateFormatter {
-  static let iso8601Full: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
-    return formatter
-  }()
-}
+#endif

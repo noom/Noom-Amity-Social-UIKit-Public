@@ -56,3 +56,17 @@ extension UIViewController {
         child.didMove(toParent: self)
     }
 }
+
+public extension DateFormatter {
+    static let iso8601Full: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
+        return formatter
+    }()
+    
+    static let yyyymmdd: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "YY/MM/dd"
+        return dateFormatter
+    }()
+}

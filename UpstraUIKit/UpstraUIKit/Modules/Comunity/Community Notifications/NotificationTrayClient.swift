@@ -46,6 +46,11 @@ public struct InternalNotificationTray: ReducerProtocol {
         case notification(id: CommunityNotification.ID, action: NotificationAction)
     }
     
+//    public var body: some ReducerProtocol<State, Action> {
+//        Reduce(businessLogic)
+//            .forEach(\.notifications, action: Action.notification) { NotificationFeature(markNotificationAsRead: client.markNotificationAsRead) }
+//    }
+    
     public func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
         switch action {
         case .notificationsListAppeared:
@@ -85,3 +90,8 @@ public struct InternalNotificationTray: ReducerProtocol {
     public typealias Store = ComposableArchitecture.Store<State, Action>
     public typealias ViewStore = ComposableArchitecture.ViewStore<State, Action>
 }
+
+public enum NotificationAction: Equatable {
+    case didTap
+}
+

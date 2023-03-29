@@ -28,19 +28,26 @@ struct DismissableTooltipView: View {
                             .foregroundColor(.black)
                     }
                     
-                    ForEachStore(
-                        self.store.scope(
-                            state: \.notifications,
-                            action: InternalNotificationTray.Action.notification(id:action:)
-                        ),
-                        content: NotificationContentView.init(store:)
-                    )
-                    
-                    Button {
-                        viewstore.send(.markAllNotificationsAsRead)
-                    } label: {
-                        Text("mark all notifications as read")
+                    if viewstore.notifications.isEmpty {
+                       ProgressView()
+                            .frame(maxWidth: .infinity)
+                    } else {
+                        ForEachStore(
+                            self.store.scope(
+                                state: \.notifications,
+                                action: InternalNotificationTray.Action.notification(id:action:)
+                            ),
+                            content: NotificationContentView.init(store:)
+                        )
+                        
+                        
+                        Button {
+                            viewstore.send(.markAllNotificationsAsRead)
+                        } label: {
+                            Text("mark all notifications as read")
+                        }.frame(maxHeight: .infinity, alignment: .bottom)
                     }
+                    
 
                 }.onAppear {
                     viewstore.send(.notificationsListAppeared)
@@ -68,6 +75,7 @@ struct DismissableTooltipView: View {
                     }
                 }
             }
+            .frame(width: 300, height: 400)
             .padding(.leading, Self.horizontalContentPadding)
             .padding(.vertical, Self.verticalContentPadding)
         }
