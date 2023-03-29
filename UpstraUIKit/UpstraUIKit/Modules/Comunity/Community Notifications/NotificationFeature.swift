@@ -6,7 +6,7 @@
 import Foundation
 import ComposableArchitecture
 
-struct NotificationFeature: ReducerProtocol {
+public struct NotificationFeature: ReducerProtocol {
     
     private let markNotificationAsRead: (String) -> EffectTask<Action>
     
@@ -14,9 +14,9 @@ struct NotificationFeature: ReducerProtocol {
         self.markNotificationAsRead = markNotificationAsRead
     }
     
-    typealias State = CommunityNotification
-    enum Action: Equatable { case didTap }
-    func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
+    public typealias State = CommunityNotification
+    public enum Action: Equatable { case didTap }
+    public func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
         switch action {
         case .didTap:
             state.hasRead = true

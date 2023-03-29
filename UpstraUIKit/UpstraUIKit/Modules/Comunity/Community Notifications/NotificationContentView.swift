@@ -8,7 +8,7 @@ import ComposableArchitecture
 
 struct NotificationContentView: View {
         
-    let store: ComposableArchitecture.Store<CommunityNotification, NotificationAction>
+    let store: ComposableArchitecture.StoreOf<NotificationFeature>
 
     var body: some View {
         WithViewStore(store) { viewStore in

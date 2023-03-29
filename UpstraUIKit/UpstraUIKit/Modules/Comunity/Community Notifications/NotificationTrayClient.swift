@@ -12,7 +12,7 @@ public struct InternalNotificationTray: ReducerProtocol {
         public init(
             getNotifications: @escaping () -> EffectTask<Action>,
             markAllNotificationsAsRead: @escaping () -> EffectTask<Action>,
-            markNotificationAsRead: @escaping (String) -> EffectTask<Action>,
+            markNotificationAsRead: @escaping (String) -> EffectTask<NotificationFeature.Action>,
             updateNotificationTrayUser: @escaping () -> EffectTask<Action>,
             getNotificationTrayUser: @escaping () -> EffectTask<Action>
         ) {
@@ -25,7 +25,7 @@ public struct InternalNotificationTray: ReducerProtocol {
         
         public var getNotifications: () -> EffectTask<Action>
         public var markAllNotificationsAsRead: () -> EffectTask<Action>
-        public var markNotificationAsRead: (String) -> EffectTask<Action>
+        public var markNotificationAsRead: (String) -> EffectTask<NotificationFeature.Action>
         public var updateNotificationTrayUser: () -> EffectTask<Action>
         public var getNotificationTrayUser: () -> EffectTask<Action>
     }
@@ -43,25 +43,25 @@ public struct InternalNotificationTray: ReducerProtocol {
         case notificationsClientResponse(Result<Void, Error>)
         case getNotificationsResponse(Result<[CommunityNotification], Error>)
         case getNotificationUserResponse(Result<NotificationTrayUser,Error>)
-        case notification(id: CommunityNotification.ID, action: NotificationAction)
+        case notification(id: CommunityNotification.ID, action: NotificationFeature.Action)
     }
     
-//    public var body: some ReducerProtocol<State, Action> {
-//        Reduce(businessLogic)
-//            .forEach(\.notifications, action: Action.notification) { NotificationFeature(markNotificationAsRead: client.markNotificationAsRead) }
-//    }
+    public var body: some ReducerProtocol<State, Action> {
+        Reduce(businessLogic)
+            .forEach(\.notifications, action: /Action.notification) { NotificationFeature(markNotificationAsRead: client.markNotificationAsRead) }
+    }
     
-    public func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
+    public func businessLogic(into state: inout State, action: Action) -> EffectTask<Action> {
         switch action {
         case .notificationsListAppeared:
-            client.updateNotificationTrayUser()
             return client.getNotifications()
         case .markAllNotificationsAsRead:
+            for i in (0..<state.notifications.count) {
+                state.notifications[i].hasRead = true
+            }
             return client.markAllNotificationsAsRead()
-        case .notification(let id, let action):
-            guard let notification = state.notifications[id: id] else { return .none }
-            state.notifications[id: id]?.hasRead = true
-            return client.markNotificationAsRead(id)
+        case .notification:
+            return .none
         case .didTapClose:
             return .fireAndForget(closeAction)
         case .updateNotificationTrayUser:
@@ -89,9 +89,5 @@ public struct InternalNotificationTray: ReducerProtocol {
     
     public typealias Store = ComposableArchitecture.Store<State, Action>
     public typealias ViewStore = ComposableArchitecture.ViewStore<State, Action>
-}
-
-public enum NotificationAction: Equatable {
-    case didTap
 }
 
