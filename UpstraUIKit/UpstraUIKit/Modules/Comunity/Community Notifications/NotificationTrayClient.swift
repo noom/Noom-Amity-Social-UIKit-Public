@@ -87,7 +87,7 @@ public struct InternalNotificationTray: ReducerProtocol {
         self.closeAction = closeAction
     }
     
-    public typealias Store = ComposableArchitecture.Store<State, Action>
-    public typealias ViewStore = ComposableArchitecture.ViewStore<State, Action>
+    public typealias Store = StoreOf<InternalNotificationTray>
+    public typealias ViewStore = ViewStoreOf<InternalNotificationTray>
 }
 
