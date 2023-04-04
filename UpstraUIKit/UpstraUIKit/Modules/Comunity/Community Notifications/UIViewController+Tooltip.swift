@@ -32,7 +32,10 @@ extension UIViewController {
                             client: internalNotificationClient,
                             closeAction: { [weak self] in
                                 self?.presentedViewController?.dismiss(animated: true, completion: onDidClose)
-                            }
+                            },
+                            openNotification: { [weak self] postId in
+                                let viewController = AmityPostDetailViewController.make(withPostId: postId)
+                                self?.navigationController?.pushViewController(viewController, animated: true)                            }
                         )
                     )
                 )

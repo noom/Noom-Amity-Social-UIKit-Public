@@ -48,7 +48,7 @@ public struct InternalNotificationTray: ReducerProtocol {
     
     public var body: some ReducerProtocol<State, Action> {
         Reduce(businessLogic)
-            .forEach(\.notifications, action: /Action.notification) { NotificationFeature(markNotificationAsRead: client.markNotificationAsRead) }
+            .forEach(\.notifications, action: /Action.notification) { NotificationFeature(markNotificationAsRead: client.markNotificationAsRead, openNotification: openNotification) }
     }
     
     public func businessLogic(into state: inout State, action: Action) -> EffectTask<Action> {
@@ -81,10 +81,12 @@ public struct InternalNotificationTray: ReducerProtocol {
     
     let client: Client
     let closeAction: () -> Void
+    let openNotification: (String) -> Void
 
-    public init(client: Client, closeAction: @escaping () -> Void) {
+    public init(client: Client, closeAction: @escaping () -> Void, openNotification: @escaping (String) -> Void) {
         self.client = client
         self.closeAction = closeAction
+        self.openNotification = openNotification
     }
     
     public typealias Store = StoreOf<InternalNotificationTray>
