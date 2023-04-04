@@ -34,6 +34,7 @@ extension UIViewController {
                                 self?.presentedViewController?.dismiss(animated: true, completion: onDidClose)
                             },
                             openNotification: { [weak self] postId in
+                                self?.presentedViewController?.dismiss(animated: true, completion: onDidClose)
                                 let viewController = AmityPostDetailViewController.make(withPostId: postId)
                                 self?.navigationController?.pushViewController(viewController, animated: true)                            }
                         )
