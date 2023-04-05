@@ -81,9 +81,9 @@ public struct InternalNotificationTray: ReducerProtocol {
     
     let client: Client
     let closeAction: () -> Void
-    let openNotification: (String) -> Void
+    let openNotification: (NotificationFeature.PostId) -> Void
 
-    public init(client: Client, closeAction: @escaping () -> Void, openNotification: @escaping (String) -> Void) {
+    public init(client: Client, closeAction: @escaping () -> Void, openNotification: @escaping (NotificationFeature.PostId) -> Void) {
         self.client = client
         self.closeAction = closeAction
         self.openNotification = openNotification

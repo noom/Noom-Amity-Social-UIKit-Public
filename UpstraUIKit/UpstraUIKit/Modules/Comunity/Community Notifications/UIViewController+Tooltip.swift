@@ -21,6 +21,10 @@ extension UIViewController {
         internalNotificationClient: InternalNotificationTray.Client,
         onDidClose: @escaping () -> Void = {}
     ) {
+        let closeAction = { [weak self] in
+            guard let self = self else { return }
+            self.presentedViewController?.dismiss(animated: true, completion: onDidClose)
+        }
         presentPopover(
             anchorItem: anchorItem,
             attributes: popoverAttributes,
@@ -30,13 +34,12 @@ extension UIViewController {
                         initialState: .init(notifications: .init(), title: title),
                         reducer: InternalNotificationTray(
                             client: internalNotificationClient,
-                            closeAction: { [weak self] in
-                                self?.presentedViewController?.dismiss(animated: true, completion: onDidClose)
-                            },
+                            closeAction: closeAction,
                             openNotification: { [weak self] postId in
-                                self?.presentedViewController?.dismiss(animated: true, completion: onDidClose)
-                                let viewController = AmityPostDetailViewController.make(withPostId: postId)
-                                self?.navigationController?.pushViewController(viewController, animated: true)                            }
+                                closeAction()
+                                let viewController = AmityPostDetailViewController.make(withPostId: postId.value)
+                                self?.navigationController?.pushViewController(viewController, animated: true)
+                            }
                         )
                     )
                 )

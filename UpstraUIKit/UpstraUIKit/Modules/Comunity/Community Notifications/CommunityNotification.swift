@@ -17,6 +17,18 @@ public struct CommunityNotification: Equatable, Identifiable {
     var hasRead: Bool
     let lastUpdate: Date
     let actors: [Actor]
+    
+    var postId: NotificationFeature.PostId? {
+        guard let rangeOfPostSubstring = path.range(of: "/post/") else { return nil }
+        let substring = String(path[rangeOfPostSubstring.upperBound...])
+        let value: String
+        if let index = substring.firstIndex(of: "/") {
+            value = String(substring[substring.startIndex..<index])
+        } else {
+            value = substring
+        }
+        return .init(value: value)
+    }
 }
 
 extension CommunityNotification: Codable {
