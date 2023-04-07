@@ -19,7 +19,7 @@ public struct CommunityNotification: Equatable, Identifiable {
     let actors: [Actor]
     
     var postId: NotificationFeature.PostId? {
-        let regex = try? NSRegularExpression(pattern: "regex")
+        let regex = try? NSRegularExpression(pattern: "/post/[a-z0-9]+")
         guard let results = regex?.matches(in: path,
                                            range: NSRange(path.startIndex..., in: path)) else { return nil }
         
@@ -27,7 +27,7 @@ public struct CommunityNotification: Equatable, Identifiable {
             String(path[Range($0.range, in: path)!])
         }.first
         guard let value = firstMatch else { return nil }
-        return .init(value: value)
+        return .init(value: value.dropFirst(6).description)
     }
 }
 
