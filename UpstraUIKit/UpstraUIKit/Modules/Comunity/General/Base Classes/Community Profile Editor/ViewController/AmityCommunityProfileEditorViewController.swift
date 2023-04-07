@@ -406,6 +406,7 @@ private extension AmityCommunityProfileEditorViewController {
         screenViewModel.action.textViewDidChanged(communityAboutTextView)
     }
     
+    // TODO_MIKE: Filter here
     @IBAction func chooseCategoryTap() {
         view.endEditing(true)
         let vc = AmityCategoryPickerViewController.make(referenceCategoryId: screenViewModel.dataSource.selectedCategoryId)

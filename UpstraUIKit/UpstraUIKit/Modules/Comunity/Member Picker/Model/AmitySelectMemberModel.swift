@@ -21,6 +21,7 @@ public final class AmitySelectMemberModel: Equatable {
     public var isSelected: Bool = false
     public let avatarURL: String
     public let defaultDisplayName: String = AmityLocalizedStringSet.General.anonymous.localizedString
+    let metadata: [String: Any]?
     public var isCurrnetUser: Bool {
         return userId == AmityUIKitManagerInternal.shared.client.currentUserId
     }
@@ -32,17 +33,34 @@ public final class AmitySelectMemberModel: Equatable {
             self.email = metadata["email"] as? String ?? ""
         }
         self.avatarURL = object.getAvatarInfo()?.fileURL ?? ""
+        self.metadata = object.metadata
     }
     
     init(object: AmityCommunityMembershipModel) {
         self.userId = object.userId
         self.displayName = object.displayName
         self.avatarURL = object.avatarURL
+        // Not needed because we don't filter members already in a community
+        self.metadata = nil
     }
     
     init(object: AmityChannelMembershipModel) {
         self.userId = object.userId
         self.displayName = object.displayName
         self.avatarURL = object.avatarURL
+        // Not needed because we're not using channels
+        self.metadata = nil
+    }
+    
+    func matchesUserSegment(_ otherUserMetadata: [String: Any]?) -> Bool {
+        let language = metadata?["localeLanguage"] as? [String] ?? []
+        let otherLanguage = otherUserMetadata?["localeLanguage"] as? [String] ?? []
+        let businessType = metadata?["businessType"] as? String
+        let otherBusinessType = otherUserMetadata?["businessType"] as? String
+        let partnerId = metadata?["partnerId"] as? Int
+        let otherPartnerId = otherUserMetadata?["partnerId"] as? Int
+        
+        return language.contains(where: { otherLanguage.contains($0) })
+            && businessType == otherBusinessType
     }
 }

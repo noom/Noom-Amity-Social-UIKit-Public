@@ -83,6 +83,7 @@ extension AmityTrendingCommunityViewController: UITableViewDelegate {
     }
 }
 
+// TODO_MIKE: Test this
 // MARK: - UITableViewDataSource
 extension AmityTrendingCommunityViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

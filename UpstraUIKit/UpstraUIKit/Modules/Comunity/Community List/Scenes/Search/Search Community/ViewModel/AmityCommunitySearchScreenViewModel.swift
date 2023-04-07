@@ -57,7 +57,9 @@ extension AmityCommunitySearchScreenViewModel {
     }
     
     private func prepareData(communityList: [AmityCommunityModel]) {
-        self.communityList = communityList
+        let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata
+        self.communityList = communityList.filter { $0.matchesUserSegment(currentUserMetadata) }
+        
         if communityList.isEmpty {
             delegate?.screenViewModelDidSearchNotFound(self)
         } else {
