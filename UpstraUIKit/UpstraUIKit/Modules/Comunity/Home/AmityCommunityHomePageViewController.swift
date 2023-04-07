@@ -12,7 +12,7 @@ import SwiftUI
 public class AmityCommunityHomePageViewController: AmityPageViewController, AmityRootViewController {
 
     public var exitClosure: (() -> Void)? = nil
-    public var internalNotificationClient: InternalNotificationTray.Client?
+    public var internalNotificationClient: NotificationTrayClient?
     
     // MARK: - Properties
     public let newsFeedVC = AmityNewsfeedViewController.make()
@@ -56,7 +56,7 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     public static func make(
         analytics: AmityAnalytics,
         initialRouting: AmityRoute = .none,
-        internalNotificationClient: InternalNotificationTray.Client,
+        internalNotificationClient: NotificationTrayClient,
         exitClosure: (@escaping () -> Void) = {}
     ) -> AmityCommunityHomePageViewController {
         AmityUIKitManager.set(analyticsClient: analytics)

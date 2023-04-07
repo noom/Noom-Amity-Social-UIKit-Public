@@ -18,7 +18,7 @@ extension UIViewController {
         anchorItem: UIBarButtonItem,
         title: String = "",
         popoverAttributes: PopoverAttributes = .init(),
-        internalNotificationClient: InternalNotificationTray.Client,
+        internalNotificationClient: NotificationTrayClient,
         onDidClose: @escaping () -> Void = {}
     ) {
         let closeAction = { [weak self] in

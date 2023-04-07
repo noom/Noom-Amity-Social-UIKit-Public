@@ -19,14 +19,14 @@ public struct CommunityNotification: Equatable, Identifiable {
     let actors: [Actor]
     
     var postId: NotificationFeature.PostId? {
-        guard let rangeOfPostSubstring = path.range(of: "/post/") else { return nil }
-        let substring = String(path[rangeOfPostSubstring.upperBound...])
-        let value: String
-        if let index = substring.firstIndex(of: "/") {
-            value = String(substring[substring.startIndex..<index])
-        } else {
-            value = substring
-        }
+        let regex = try? NSRegularExpression(pattern: "regex")
+        guard let results = regex?.matches(in: path,
+                                           range: NSRange(path.startIndex..., in: path)) else { return nil }
+        
+        let firstMatch = results.map {
+            String(path[Range($0.range, in: path)!])
+        }.first
+        guard let value = firstMatch else { return nil }
         return .init(value: value)
     }
 }

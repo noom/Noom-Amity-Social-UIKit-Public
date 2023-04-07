@@ -6,30 +6,31 @@
 import Foundation
 import ComposableArchitecture
 
-public struct NotificationFeature: ReducerProtocol {
+public typealias NotificationId = String
+struct NotificationFeature: ReducerProtocol {
     
-    private let markNotificationAsRead: (String) -> EffectTask<Action>
+    private let markNotificationAsRead: (NotificationId) -> EffectTask<Void>
     private let openNotification: (PostId) -> Void
     
-    init(markNotificationAsRead: @escaping (String) -> EffectTask<Action>, openNotification: @escaping (PostId) -> Void) {
+    init(markNotificationAsRead: @escaping (NotificationId) -> EffectTask<Void>, openNotification: @escaping (PostId) -> Void) {
         self.markNotificationAsRead = markNotificationAsRead
         self.openNotification = openNotification
     }
     
-    public struct PostId: Hashable {
+    struct PostId: Hashable {
         let value: String
     }
     
-    public typealias State = CommunityNotification
-    public enum Action: Equatable { case didTap }
-    public func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
+    typealias State = CommunityNotification
+    enum Action: Equatable { case didTap }
+    func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
         switch action {
         case .didTap:
             state.hasRead = true
             if let postId = state.postId {
                 openNotification(postId)
             }
-            return markNotificationAsRead(state.id)
+            return markNotificationAsRead(state.id).fireAndForget()
         }
     }
 }
