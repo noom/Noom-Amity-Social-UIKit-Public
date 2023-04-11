@@ -49,6 +49,15 @@ extension AmityCommentView {
             }
         }
         
+        func shouldShowReplyButton() -> Bool {
+            switch type {
+            case .reply:
+                return false
+            default:
+                return true
+            }
+        }
+        
     }
     
 }
