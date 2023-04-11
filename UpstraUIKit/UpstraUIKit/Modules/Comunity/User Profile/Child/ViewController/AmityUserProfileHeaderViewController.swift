@@ -211,6 +211,8 @@ class AmityUserProfileHeaderViewController: AmityViewController, AmityRefreshabl
         followingButton.attributedString.setTitle(string)
         followingButton.attributedString.setBoldText(for: [value])
         followingButton.setAttributedTitle()
+        // Setting these labels to hidden because we're not supporting followers at the moment
+        followingButton.isHidden = true
     }
     
     private func updateFollowerCount(with followerCount: Int) {
@@ -219,6 +221,8 @@ class AmityUserProfileHeaderViewController: AmityViewController, AmityRefreshabl
         followersButton.attributedString.setTitle(string)
         followersButton.attributedString.setBoldText(for: [value])
         followersButton.setAttributedTitle()
+        // Setting these labels to hidden because we're not supporting followers at the moment
+        followersButton.isHidden = true
     }
     
     private func updateFollowButton(with status: AmityFollowStatus) {
@@ -226,7 +230,8 @@ class AmityUserProfileHeaderViewController: AmityViewController, AmityRefreshabl
         case .accepted:
             followButton.isHidden = true
         case .pending:
-            followButton.isHidden = false
+            // Setting isHidden to true here because the following functionality is confusing for users
+            followButton.isHidden = true
             followButton.setTitle(AmityLocalizedStringSet.userDetailFollowButtonCancel.localizedString, for: .normal)
             followButton.setImage(AmityIconSet.Follow.iconFollowPendingRequest, position: .left)
             followButton.backgroundColor = .white
@@ -234,7 +239,8 @@ class AmityUserProfileHeaderViewController: AmityViewController, AmityRefreshabl
             followButton.layer.borderWidth = 1
             followButton.tintColor = AmityColorSet.secondary
         case .none:
-            followButton.isHidden = false
+            // Setting isHidden to true here because the following functionality is confusing for users
+            followButton.isHidden = true
             followButton.setTitle(AmityLocalizedStringSet.userDetailFollowButtonFollow.localizedString, for: .normal)
             followButton.setImage(AmityIconSet.iconAdd, position: .left)
             followButton.backgroundColor = AmityColorSet.primary
