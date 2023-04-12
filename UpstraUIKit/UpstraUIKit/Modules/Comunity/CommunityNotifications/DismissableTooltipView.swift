@@ -15,7 +15,7 @@ struct DismissableTooltipView: View {
     private static let verticalContentPadding: CGFloat = 8
     private static let textSpacing: CGFloat = 8
     
-    let store: InternalNotificationTray.Store
+    let store: StoreOf<InternalNotificationTray>
 
     var body: some View {
         WithViewStore(store) { viewstore in

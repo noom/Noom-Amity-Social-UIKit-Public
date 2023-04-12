@@ -133,3 +133,14 @@ public extension AmityCommunityHomePageViewController {
         moveTo(viewController: exploreVC)
     }
 }
+
+//extension ParentClient {
+//    static func live(apiClient: NotificationTrayClient) -> Self {
+//        .init(
+//            apiClient: apiClient,
+//            openNotification: {
+//                presentedViewController?.dismiss(animated: true)
+//            }
+//        )
+//    }
+//}

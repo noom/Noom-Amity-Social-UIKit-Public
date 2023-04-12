@@ -19,15 +19,39 @@ public struct CommunityNotification: Equatable, Identifiable {
     let actors: [Actor]
     
     var postId: NotificationFeature.PostId? {
-        let regex = try? NSRegularExpression(pattern: "/post/[a-z0-9]+")
-        guard let results = regex?.matches(in: path,
-                                           range: NSRange(path.startIndex..., in: path)) else { return nil }
-        
-        let firstMatch = results.map {
-            String(path[Range($0.range, in: path)!])
-        }.first
-        guard let value = firstMatch else { return nil }
-        return .init(value: value.dropFirst(6).description)
+        let pathRange = NSRange(
+            path.startIndex..<path.endIndex,
+            in: path
+        )
+        let capturePattern = #"/post/([a-z0-9]+)"#
+        let captureRegex = try? NSRegularExpression(
+            pattern: capturePattern,
+            options: []
+        )
+
+        guard let matches = captureRegex?.matches(
+            in: path,
+            options: [],
+            range: pathRange
+        ), let match = matches.first else { return nil }
+
+        var postId: [String] = []
+
+        // For each matched range, extract the capture group
+        for rangeIndex in 0..<match.numberOfRanges {
+            let matchRange = match.range(at: rangeIndex)
+            
+            // Ignore matching the entire username string
+            if matchRange == pathRange { continue }
+            
+            // Extract the substring matching the capture group
+            if let substringRange = Range(matchRange, in: path) {
+                let capture = String(path[substringRange])
+                postId.append(capture)
+            }
+        }
+        guard let capturedPostId = postId.last else { return nil }
+        return .init(value: capturedPostId)
     }
 }
 

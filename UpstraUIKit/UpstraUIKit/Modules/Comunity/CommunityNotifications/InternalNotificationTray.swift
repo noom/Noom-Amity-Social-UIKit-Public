@@ -36,8 +36,8 @@ struct InternalNotificationTray: ReducerProtocol {
         case .notificationsListAppeared:
             return client.updateNotificationTrayUser().fireAndForget()
         case .markAllNotificationsAsRead:
-            for i in (0..<state.notifications.count) {
-                state.notifications[i].hasRead = true
+            for index in state.notifications.indices {
+                state.notifications[index].hasRead = true
             }
             return client.markAllNotificationsAsRead().fireAndForget()
         case .notification:
@@ -56,8 +56,5 @@ struct InternalNotificationTray: ReducerProtocol {
         self.closeAction = closeAction
         self.openNotification = openNotification
     }
-    
-    typealias Store = StoreOf<InternalNotificationTray>
-    typealias ViewStore = ViewStoreOf<InternalNotificationTray>
 }
 

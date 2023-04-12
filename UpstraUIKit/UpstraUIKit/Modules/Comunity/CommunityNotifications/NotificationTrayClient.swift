@@ -28,3 +28,12 @@ public struct NotificationTrayClient {
     public var updateNotificationTrayUser: () -> EffectTask<Void>
     public var getNotificationTrayUser: () -> EffectTask<Result<NotificationTrayUser, Error>>
 }
+
+struct ParentClient {
+    let apiClient: NotificationTrayClient
+    public var openNotification: () -> EffectTask<Void>
+}
+
+extension ParentClient {
+    
+}
