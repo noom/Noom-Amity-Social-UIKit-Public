@@ -43,7 +43,7 @@ final class AmityCommunityCategoryController: AmityCommunityCategoryControllerPr
         var category: [AmityCommunityCategoryModel] = []
         for index in 0..<min(collection.count(), maxCategories) {
             guard let object = collection.object(at: index) else { continue }
-            let communityCount = self.repository
+            let communities = self.repository
                 .getCommunities(
                     displayName: nil,
                     filter: .all,
@@ -51,10 +51,15 @@ final class AmityCommunityCategoryController: AmityCommunityCategoryControllerPr
                     categoryId: object.categoryId,
                     includeDeleted: false
                 )
-                .count()
+            let communityCount = communities.count()
+            // The metadata parameter doesn't exist on the AmityCommunityCategory object (yet?) so
+            //  we're passing it in on construction, and we're just going to assume it has the same
+            //  (relevant) metadata as any random community that is in it
+            let metadata = communities.object(at: 0)?.metadata
             let model = AmityCommunityCategoryModel(
                 object: object,
-                communityCount: Int(communityCount)
+                communityCount: Int(communityCount),
+                metadata: metadata
             )
             category.append(model)
         }

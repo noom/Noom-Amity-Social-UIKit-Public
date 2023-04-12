@@ -15,15 +15,17 @@ public struct AmityCommunityCategoryModel {
     let avatarURL: String
     public let categoryId: String
     public var communityCount: Int
-    let metadata: [String: Any]?
     
-    init(object: AmityCommunityCategory, communityCount: Int? = 0) {
+    init(object: AmityCommunityCategory, communityCount: Int? = 0, metadata: [String: Any]?) {
         self.name = object.name
         self.avatarURL = object.avatar?.fileURL ?? ""
         self.categoryId = object.categoryId
         self.communityCount = communityCount ?? 0
         
-        self.metadata = [:]
+        // This doesn't exist on the AmityCommunityCategory object (yet?) so we're passing it in
+        //  on construction, and it's currently assuming it has the same (relevant) metadata as
+        //  any random community that is in it
+        self.metadata = metadata
     }
     
     func matchesUserSegment(_ comparisonMetadata: [String: Any]?) -> Bool {
