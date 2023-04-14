@@ -78,7 +78,6 @@ extension AmityCommunitySearchViewController: UITableViewDelegate {
     }
 }
 
-// TODO_MIKE: Test this
 extension AmityCommunitySearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return screenViewModel.dataSource.numberOfCommunity()

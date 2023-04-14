@@ -86,7 +86,7 @@ extension AmityRecommendedCommunityViewController: UICollectionViewDelegateFlowL
         selectedCommunityHandler?(community.object)
     }
 }
-// TODO_MIKE: Test this
+
 // MARK: - UICollectionViewDataSource
 extension AmityRecommendedCommunityViewController: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

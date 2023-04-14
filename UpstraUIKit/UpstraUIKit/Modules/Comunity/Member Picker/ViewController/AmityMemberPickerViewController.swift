@@ -151,7 +151,6 @@ extension AmityMemberPickerViewController: UITableViewDelegate {
     }
 }
 
-// TODO_MIKE: Test this
 extension AmityMemberPickerViewController: UITableViewDataSource {
     public func numberOfSections(in tableView: UITableView) -> Int {
         return screenViewModel.numberOfAlphabet()

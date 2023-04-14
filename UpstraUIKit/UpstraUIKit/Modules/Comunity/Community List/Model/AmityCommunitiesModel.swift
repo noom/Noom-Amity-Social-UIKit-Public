@@ -45,7 +45,7 @@ struct AmityCommunityModel {
         self.postsCount = Int(object.postsCount)
         self.membersCount = Int(object.membersCount)
         self.createdAt = object.createdAt
-        self.metadata = object.metadata as? [String : String]
+        self.metadata = object.metadata
         self.userId = object.userId
         self.tags = object.tags ?? []
         self.category = object.categories.first?.name ?? AmityLocalizedStringSet.General.general.localizedString

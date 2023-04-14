@@ -76,7 +76,6 @@ extension AmityMemberSearchViewController: UITableViewDelegate {
     }
 }
 
-// TODO_MIKE: Test this filtering
 // MARK: - UITableView DataSource
 extension AmityMemberSearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

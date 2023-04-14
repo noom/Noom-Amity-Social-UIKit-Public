@@ -118,7 +118,6 @@ extension AmityCategoryPreviewViewController: UICollectionViewDelegateFlowLayout
     }
 }
 
-// TODO_MIKE: Filter here
 extension AmityCategoryPreviewViewController: UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

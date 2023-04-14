@@ -39,9 +39,10 @@ class AmityCategorySeletionTableViewCell: UITableViewCell, Nibbable {
         checkmarkImageView.isHidden = shouldSelectionEnable ? !selected : true
     }
     
-    func configure(category: AmityCommunityCategory, shouldSelectionEnable: Bool) {
+    func configure(category: AmityCommunityCategoryModel, shouldSelectionEnable: Bool) {
+    //func configure(category: AmityCommunityCategory, shouldSelectionEnable: Bool) {
         titleLabel.text = category.name
-        avatarView.setImage(withImageURL: category.avatar?.fileURL ?? "", placeholder: AmityIconSet.defaultCategory)
+        avatarView.setImage(withImageURL: category.avatarURL, placeholder: AmityIconSet.defaultCategory)
         self.shouldSelectionEnable = shouldSelectionEnable
         checkmarkTrailingConstraint.constant = shouldSelectionEnable ? 38 : 8
     }

@@ -15,6 +15,7 @@ public struct AmityCommunityCategoryModel {
     let avatarURL: String
     public let categoryId: String
     public var communityCount: Int
+    let metadata: [String: Any]?
     
     init(object: AmityCommunityCategory, communityCount: Int? = 0, metadata: [String: Any]?) {
         self.name = object.name

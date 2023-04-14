@@ -38,6 +38,7 @@ final class AmityCommunityCategoryController: AmityCommunityCategoryControllerPr
         }
     }
     
+    // MIKE_REF
     private func prepareDataSource() -> [AmityCommunityCategoryModel] {
         guard let collection = collection else { return [] }
         var category: [AmityCommunityCategoryModel] = []
@@ -52,16 +53,21 @@ final class AmityCommunityCategoryController: AmityCommunityCategoryControllerPr
                     includeDeleted: false
                 )
             let communityCount = communities.count()
-            // The metadata parameter doesn't exist on the AmityCommunityCategory object (yet?) so
-            //  we're passing it in on construction, and we're just going to assume it has the same
-            //  (relevant) metadata as any random community that is in it
-            let metadata = communities.object(at: 0)?.metadata
-            let model = AmityCommunityCategoryModel(
-                object: object,
-                communityCount: Int(communityCount),
-                metadata: metadata
-            )
-            category.append(model)
+            
+            // We can only determine if a category can be shown or not if we have metadata for it, and we
+            //  can only approximate metadata for it if we have at least one community, so let's just not
+            //  show any categories without communities (at least on iOS).
+            if (communityCount > 0) {
+                let model = AmityCommunityCategoryModel(
+                    object: object,
+                    communityCount: Int(communityCount),
+                    // The metadata parameter doesn't exist on the AmityCommunityCategory object (yet?) so
+                    //  we're passing it in on construction, and we're just going to assume it has the same
+                    //  (relevant) metadata as any random community that is in it
+                    metadata: communities.object(at: 0)!.metadata
+                )
+                category.append(model)
+            }
         }
         return category
     }
