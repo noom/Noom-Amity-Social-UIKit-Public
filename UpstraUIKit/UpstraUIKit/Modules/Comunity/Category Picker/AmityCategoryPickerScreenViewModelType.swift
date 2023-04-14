@@ -11,7 +11,6 @@ import AmitySDK
 protocol AmityCategoryPickerViewModelDataSource {
     func numberOfItems() -> Int
     func item(at indexPath: IndexPath) -> AmityCommunityCategoryModel?
-    //func item(at indexPath: IndexPath) -> AmityCommunityCategory?
     func loadNext()
 }
 

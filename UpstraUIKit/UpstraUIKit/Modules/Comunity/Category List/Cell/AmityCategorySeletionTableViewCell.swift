@@ -40,7 +40,6 @@ class AmityCategorySeletionTableViewCell: UITableViewCell, Nibbable {
     }
     
     func configure(category: AmityCommunityCategoryModel, shouldSelectionEnable: Bool) {
-    //func configure(category: AmityCommunityCategory, shouldSelectionEnable: Bool) {
         titleLabel.text = category.name
         avatarView.setImage(withImageURL: category.avatarURL, placeholder: AmityIconSet.defaultCategory)
         self.shouldSelectionEnable = shouldSelectionEnable

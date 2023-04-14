@@ -38,7 +38,6 @@ final class AmityCommunityCategoryController: AmityCommunityCategoryControllerPr
         }
     }
     
-    // MIKE_REF
     private func prepareDataSource() -> [AmityCommunityCategoryModel] {
         guard let collection = collection else { return [] }
         var category: [AmityCommunityCategoryModel] = []
