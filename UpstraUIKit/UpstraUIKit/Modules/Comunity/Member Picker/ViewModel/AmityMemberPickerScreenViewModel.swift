@@ -91,12 +91,13 @@ extension AmityMemberPickerScreenViewModel {
         fetchUserController?.getUser { (result) in
             switch result {
             case .success(let users):
-                let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata
-                self.users = users.map {
-                    (key: $0.key,
-                     value: $0.value.filter { $0.matchesUserSegment(currentUserMetadata) })
-                   }
-                self.delegate?.screenViewModelDidFetchUser()
+                if let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata {
+                    self.users = users.map {
+                        (key: $0.key,
+                         value: $0.value.filter { $0.matchesUserSegment(currentUserMetadata) })
+                    }
+                    self.delegate?.screenViewModelDidFetchUser()
+                }
             case .failure(let error):
                 break
             }
@@ -108,9 +109,10 @@ extension AmityMemberPickerScreenViewModel {
         searchUserController?.search(with: text, storeUsers: storeUsers, { [weak self] (result) in
             switch result {
             case .success(let users):
-                let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata
-                self?.searchUsers = users.filter { $0.matchesUserSegment(currentUserMetadata) }
-                self?.delegate?.screenViewModelDidSearchUser()
+                if let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata {
+                    self?.searchUsers = users.filter { $0.matchesUserSegment(currentUserMetadata) }
+                    self?.delegate?.screenViewModelDidSearchUser()
+                }
             case .failure(let error):
                 switch error {
                 case .textEmpty:

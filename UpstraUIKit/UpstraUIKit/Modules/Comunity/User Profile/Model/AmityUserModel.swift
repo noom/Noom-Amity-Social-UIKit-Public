@@ -9,6 +9,9 @@
 import AmitySDK
 
 struct AmityUserModel {
+    public static let localeLanguageKey = "localeLanguage"
+    public static let businessTypeKey = "businessType"
+    public static let partnerIdKey = "partnerId"
     
     let userId: String
     let displayName: String
@@ -32,13 +35,11 @@ struct AmityUserModel {
     }
     
     func matchesUserSegment(_ otherUserMetadata: [String: Any]?) -> Bool {
-        let language = metadata?["localeLanguage"] as? [String] ?? []
-        let otherLanguage = otherUserMetadata?["localeLanguage"] as? [String] ?? []
-        let businessType = metadata?["businessType"] as? String
-        let otherBusinessType = otherUserMetadata?["businessType"] as? String
-        let partnerId = metadata?["partnerId"] as? Int
-        let otherPartnerId = otherUserMetadata?["partnerId"] as? Int
-        
+        let language = metadata?[AmityUserModel.localeLanguageKey] as? [String] ?? []
+        let otherLanguage = otherUserMetadata?[AmityUserModel.localeLanguageKey] as? [String] ?? []
+        let businessType = metadata?[AmityUserModel.businessTypeKey] as? String
+        let otherBusinessType = otherUserMetadata?[AmityUserModel.businessTypeKey] as? String
+
         return language.contains(where: { otherLanguage.contains($0) })
             && businessType == otherBusinessType
     }

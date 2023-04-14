@@ -53,13 +53,11 @@ public final class AmitySelectMemberModel: Equatable {
     }
     
     func matchesUserSegment(_ otherUserMetadata: [String: Any]?) -> Bool {
-        let language = metadata?["localeLanguage"] as? [String] ?? []
-        let otherLanguage = otherUserMetadata?["localeLanguage"] as? [String] ?? []
-        let businessType = metadata?["businessType"] as? String
-        let otherBusinessType = otherUserMetadata?["businessType"] as? String
-        let partnerId = metadata?["partnerId"] as? Int
-        let otherPartnerId = otherUserMetadata?["partnerId"] as? Int
-        
+        let language = metadata?[AmityUserModel.localeLanguageKey] as? [String] ?? []
+        let otherLanguage = otherUserMetadata?[AmityUserModel.localeLanguageKey] as? [String] ?? []
+        let businessType = metadata?[AmityUserModel.partnerIdKey] as? String
+        let otherBusinessType = otherUserMetadata?[AmityUserModel.partnerIdKey] as? String
+
         return language.contains(where: { otherLanguage.contains($0) })
             && businessType == otherBusinessType
     }
