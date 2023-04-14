@@ -7,51 +7,26 @@ import Foundation
 
 public struct CommunityNotification: Equatable, Identifiable {
     
-    public var id: String
+    public let id: String
     let description: String
     let userAccessCode: String
     let sourceType: SourceType
     let path: String
     let sourceId: String
     let imageUrl: String
-    var hasRead: Bool
     let lastUpdate: Date
     let actors: [Actor]
+
+    let hasRead: Bool
     
-    var postId: NotificationFeature.PostId? {
-        let pathRange = NSRange(
-            path.startIndex..<path.endIndex,
-            in: path
-        )
-        let capturePattern = #"/post/([a-z0-9]+)"#
-        let captureRegex = try? NSRegularExpression(
-            pattern: capturePattern,
-            options: []
-        )
-
-        guard let matches = captureRegex?.matches(
-            in: path,
-            options: [],
-            range: pathRange
-        ), let match = matches.first else { return nil }
-
-        var postId: [String] = []
-
-        // For each matched range, extract the capture group
-        for rangeIndex in 0..<match.numberOfRanges {
-            let matchRange = match.range(at: rangeIndex)
-            
-            // Ignore matching the entire username string
-            if matchRange == pathRange { continue }
-            
-            // Extract the substring matching the capture group
-            if let substringRange = Range(matchRange, in: path) {
-                let capture = String(path[substringRange])
-                postId.append(capture)
-            }
-        }
-        guard let capturedPostId = postId.last else { return nil }
-        return .init(value: capturedPostId)
+    var postId: String? {
+        let pathRange = NSRange(path.startIndex ..< path.endIndex, in: path)
+        let captureRegex = try? NSRegularExpression(pattern: "/post/(?<postId>[a-zA-Z0-9]+)")
+        let matches = captureRegex?.matches(in: path, options: [], range: pathRange) ?? []
+        return matches.lazy
+            .map { $0.range(withName: "postId") }
+            .last { $0.location != NSNotFound }
+            .flatMap { Range($0, in: path).map { String(path[$0]) } }
     }
 }
 
@@ -69,7 +44,6 @@ extension CommunityNotification: Codable {
         userAccessCode = try container.decode(String.self, forKey: .userAccessCode)
         path = try container.decode(String.self, forKey: .path)
         sourceId = try container.decode(String.self, forKey: .sourceId)
-        id = try container.decode(String.self, forKey: .id)
         hasRead = try container.decode(Bool.self, forKey: .hasRead)
         actors = try container.decode([Actor].self, forKey: .actors)
         sourceType = try container.decode(SourceType.self, forKey: .sourceType)
@@ -151,9 +125,9 @@ extension CommunityNotification {
             path: path,
             sourceId: sourceId,
             imageUrl: imageUrl,
-            hasRead: hasRead,
             lastUpdate: DateFormatter.iso8601Full.date(from: lastUpdate) ?? Date(),
-            actors: actors
+            actors: actors,
+            hasRead: hasRead
         )
     }
     

@@ -12,7 +12,7 @@ import SwiftUI
 public class AmityCommunityHomePageViewController: AmityPageViewController, AmityRootViewController {
 
     public var exitClosure: (() -> Void)? = nil
-    public var internalNotificationClient: NotificationTrayClient?
+    public var notificationAPIClient: NotificationTrayAPIClient?
     
     // MARK: - Properties
     public let newsFeedVC = AmityNewsfeedViewController.make()
@@ -56,13 +56,13 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     public static func make(
         analytics: AmityAnalytics,
         initialRouting: AmityRoute = .none,
-        internalNotificationClient: NotificationTrayClient,
+        notificationAPIClient: NotificationTrayAPIClient? = nil,
         exitClosure: (@escaping () -> Void) = {}
     ) -> AmityCommunityHomePageViewController {
         AmityUIKitManager.set(analyticsClient: analytics)
         let viewController = AmityCommunityHomePageViewController()
         viewController.exitClosure = exitClosure
-        viewController.internalNotificationClient = internalNotificationClient
+        viewController.notificationAPIClient = notificationAPIClient
         AmityUIKitManager.route(to: initialRouting)
         return viewController
     }
@@ -119,8 +119,29 @@ private extension AmityCommunityHomePageViewController {
     }
     
     @objc func notificationsTapped() {
-         guard let notificationsItem = notificationsItem, let internalNotificationClient = internalNotificationClient else { return }
-        presentNavbarTooltip(anchorItem: notificationsItem, title: "Notifications", internalNotificationClient: internalNotificationClient)
+        guard
+            let notificationsItem = notificationsItem,
+            let notificationAPIClient = notificationAPIClient
+        else {
+            return
+        }
+        presentNavbarTooltip(
+            anchorItem: notificationsItem,
+            client: .init(
+                api: notificationAPIClient,
+                close: { [weak self] in
+                    .fireAndForget { self?.dismiss(animated: true) }
+                },
+                openNotification: { [weak self] postId in
+                    .fireAndForget {
+                        self?.dismiss(animated: true) {
+                            let viewController = AmityPostDetailViewController.make(withPostId: postId)
+                            self?.navigationController?.pushViewController(viewController, animated: true)
+                        }
+                    }
+                }
+            )
+        )
     }
 }
 

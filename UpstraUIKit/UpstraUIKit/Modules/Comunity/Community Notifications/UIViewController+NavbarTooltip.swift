@@ -16,30 +16,20 @@ extension UIViewController {
     ///   - onDidClose: This block is triggered after the tooltip is dismissed by the user.
     func presentNavbarTooltip(
         anchorItem: UIBarButtonItem,
-        title: String = "",
-        popoverAttributes: PopoverAttributes = .init(),
-        internalNotificationClient: NotificationTrayClient,
-        onDidClose: @escaping () -> Void = {}
+        client: NotificationTrayClient
     ) {
         presentPopover(
             anchorItem: anchorItem,
-            attributes: popoverAttributes,
+            attributes: .init(),
             content: {
-                DismissableTooltipView(
+                NotificationTray.View(
                     store: .init(
-                        initialState: .init(notifications: IdentifiedArray(uniqueElements: self.getMockNotifications()), title: title),
-                        reducer: InternalNotificationTray(
-                            client: internalNotificationClient,
-                            closeAction: { [weak self] in
-                                self?.presentedViewController?.dismiss(animated: true, completion: onDidClose)
-                            },
-                            openNotification: { [weak self] postId in
-                                self?.presentedViewController?.dismiss(animated: true) {
-                                    let viewController = AmityPostDetailViewController.make(withPostId: postId.value)
-                                    self?.navigationController?.pushViewController(viewController, animated: true)
-                                }
-                            }
-                        )
+                        initialState: .init(
+                            notifications: IdentifiedArray(
+                                uniqueElements: self.getMockNotifications().map(NotificationRow.State.init)
+                            )
+                        ),
+                        reducer: NotificationTray(client: client)
                     )
                 )
             },
