@@ -119,8 +119,8 @@ final class AmityCommunityProfileHeaderViewController: UIViewController {
     private func updateMemberLabel(community: AmityCommunityModel?) {
         let isAnonymous = community?.metadata?[AmityCommunityModel.anonymousKey] as? Bool ?? false
         
-        if !isAnonymous && community != nil {
-            let memberCount = community!.membersCount
+        if !isAnonymous, let community {
+            let memberCount = community.membersCount
             var  format = memberCount == 1 ? AmityLocalizedStringSet.Unit.memberSingular.localizedString : AmityLocalizedStringSet.Unit.memberPlural.localizedString
             format = format.replacingOccurrences(of: " ", with: "\n") // adjust a format of localized string... "%@ members" -> "%@\nmembers"
             let value = memberCount.formatUsingAbbrevation()
