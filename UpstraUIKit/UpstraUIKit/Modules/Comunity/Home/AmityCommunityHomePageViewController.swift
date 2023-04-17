@@ -135,7 +135,7 @@ private extension AmityCommunityHomePageViewController {
                 openNotification: { [weak self] postId in
                     .fireAndForget {
                         self?.dismiss(animated: true) {
-                            let viewController = AmityPostDetailViewController.make(withPostId: postId)
+                            let viewController = AmityPostDetailViewController.make(withPostId: postId.value)
                             self?.navigationController?.pushViewController(viewController, animated: true)
                         }
                     }
@@ -154,14 +154,3 @@ public extension AmityCommunityHomePageViewController {
         moveTo(viewController: exploreVC)
     }
 }
-
-//extension ParentClient {
-//    static func live(apiClient: NotificationTrayClient) -> Self {
-//        .init(
-//            apiClient: apiClient,
-//            openNotification: {
-//                presentedViewController?.dismiss(animated: true)
-//            }
-//        )
-//    }
-//}

@@ -4,7 +4,6 @@
 //
 
 import SwiftUI
-import ComposableArchitecture
 
 /// A default tooltip with default theming
 internal struct DismissableTooltipView<Content> where Content: View {

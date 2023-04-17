@@ -12,27 +12,29 @@ public struct CommunityNotification: Equatable, Identifiable {
     let userAccessCode: String
     let sourceType: SourceType
     let path: String
-    let sourceId: String
-    let imageUrl: String
+    let imageUrl: URL?
     let lastUpdate: Date
     let actors: [Actor]
-
     let hasRead: Bool
-    
-    var postId: String? {
+
+    public struct PostID: Equatable {
+        let value: String
+    }
+
+    var postId: PostID? {
         let pathRange = NSRange(path.startIndex ..< path.endIndex, in: path)
         let captureRegex = try? NSRegularExpression(pattern: "/post/(?<postId>[a-zA-Z0-9]+)")
         let matches = captureRegex?.matches(in: path, options: [], range: pathRange) ?? []
         return matches.lazy
             .map { $0.range(withName: "postId") }
             .last { $0.location != NSNotFound }
-            .flatMap { Range($0, in: path).map { String(path[$0]) } }
+            .flatMap { Range($0, in: path).map { PostID(value: String(path[$0])) } }
     }
 }
 
 extension CommunityNotification: Codable {
     enum CodingKeys: String, CodingKey {
-        case id, description, userAccessCode, imageUrl, sourceType, path, sourceId, actors
+        case id, description, userAccessCode, imageUrl, sourceType, path, actors
         case hasRead = "read"
         case lastUpdate = "serverTimeUpdated"
     }
@@ -43,18 +45,12 @@ extension CommunityNotification: Codable {
         description = try container.decode(String.self, forKey: .description)
         userAccessCode = try container.decode(String.self, forKey: .userAccessCode)
         path = try container.decode(String.self, forKey: .path)
-        sourceId = try container.decode(String.self, forKey: .sourceId)
-        hasRead = try container.decode(Bool.self, forKey: .hasRead)
-        actors = try container.decode([Actor].self, forKey: .actors)
-        sourceType = try container.decode(SourceType.self, forKey: .sourceType)
-        let lastUpdateString = try container.decode(String.self, forKey: .lastUpdate)
-        lastUpdate = DateFormatter.iso8601Full.date(from: lastUpdateString) ?? Date()
-        do {
-            imageUrl = try container.decode(String.self, forKey: .imageUrl)
-        } catch {
-            guard try container.decode(String.self, forKey: .imageUrl) == "" else { throw error }
-            imageUrl = "defaultString"
-        }
+        hasRead = (try? container.decode(Bool.self, forKey: .hasRead)) ?? false
+        actors = (try? container.decode([Actor].self, forKey: .actors)) ?? []
+        sourceType = (try? container.decode(SourceType.self, forKey: .sourceType)) ?? .unknown
+        let lastUpdateString = try? container.decode(String.self, forKey: .lastUpdate)
+        lastUpdate = lastUpdateString.flatMap { DateFormatter.iso8601Full.date(from: $0) } ?? Date()
+        imageUrl = (try? container.decode(String.self, forKey: .imageUrl)).flatMap(URL.init)
     }
 }
 
@@ -67,21 +63,11 @@ public extension CommunityNotification {
     }
     
     enum SourceType: String, Codable {
+        case unknown = "UNKNOWN"
+
         case post = "POST"
         case comment = "COMMENT"
         case community = "COMMUNITY"
-        
-        public init(from decoder: Decoder) throws {
-            let container = try decoder.singleValueContainer()
-            let rawString = try container.decode(String.self)
-            if let sourceType = SourceType(rawValue: rawString) {
-                self = sourceType
-            } else {
-                throw DecodingError.dataCorruptedError(
-                    in: container,
-                    debugDescription: "Cannot initialize UserType from invalid String value \(rawString)")
-            }
-        }
     }
 }
 
@@ -108,7 +94,7 @@ extension CommunityNotification {
         sourceType: SourceType = .community,
         path: String = "",
         sourceId: String = "",
-        imageUrl: String = "",
+        imageUrl: URL? = nil,
         hasRead: Bool = false,
         lastUpdate: String = "2023-03-27T16:07:02.299474Z",
         actors: [Actor] = [
@@ -123,7 +109,6 @@ extension CommunityNotification {
             userAccessCode: userAccessCode,
             sourceType: sourceType,
             path: path,
-            sourceId: sourceId,
             imageUrl: imageUrl,
             lastUpdate: DateFormatter.iso8601Full.date(from: lastUpdate) ?? Date(),
             actors: actors,

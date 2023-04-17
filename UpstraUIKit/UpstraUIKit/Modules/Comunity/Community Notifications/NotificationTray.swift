@@ -19,7 +19,7 @@ struct NotificationTray: ReducerProtocol {
         case onFirstAppear
 
         case markAllNotificationsAsRead
-        case notification(id: CommunityNotification.ID, action: NotificationRow.Action)
+        case notification(id: NotificationRow.State.ID, action: NotificationRow.Action)
     }
     
     var body: some ReducerProtocol<State, Action> {

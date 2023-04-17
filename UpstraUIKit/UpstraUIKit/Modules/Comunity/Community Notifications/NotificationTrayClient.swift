@@ -29,22 +29,22 @@ public struct NotificationTrayAPIClient {
     public var markAllNotificationsAsRead: MarkAllNotificationsAsRead
 
     public typealias MarkNotificationAsRead = (String) -> EffectTask<Void>
-    public var markNotificationAsRead: (String) -> EffectTask<Void>
+    public var markNotificationAsRead: MarkNotificationAsRead
 
     public typealias UpdateNotificationTrayUser = () -> EffectTask<Void>
-    public var updateNotificationTrayUser: () -> EffectTask<Void>
+    public var updateNotificationTrayUser: UpdateNotificationTrayUser
 
     public struct User: Codable {
         let accessCode: String
         let lastViewed: String
     }
     public typealias GetNotificationTrayUser = () -> EffectTask<Result<User, Error>>
-    public var getNotificationTrayUser: () -> EffectTask<Result<User, Error>>
+    public var getNotificationTrayUser: GetNotificationTrayUser
 }
 
 struct NotificationTrayClient {
     var api: NotificationTrayAPIClient
 
     var close: () -> EffectTask<Void>
-    var openNotification: (String) -> EffectTask<Void>
+    var openNotification: (CommunityNotification.PostID) -> EffectTask<Void>
 }

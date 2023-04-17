@@ -48,7 +48,6 @@ final class PopoverContentViewController<
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        //view.backgroundColor = theme.color(for: attributes.popoverColor)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
