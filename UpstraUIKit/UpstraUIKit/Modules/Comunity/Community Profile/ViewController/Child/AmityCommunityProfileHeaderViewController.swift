@@ -48,7 +48,7 @@ final class AmityCommunityProfileHeaderViewController: UIViewController {
         setupBadgeView()
         setupSubTitleLabel()
         updatePostLabel(postCount: 0)
-        updateMemberLabel(memberCount: 0)
+        updateMemberLabel(community: nil)
         setupDescription()
         setupActionButton()
         setupPendingPosts()
@@ -116,19 +116,29 @@ final class AmityCommunityProfileHeaderViewController: UIViewController {
         postLabel.attributedText = attribute
     }
     
-    private func updateMemberLabel(memberCount: Int) {
-        var  format = memberCount == 1 ? AmityLocalizedStringSet.Unit.memberSingular.localizedString : AmityLocalizedStringSet.Unit.memberPlural.localizedString
-        format = format.replacingOccurrences(of: " ", with: "\n") // adjust a format of localized string... "%@ members" -> "%@\nmembers"
-        let value = memberCount.formatUsingAbbrevation()
-        let string = String.localizedStringWithFormat(format, value)
+    private func updateMemberLabel(community: AmityCommunityModel?) {
+        let isAnonymous = community?.metadata?[AmityCommunityModel.anonymousKey] as? Bool ?? false
         
-        let attribute = NSMutableAttributedString(string: string,
-                                                  attributes: [.font : AmityFontSet.body,
-                                                               .foregroundColor: AmityColorSet.base.blend(.shade1)])
-        let range = NSString(string: string).range(of: value)
-        attribute.addAttributes([.font : AmityFontSet.bodyBold,
-                                 .foregroundColor: AmityColorSet.base], range: range)
-        memberLabel.attributedText = attribute
+        if !isAnonymous, let community {
+            let memberCount = community.membersCount
+            var  format = memberCount == 1 ? AmityLocalizedStringSet.Unit.memberSingular.localizedString : AmityLocalizedStringSet.Unit.memberPlural.localizedString
+            format = format.replacingOccurrences(of: " ", with: "\n") // adjust a format of localized string... "%@ members" -> "%@\nmembers"
+            let value = memberCount.formatUsingAbbrevation()
+            let string = String.localizedStringWithFormat(format, value)
+            
+            let attribute = NSMutableAttributedString(string: string,
+                                                      attributes: [.font : AmityFontSet.body,
+                                                                   .foregroundColor: AmityColorSet.base.blend(.shade1)])
+            let range = NSString(string: string).range(of: value)
+            attribute.addAttributes([.font : AmityFontSet.bodyBold,
+                                     .foregroundColor: AmityColorSet.base], range: range)
+            memberLabel.attributedText = attribute
+            memberLabel.isHidden = false
+        } else {
+            memberLabel.isHidden = true
+        }
+        
+        separatorView.isHidden = memberLabel.isHidden
     }
     
     private func setupDescription() {
@@ -181,7 +191,7 @@ final class AmityCommunityProfileHeaderViewController: UIViewController {
         displayNameLabel.text = community.displayName
         descriptionLabel.text = community.description
         descriptionLabel.isHidden = community.description == ""
-        updateMemberLabel(memberCount: Int(community.membersCount))
+        updateMemberLabel(community: community)
         categoryLabel.text = community.category
         privateBadgeImageView.isHidden = community.isPublic
         officialBadgeImageView.isHidden = !community.isOfficial

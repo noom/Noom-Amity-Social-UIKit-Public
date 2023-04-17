@@ -11,7 +11,9 @@ import AmitySDK
 
 struct AmityCommunityModel {
     public static let commentsDisabledKey = "isCommentingDisabled"
-    public static let commentsHiddenKey = "areCommentsHidden" 
+    public static let commentsHiddenKey = "areCommentsHidden"
+    public static let anonymousKey = "isAnonymous"
+    
     let communityId: String
     let description: String
     let displayName: String
