@@ -88,7 +88,8 @@ extension AmityMemberPickerScreenViewModel {
     
     func getUsers() {
         fetchUserController?.storeUsers = storeUsers
-        fetchUserController?.getUser { (result) in
+        fetchUserController?.getUser { [weak self] result in
+            guard let self else { return }
             switch result {
             case .success(let users):
                 if let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata {
