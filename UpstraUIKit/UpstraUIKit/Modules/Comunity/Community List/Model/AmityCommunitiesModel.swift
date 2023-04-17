@@ -56,15 +56,15 @@ struct AmityCommunityModel {
     }
     
     func matchesUserSegment(_ comparisonMetadata: [String: Any]?) -> Bool {
-        let language = metadata?[AmityUserModel.localeLanguageKey] as? String
+        let language = metadata?[AmityUserModel.localeLanguageKey] as? String ?? "en"
         let otherLanguage = comparisonMetadata?[AmityUserModel.localeLanguageKey] as? [String] ?? []
         let businessType = metadata?[AmityUserModel.businessTypeKey] as? String
         let otherBusinessType = comparisonMetadata?[AmityUserModel.businessTypeKey] as? String
         let partnerId = metadata?[AmityUserModel.partnerIdKey] as? Int
         let otherPartnerId = comparisonMetadata?[AmityUserModel.partnerIdKey] as? Int
         
-        return (language == nil || otherLanguage.contains(language!))
-            && (businessType == nil || businessType == otherBusinessType)
+        return otherLanguage.contains(language)
+            && businessType == otherBusinessType
             && (partnerId == nil || partnerId == otherPartnerId)
     }
 }

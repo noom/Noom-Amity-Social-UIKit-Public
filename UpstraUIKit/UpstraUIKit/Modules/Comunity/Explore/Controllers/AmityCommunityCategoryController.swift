@@ -39,6 +39,8 @@ final class AmityCommunityCategoryController: AmityCommunityCategoryControllerPr
     }
     
     private func prepareDataSource() -> [AmityCommunityCategoryModel] {
+        guard let currentUserMetadata =
+                AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata else { return [] }
         guard let collection = collection else { return [] }
         var category: [AmityCommunityCategoryModel] = []
         for index in 0..<min(collection.count(), maxCategories) {
@@ -51,21 +53,10 @@ final class AmityCommunityCategoryController: AmityCommunityCategoryControllerPr
                     categoryId: object.categoryId,
                     includeDeleted: false
                 )
-            let communityCount = communities.count()
             
-            // We can only determine if a category can be shown or not if we have metadata for it, and we
-            //  can only approximate metadata for it if we have at least one community, so let's just not
-            //  show any categories without communities (at least on iOS).
-            if (communityCount > 0) {
-                let model = AmityCommunityCategoryModel(
-                    object: object,
-                    communityCount: Int(communityCount),
-                    // The metadata parameter doesn't exist on the AmityCommunityCategory object (yet?) so
-                    //  we're passing it in on construction, and we're just going to assume it has the same
-                    //  (relevant) metadata as any random community that is in it
-                    metadata: communities.object(at: 0)!.metadata
-                )
-                category.append(model)
+            let model = AmityCommunityCategoryModel.from(category: object, communityList: communities)
+            if model?.matchesUserSegment(currentUserMetadata) == true, let nonEmptyCategory = model {
+                category.append(nonEmptyCategory)
             }
         }
         return category

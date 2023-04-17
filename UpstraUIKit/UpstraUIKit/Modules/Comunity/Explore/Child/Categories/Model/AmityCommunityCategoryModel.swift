@@ -30,15 +30,35 @@ public struct AmityCommunityCategoryModel {
     }
     
     func matchesUserSegment(_ comparisonMetadata: [String: Any]?) -> Bool {
-        let language = metadata?[AmityUserModel.localeLanguageKey] as? String
+        let language = metadata?[AmityUserModel.localeLanguageKey] as? String ?? "en"
         let otherLanguage = comparisonMetadata?[AmityUserModel.localeLanguageKey] as? [String] ?? []
         let businessType = metadata?[AmityUserModel.businessTypeKey] as? String
         let otherBusinessType = comparisonMetadata?[AmityUserModel.businessTypeKey] as? String
         let partnerId = metadata?[AmityUserModel.partnerIdKey] as? Int
         let otherPartnerId = comparisonMetadata?[AmityUserModel.partnerIdKey] as? Int
         
-        return (language == nil || otherLanguage.contains(language!))
-            && (businessType == nil || businessType == otherBusinessType)
+        return otherLanguage.contains(language)
+            && businessType == otherBusinessType
             && (partnerId == nil || partnerId == otherPartnerId)
+    }
+    
+    static func from(category: AmityCommunityCategory, communityList: AmityCollection<AmityCommunity>) -> AmityCommunityCategoryModel? {
+        let communityCount = communityList.count()
+
+        // We can only determine if a category can be shown or not if we have metadata for it, and we
+        //  can only approximate metadata for it if we have at least one community, so let's just not
+        //  show any categories without communities (at least on iOS).
+        if communityCount > 0, let firstCommunity = communityList.object(at: 0) {
+            return AmityCommunityCategoryModel(
+                object: category,
+                communityCount: Int(communityCount),
+                // The metadata parameter doesn't exist on the AmityCommunityCategory object (yet?) so
+                //  we're passing it in on construction, and we're just going to assume it has the same
+                //  (relevant) metadata as any random community that is in it
+                metadata: firstCommunity.metadata
+            )
+        } else {
+            return nil
+        }
     }
 }
