@@ -26,7 +26,7 @@ extension UIViewController {
                     store: .init(
                         initialState: .init(
                             notifications: IdentifiedArray(
-                                uniqueElements: self.getMockNotifications().map(NotificationRow.State.init)
+                                uniqueElements: []
                             )
                         ),
                         reducer: NotificationTray(client: client)
@@ -90,83 +90,5 @@ extension UIViewController {
         popover.popoverLayoutMargins = attributes.popoverLayoutMargins
 
         return compressedController
-    }
-    
-    private func getMockNotifications() -> [CommunityNotification] {
-        let json = """
-            {
-                "result": [
-                    {
-                        "id": "b7c2d2f6-4f2c-4b53-a251-309c9eb6b260",
-                        "description": "Elwin Larkin commented on your post.",
-                        "userAccessCode": "8GNTYDFG",
-                        "imageUrl": "",
-                        "read": true,
-                        "path": "https://community.test.wsli.dev/community/62e9a2058dde5a00db8f0d81/post/6421befa023ff60a8109c283/comment/6421bf25cc1efe78a4b02a0c",
-                        "actors": [
-                            {
-                                "userAccessCode": "HBNCAW8B",
-                                "name": "Elwin Larkin",
-                                "avatarUrl": ""
-                            }
-                        ],
-                        "sourceId": "6421bf25cc1efe78a4b02a0c",
-                        "sourceType": "COMMENT",
-                        "serverTimeUpdated": "2023-03-27T16:07:02.299474Z"
-                    },
-                    {
-                        "id": "0e2a74f0-f544-4afa-831e-08db36809bec",
-                        "description": "Elwin Larkin reacted to your post.",
-                        "userAccessCode": "8GNTYDFG",
-                        "imageUrl": "",
-                        "read": true,
-                        "path": "https://community.test.wsli.dev/community/62e9a2058dde5a00db8f0d81/post/6421befa023ff60a8109c283",
-                        "actors": [
-                            {
-                                "userAccessCode": "HBNCAW8B",
-                                "name": "Elwin Larkin",
-                                "avatarUrl": ""
-                            }
-                        ],
-                        "sourceId": "6421befa023ff60a8109c283",
-                        "sourceType": "POST",
-                        "serverTimeUpdated": "2023-03-27T16:06:51.344958Z"
-                    },
-                    {
-                        "id": "56f1bfc3-f56b-4edf-85d6-a25f48226ad3",
-                        "description": "Elwin Larkin mentioned you in a comment.",
-                        "userAccessCode": "8GNTYDFG",
-                        "imageUrl": "",
-                        "read": true,
-                        "path": "https://community.test.wsli.dev/community/62e9a37dcc489500d965db40/post/63f7e18095e7a2313255bc65/comment/6421bec77770a54b724ab5f1",
-                        "actors": [
-                            {
-                                "userAccessCode": "HBNCAW8B",
-                                "name": "Elwin Larkin",
-                                "avatarUrl": ""
-                            }
-                        ],
-                        "sourceId": "6421bec77770a54b724ab5f1",
-                        "sourceType": "COMMENT",
-                        "serverTimeUpdated": "2023-03-27T16:05:37.552802Z"
-                    }
-                ]
-            }
-        """
-        let jsonData = Data(json.utf8)
-        let decoder = JSONDecoder()
-        struct NotificationsResponse: Codable {
-            var result: [CommunityNotification]
-            var nextPageUrl: String?
-            var previousPageUrl: String?
-        }
-        
-        do {
-            let response = try decoder.decode(NotificationsResponse.self, from: jsonData)
-            return (response.result)
-        } catch {
-            print(error.localizedDescription)
-            return []
-        }
     }
 }
