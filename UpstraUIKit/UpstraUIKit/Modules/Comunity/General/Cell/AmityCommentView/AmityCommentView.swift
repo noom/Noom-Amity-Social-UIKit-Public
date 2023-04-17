@@ -144,8 +144,7 @@ class AmityCommentView: AmityView {
         leadingAvatarImageViewConstraint.constant = layout.space.avatarLeading
         topAvatarImageViewConstraint.constant = layout.space.aboveAvatar
 
-        replyButton.isHidden = !replyEnabled
-        
+        replyButton.isHidden = !replyEnabled || !layout.shouldShowReplyButton()
     }
 
     @IBAction func displaynameTap(_ sender: Any) {
