@@ -46,7 +46,8 @@ extension AmityRecommendedCommunityScreenViewModel {
                 guard let strongSelf = self else { return }
                 switch result {
                 case .success(let community):
-                    strongSelf.communities = community
+                    let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata
+                    strongSelf.communities = community.filter { $0.matchesUserSegment(currentUserMetadata) }
                     strongSelf.delegate?.screenViewModel(strongSelf, didRetrieveRecommended: community, isEmpty: community.isEmpty)
                 case .failure(let error):
                     strongSelf.delegate?.screenViewModel(strongSelf, didFail: error)

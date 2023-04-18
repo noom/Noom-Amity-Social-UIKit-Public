@@ -178,8 +178,11 @@ extension AmityCommunityProfilePageViewController: AmityCommunityProfileScreenVi
                 analyticsSource: .communityProfile
             )
         case .member:
-            let vc = AmityCommunityMemberSettingsViewController.make(community: community.object)
-            navigationController?.pushViewController(vc, animated: true)
+            let isAnonymous = community.metadata?[AmityCommunityModel.anonymousKey] as? Bool ?? false
+            if !isAnonymous {
+                let vc = AmityCommunityMemberSettingsViewController.make(community: community.object)
+                navigationController?.pushViewController(vc, animated: true)
+            }
         case .settings:
             let vc = AmityCommunitySettingsViewController.make(communityId: community.communityId)
             navigationController?.pushViewController(vc, animated: true)

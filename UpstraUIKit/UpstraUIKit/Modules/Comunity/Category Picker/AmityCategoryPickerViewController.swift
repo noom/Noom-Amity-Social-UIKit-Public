@@ -20,14 +20,14 @@ public class AmityCategoryPickerViewController: AmityViewController {
     // A `referenceCategoryId` uses for validating selection state.
     // If the value changes, done button will be enable.
     private let referenceCategoryId: String?
-    private var selectedCategory: AmityCommunityCategory?
+    private var selectedCategory: AmityCommunityCategoryModel?
     
     // This handler will be triggerd every time we tapping the cell.
-    var selectionHandler: ((AmityCommunityCategory) -> Void)?
+    var selectionHandler: ((AmityCommunityCategoryModel) -> Void)?
     
     // Completion only works for selection type list.
     // Get called by tapping done button.
-    var completionHandler: ((AmityCommunityCategory?) -> Void)?
+    var completionHandler: ((AmityCommunityCategoryModel?) -> Void)?
     
     // MARK: - Initializer
     
