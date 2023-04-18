@@ -20,6 +20,29 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     public let myCommunitiesVC = AmityMyCommunityViewController.make()
     private var notificationsItem: UIBarButtonItem?
 
+    // MARK: - Buttons -
+
+    private lazy var notificationsButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "bell.fill"), for: .normal)
+        button.addTarget(self, action: #selector(notificationsTapped), for: .touchUpInside)
+        return button
+    }()
+
+    private let badgeSize: CGFloat = 20
+    private lazy var badgeCountLabel: UILabel = {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: badgeSize, height: badgeSize))
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.tag = 9830384
+        label.layer.cornerRadius = label.bounds.size.height / 2
+        label.textAlignment = .center
+        label.layer.masksToBounds = true
+        label.textColor = .white
+        label.font = label.font.withSize(12)
+        label.backgroundColor = .systemRed
+        return label
+    }()
+
     private init() {
         super.init(nibName: AmityCommunityHomePageViewController.identifier, bundle: AmityUIKitManager.bundle)
         title = AmityLocalizedStringSet.communityHomeTitle.localizedString
@@ -33,6 +56,8 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
+        fetchNotifications()
+        showBadge(withCount: 3)
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -80,16 +105,16 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
         let searchItem = UIBarButtonItem(image: AmityIconSet.iconSearch, style: .plain, target: self, action: #selector(searchTap))
         searchItem.tintColor = AmityColorSet.base
         searchItem.accessibilityIdentifier = "home_search_button"
-        let notificationsItem = UIBarButtonItem(
-            image: UIImage(systemName: "bell.fill"),
-            style: .plain,
-            target: self,
-            action: #selector(notificationsTapped)
-        )
-        notificationsItem.tintColor = AmityColorSet.base
-        notificationsItem.accessibilityIdentifier = "notifications_button"
-        self.notificationsItem = notificationsItem
-        navigationItem.rightBarButtonItem = searchItem
+
+        NSLayoutConstraint.activate([
+            notificationsButton.widthAnchor.constraint(equalToConstant: 34),
+            notificationsButton.heightAnchor.constraint(equalToConstant: 44),
+        ])
+        let notificationItem = UIBarButtonItem(customView: notificationsButton)
+        notificationItem.tintColor = AmityColorSet.base
+        notificationItem.accessibilityIdentifier = "notifications_button"
+        self.notificationsItem = notificationItem
+        navigationItem.rightBarButtonItems = [searchItem, notificationItem]
         // TODO(LTRGTR-168): Set right bar buttons to include notification bell
         let closeItem = UIBarButtonItem(
             image: AmityIconSet.iconClose,
@@ -99,6 +124,31 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
         )
         closeItem.accessibilityIdentifier = "home_close_button"
         navigationItem.leftBarButtonItem = closeItem
+    }
+
+    private func fetchNotifications() {
+        notificationAPIClient?
+            .getNotifications().map({ [weak self] result in
+                switch result {
+                case .success(let notifications):
+                    print(notifications)
+                    self?.showBadge(withCount: 4)
+                case .failure(let error):
+                    print(error)
+                }
+            })
+    }
+
+    private func showBadge(withCount count: Int) {
+        badgeCountLabel.text = String(count)
+        notificationsButton.addSubview(badgeCountLabel)
+
+        NSLayoutConstraint.activate([
+            badgeCountLabel.leftAnchor.constraint(equalTo: notificationsButton.leftAnchor, constant: 14),
+            badgeCountLabel.topAnchor.constraint(equalTo: notificationsButton.topAnchor, constant: 4),
+            badgeCountLabel.widthAnchor.constraint(equalToConstant: badgeSize),
+            badgeCountLabel.heightAnchor.constraint(equalToConstant: badgeSize)
+        ])
     }
 }
 
