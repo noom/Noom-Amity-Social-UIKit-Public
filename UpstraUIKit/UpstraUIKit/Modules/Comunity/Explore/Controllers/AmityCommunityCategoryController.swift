@@ -39,11 +39,13 @@ final class AmityCommunityCategoryController: AmityCommunityCategoryControllerPr
     }
     
     private func prepareDataSource() -> [AmityCommunityCategoryModel] {
+        guard let currentUserMetadata =
+                AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata else { return [] }
         guard let collection = collection else { return [] }
         var category: [AmityCommunityCategoryModel] = []
         for index in 0..<min(collection.count(), maxCategories) {
             guard let object = collection.object(at: index) else { continue }
-            let communityCount = self.repository
+            let communities = self.repository
                 .getCommunities(
                     displayName: nil,
                     filter: .all,
@@ -51,12 +53,11 @@ final class AmityCommunityCategoryController: AmityCommunityCategoryControllerPr
                     categoryId: object.categoryId,
                     includeDeleted: false
                 )
-                .count()
-            let model = AmityCommunityCategoryModel(
-                object: object,
-                communityCount: Int(communityCount)
-            )
-            category.append(model)
+            
+            if let model = AmityCommunityCategoryModel.from(category: object, communityList: communities),
+               model.matchesUserSegment(currentUserMetadata) == true {
+                category.append(model)
+            }
         }
         return category
     }

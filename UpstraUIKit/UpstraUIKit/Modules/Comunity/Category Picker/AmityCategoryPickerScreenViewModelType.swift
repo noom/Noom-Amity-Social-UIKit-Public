@@ -10,7 +10,7 @@ import AmitySDK
 
 protocol AmityCategoryPickerViewModelDataSource {
     func numberOfItems() -> Int
-    func item(at indexPath: IndexPath) -> AmityCommunityCategory?
+    func item(at indexPath: IndexPath) -> AmityCommunityCategoryModel?
     func loadNext()
 }
 

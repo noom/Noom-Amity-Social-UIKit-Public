@@ -47,7 +47,7 @@ struct AmityCommunityModel {
         self.postsCount = Int(object.postsCount)
         self.membersCount = Int(object.membersCount)
         self.createdAt = object.createdAt
-        self.metadata = object.metadata as? [String : String]
+        self.metadata = object.metadata
         self.userId = object.userId
         self.tags = object.tags ?? []
         self.category = object.categories.first?.name ?? AmityLocalizedStringSet.General.general.localizedString
@@ -55,5 +55,18 @@ struct AmityCommunityModel {
         self.avatarURL = object.avatar?.fileURL ?? ""
         self.participation = object.participation
         self.isPostReviewEnabled = object.isPostReviewEnabled
+    }
+    
+    func matchesUserSegment(_ comparisonMetadata: [String: Any]?) -> Bool {
+        let language = metadata?[AmityUserModel.localeLanguageKey] as? String ?? "en"
+        let otherLanguage = comparisonMetadata?[AmityUserModel.localeLanguageKey] as? [String] ?? []
+        let businessType = metadata?[AmityUserModel.businessTypeKey] as? String
+        let otherBusinessType = comparisonMetadata?[AmityUserModel.businessTypeKey] as? String
+        let partnerId = metadata?[AmityUserModel.partnerIdKey] as? Int
+        let otherPartnerId = comparisonMetadata?[AmityUserModel.partnerIdKey] as? Int
+        
+        return otherLanguage.contains(language)
+            && businessType == otherBusinessType
+            && (partnerId == nil || partnerId == otherPartnerId)
     }
 }
