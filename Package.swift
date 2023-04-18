@@ -15,7 +15,7 @@ let package = Package(
             targets: ["AmityUIKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/AmityCo/Amity-Social-Cloud-SDK-iOS-SwiftPM.git", exact: "5.32.0"),
+        .package(url: "https://github.com/AmityCo/Amity-Social-Cloud-SDK-iOS-SwiftPM.git", exact: "5.33.3"),
         .package(url: "https://github.com/SnapKit/SnapKit.git", exact: "5.0.1"),
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", exact: "0.52.0"),
     ],
