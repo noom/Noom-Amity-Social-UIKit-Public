@@ -90,8 +90,7 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
         notificationsItem.accessibilityIdentifier = "notifications_button"
         self.notificationsItem = notificationsItem
         navigationItem.rightBarButtonItem = searchItem
-        #warning("TODO: uncomment the line below and then delete the line above when notifications is ready to be relaesed")
-        // navigationItem.rightBarButtonItems = [searchItem, notificationsItem]
+        // TODO(LTRGTR-168): Set right bar buttons to include notification bell
         let closeItem = UIBarButtonItem(
             image: AmityIconSet.iconClose,
             style: .plain,
