@@ -89,7 +89,9 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
         notificationsItem.tintColor = AmityColorSet.base
         notificationsItem.accessibilityIdentifier = "notifications_button"
         self.notificationsItem = notificationsItem
-        navigationItem.rightBarButtonItems = [searchItem, notificationsItem]
+        navigationItem.rightBarButtonItem = searchItem
+        #warning("TODO: uncomment the line below and then delete the line above when notifications is ready to be relaesed")
+        // navigationItem.rightBarButtonItems = [searchItem, notificationsItem]
         let closeItem = UIBarButtonItem(
             image: AmityIconSet.iconClose,
             style: .plain,
