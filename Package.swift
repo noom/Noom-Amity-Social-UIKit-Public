@@ -16,15 +16,16 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/AmityCo/Amity-Social-Cloud-SDK-iOS-SwiftPM.git", exact: "5.33.3"),
-        .package(url: "https://github.com/SnapKit/SnapKit.git", exact: "5.0.1")
+        .package(url: "https://github.com/SnapKit/SnapKit.git", exact: "5.0.1"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", exact: "0.52.0"),
     ],
     targets: [
         .target(
             name: "AmityUIKit",
             dependencies: [
                 .product(name: "AmitySDK", package: "Amity-Social-Cloud-SDK-iOS-SwiftPM"),
-                .product(name: "SnapKit", package: "SnapKit")
-
+                .product(name: "SnapKit", package: "SnapKit"),
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ],
             path: "UpstraUIKit/UpstraUIKit",
             resources: [

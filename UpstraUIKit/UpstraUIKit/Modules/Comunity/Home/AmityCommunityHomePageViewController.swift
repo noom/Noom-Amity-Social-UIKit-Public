@@ -7,14 +7,18 @@
 //
 
 import UIKit
+import SwiftUI
 
 public class AmityCommunityHomePageViewController: AmityPageViewController, AmityRootViewController {
 
     public var exitClosure: (() -> Void)? = nil
+    public var notificationAPIClient: NotificationTrayAPIClient?
+    
     // MARK: - Properties
     public let newsFeedVC = AmityNewsfeedViewController.make()
     public let exploreVC = AmityCommunityExplorerViewController.make()
     public let myCommunitiesVC = AmityMyCommunityViewController.make()
+    private var notificationsItem: UIBarButtonItem?
 
     private init() {
         super.init(nibName: AmityCommunityHomePageViewController.identifier, bundle: AmityUIKitManager.bundle)
@@ -52,11 +56,13 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     public static func make(
         analytics: AmityAnalytics,
         initialRouting: AmityRoute = .none,
+        notificationAPIClient: NotificationTrayAPIClient? = nil,
         exitClosure: (@escaping () -> Void) = {}
     ) -> AmityCommunityHomePageViewController {
         AmityUIKitManager.set(analyticsClient: analytics)
         let viewController = AmityCommunityHomePageViewController()
         viewController.exitClosure = exitClosure
+        viewController.notificationAPIClient = notificationAPIClient
         AmityUIKitManager.route(to: initialRouting)
         return viewController
     }
@@ -74,7 +80,17 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
         let searchItem = UIBarButtonItem(image: AmityIconSet.iconSearch, style: .plain, target: self, action: #selector(searchTap))
         searchItem.tintColor = AmityColorSet.base
         searchItem.accessibilityIdentifier = "home_search_button"
+        let notificationsItem = UIBarButtonItem(
+            image: UIImage(systemName: "bell.fill"),
+            style: .plain,
+            target: self,
+            action: #selector(notificationsTapped)
+        )
+        notificationsItem.tintColor = AmityColorSet.base
+        notificationsItem.accessibilityIdentifier = "notifications_button"
+        self.notificationsItem = notificationsItem
         navigationItem.rightBarButtonItem = searchItem
+        // TODO(LTRGTR-168): Set right bar buttons to include notification bell
         let closeItem = UIBarButtonItem(
             image: AmityIconSet.iconClose,
             style: .plain,
@@ -101,6 +117,32 @@ private extension AmityCommunityHomePageViewController {
         AmityUIKitManager.track(event: .userClosedAmity)
         // Unset analytics to prevent dangling references.
         AmityUIKitManager.set(analyticsClient: nil)
+    }
+    
+    @objc func notificationsTapped() {
+        guard
+            let notificationsItem = notificationsItem,
+            let notificationAPIClient = notificationAPIClient
+        else {
+            return
+        }
+        presentNavbarTooltip(
+            anchorItem: notificationsItem,
+            client: .init(
+                api: notificationAPIClient,
+                close: { [weak self] in
+                    .fireAndForget { self?.dismiss(animated: true) }
+                },
+                openNotification: { [weak self] postId in
+                    .fireAndForget {
+                        self?.dismiss(animated: true) {
+                            let viewController = AmityPostDetailViewController.make(withPostId: postId.value)
+                            self?.navigationController?.pushViewController(viewController, animated: true)
+                        }
+                    }
+                }
+            )
+        )
     }
 }
 
