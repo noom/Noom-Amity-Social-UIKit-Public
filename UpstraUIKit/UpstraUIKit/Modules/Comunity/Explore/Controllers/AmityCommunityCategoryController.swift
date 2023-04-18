@@ -54,9 +54,9 @@ final class AmityCommunityCategoryController: AmityCommunityCategoryControllerPr
                     includeDeleted: false
                 )
             
-            let model = AmityCommunityCategoryModel.from(category: object, communityList: communities)
-            if model?.matchesUserSegment(currentUserMetadata) == true, let nonEmptyCategory = model {
-                category.append(nonEmptyCategory)
+            if let model = AmityCommunityCategoryModel.from(category: object, communityList: communities),
+               model.matchesUserSegment(currentUserMetadata) == true {
+                category.append(model)
             }
         }
         return category
