@@ -57,7 +57,6 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
         super.viewDidLoad()
         setupNavigationBar()
         fetchNotifications()
-        showBadge(withCount: 3)
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -67,7 +66,6 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
     }
 
     public override func willMove(toParent parent: UIViewController?) {
@@ -106,16 +104,17 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
         searchItem.tintColor = AmityColorSet.base
         searchItem.accessibilityIdentifier = "home_search_button"
 
-        NSLayoutConstraint.activate([
-            notificationsButton.widthAnchor.constraint(equalToConstant: 34),
-            notificationsButton.heightAnchor.constraint(equalToConstant: 44),
-        ])
+        setupNotificationsBadge()
         let notificationItem = UIBarButtonItem(customView: notificationsButton)
         notificationItem.tintColor = AmityColorSet.base
         notificationItem.accessibilityIdentifier = "notifications_button"
         self.notificationsItem = notificationItem
         navigationItem.rightBarButtonItems = [searchItem, notificationItem]
         // TODO(LTRGTR-168): Set right bar buttons to include notification bell
+        setupCloseItem()
+    }
+
+    private func setupCloseItem() {
         let closeItem = UIBarButtonItem(
             image: AmityIconSet.iconClose,
             style: .plain,
@@ -126,21 +125,12 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
         navigationItem.leftBarButtonItem = closeItem
     }
 
-    private func fetchNotifications() {
-        notificationAPIClient?
-            .getNotifications().map({ [weak self] result in
-                switch result {
-                case .success(let notifications):
-                    print(notifications)
-                    self?.showBadge(withCount: 4)
-                case .failure(let error):
-                    print(error)
-                }
-            })
-    }
-
-    private func showBadge(withCount count: Int) {
-        badgeCountLabel.text = String(count)
+    private func setupNotificationsBadge() {
+        badgeCountLabel.isHidden = true
+        NSLayoutConstraint.activate([
+            notificationsButton.widthAnchor.constraint(equalToConstant: 34),
+            notificationsButton.heightAnchor.constraint(equalToConstant: 44),
+        ])
         notificationsButton.addSubview(badgeCountLabel)
 
         NSLayoutConstraint.activate([
@@ -149,6 +139,25 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
             badgeCountLabel.widthAnchor.constraint(equalToConstant: badgeSize),
             badgeCountLabel.heightAnchor.constraint(equalToConstant: badgeSize)
         ])
+    }
+
+    private func fetchNotifications() {
+        guard let client = notificationAPIClient else { return }
+        _ = client
+            .getNotifications()
+            .map({ [weak self] result in
+                switch result {
+                case .success(let notifications):
+                    self?.showBadge(withCount: notifications.count)
+                case .failure(let error):
+                    print(error)
+                }
+            })
+    }
+
+    private func showBadge(withCount count: Int) {
+        badgeCountLabel.isHidden = false
+        badgeCountLabel.text = String(count)
     }
 }
 
