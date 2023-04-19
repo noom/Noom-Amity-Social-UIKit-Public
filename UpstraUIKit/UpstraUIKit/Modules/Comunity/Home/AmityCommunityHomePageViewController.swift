@@ -149,6 +149,7 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
                 switch result {
                 case .success(let notifications):
                     self?.showBadge(withCount: notifications.count)
+                    // TODO: fetch the Notifications.User info to get the lastSeenTime of the notifications and then calculate the number of most recent notifcations that the user has not seen.
                 case .failure(let error):
                     print(error)
                 }
