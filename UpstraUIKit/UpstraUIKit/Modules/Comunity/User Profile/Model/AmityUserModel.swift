@@ -22,8 +22,9 @@ struct AmityUserModel {
     
     init(user: AmityUser) {
         userId = user.userId
-        displayName = user.displayName == user.userId ? "Noomer" : user.displayName
-        ?? AmityLocalizedStringSet.General.anonymous.localizedString
+        displayName = user.displayName == user.userId
+            ? "Noomer"
+            : user.displayName ?? AmityLocalizedStringSet.General.anonymous.localizedString
         avatarURL = user.getAvatarInfo()?.fileURL ?? ""
         about = user.userDescription
         isGlobalBan = user.isGlobalBan
