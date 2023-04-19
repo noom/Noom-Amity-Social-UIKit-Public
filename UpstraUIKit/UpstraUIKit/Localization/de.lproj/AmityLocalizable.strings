@@ -109,7 +109,7 @@
 
 "empty_chat_list" = "Keine Unterhaltungen";
 "empty_newsfeed_title" = "Dein Feed ist leer";
-"empty_newsfeed_subtitle" = "Community suchen oder eigene erstellen";
+"empty_newsfeed_subtitle" = "Community suchen";
 "empty_newsfeed_explore_button" = "Community ansehen";
 "empty_newsfeed_create_button" = "Community erstellen";
 "empty_newsfeed_start_your_first_post" = "Fang jetzt deinen ersten Beitrag an";

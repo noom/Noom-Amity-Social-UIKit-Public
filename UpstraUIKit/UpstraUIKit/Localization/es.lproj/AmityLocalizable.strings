@@ -109,7 +109,7 @@
 
 "empty_chat_list" = "No hay conversaciones";
 "empty_newsfeed_title" = "Tu feed está vacío";
-"empty_newsfeed_subtitle" = "Encuentra una comunidad o crea la tuya";
+"empty_newsfeed_subtitle" = "Encuentra una comunidad";
 "empty_newsfeed_explore_button" = "Explorar comunidad";
 "empty_newsfeed_create_button" = "Crear una comunidad";
 "empty_newsfeed_start_your_first_post" = "Haz tu primera publicación";
