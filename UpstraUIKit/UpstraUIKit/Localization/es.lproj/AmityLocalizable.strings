@@ -138,7 +138,7 @@
 "create_community_name_already_taken" = "Crear una comunidad";
 "create_community_button_create" = "¿Salir sin terminar?";
 "create_community_alert_title" = "Tu progreso no se guardará y tu grupo no se creará.";
-"create_community_alert_desc" = "Tu progreso no se guardará y tu grupo no se creará."
+"create_community_alert_desc" = "Tu progreso no se guardará y tu grupo no se creará.";
 
 "select_member_list_title" = "Seleccionar miembro";
 "select_member_list_selected_title" = "%@ Seleccionado";
