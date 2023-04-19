@@ -723,7 +723,6 @@
 		27019EB329EDAB8C00853F46 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AmityLocalizable.strings; sourceTree = "<group>"; };
 		27019EB529EDABC600853F46 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/AmityLocalizable.strings; sourceTree = "<group>"; };
 		27019EB629EDABD600853F46 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/AmityLocalizable.strings; sourceTree = "<group>"; };
-		27019EB729EDAC2100853F46 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/AmityLocalizable.strings; sourceTree = "<group>"; };
 		720D59992525BDB1009734EF /* DispatchGroupWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchGroupWrapper.swift; sourceTree = "<group>"; };
 		7211553C25505D180081CC23 /* AmityCategoryPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmityCategoryPickerViewController.swift; sourceTree = "<group>"; };
 		7211553D25505D180081CC23 /* AmityCategoryPickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AmityCategoryPickerViewController.xib; sourceTree = "<group>"; };
@@ -4393,7 +4392,6 @@
 				Base,
 				de,
 				es,
-				ko,
 			);
 			mainGroup = 72A3502624EA811500DA9D46;
 			productRefGroup = 72A3503124EA811500DA9D46 /* Products */;
@@ -5081,7 +5079,6 @@
 				27019EB329EDAB8C00853F46 /* en */,
 				27019EB529EDABC600853F46 /* de */,
 				27019EB629EDABD600853F46 /* es */,
-				27019EB729EDAC2100853F46 /* ko */,
 			);
 			name = AmityLocalizable.strings;
 			sourceTree = "<group>";
