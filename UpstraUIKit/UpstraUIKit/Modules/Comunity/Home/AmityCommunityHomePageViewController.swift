@@ -33,7 +33,6 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     private lazy var badgeCountLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: badgeSize, height: badgeSize))
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.tag = 9830384
         label.layer.cornerRadius = label.bounds.size.height / 2
         label.textAlignment = .center
         label.layer.masksToBounds = true
