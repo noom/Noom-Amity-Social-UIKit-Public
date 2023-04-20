@@ -174,6 +174,7 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     }
 
     private func showBadge(withCount count: Int) {
+        guard count > 0 else { return }
         badgeCountLabel.isHidden = false
         badgeCountLabel.text = String(count)
     }
