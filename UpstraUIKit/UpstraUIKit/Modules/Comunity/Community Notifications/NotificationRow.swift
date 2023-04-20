@@ -78,7 +78,7 @@ extension NotificationRow.View: View {
                     }
                     Spacer()
 
-                    if viewStore.hasRead {
+                    if !viewStore.hasRead {
                         Circle()
                             .foregroundColor(.orange)
                             .frame(width: 10, height: 10)

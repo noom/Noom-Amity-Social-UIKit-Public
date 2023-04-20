@@ -113,6 +113,7 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
         notificationItem.tintColor = AmityColorSet.base
         notificationItem.accessibilityIdentifier = "notifications_button"
         self.notificationsItem = notificationItem
+        
         navigationItem.rightBarButtonItems = [searchItem, notificationItem]
         // TODO(LTRGTR-168): Set right bar buttons to include notification bell
         setupCloseItem()
