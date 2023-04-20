@@ -23,6 +23,12 @@ struct AmityUserMetadata {
         self.businessType = (dict?[MetadataKey.businessType] as? String).flatMap(BusinessType.init(rawValue:))
         self.partnerId = dict?[MetadataKey.partnerId] as? String
     }
+
+    func matches(_ other: AmityUserMetadata) -> Bool {
+        return languages.contains(where: { other.languages.contains($0) })
+            && businessType == other.businessType
+            // partnerId not compared on purpose
+    }
 }
 
 // MARK: BusinessType
