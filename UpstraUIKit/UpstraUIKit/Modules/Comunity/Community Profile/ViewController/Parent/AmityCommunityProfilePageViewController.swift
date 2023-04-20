@@ -8,18 +8,12 @@
 
 import UIKit
 
-public class AmityCommunityProfilePageSettings {
-    public init() { }
-    public var shouldChatButtonHide: Bool = true
-}
-
 /// A view controller for providing community profile and community feed.
 public final class AmityCommunityProfilePageViewController: AmityProfileViewController {
     
     static var newCreatedCommunityIds = Set<String>()
     
     // MARK: - Properties
-    private var settings: AmityCommunityProfilePageSettings!
     private var header: AmityCommunityProfileHeaderViewController!
     private var bottom: AmityCommunityFeedViewController!
     private var postButton: AmityFloatingButton = AmityFloatingButton()
@@ -44,8 +38,7 @@ public final class AmityCommunityProfilePageViewController: AmityProfileViewCont
     }
     
     public static func make(
-        withCommunityId communityId: String,
-        settings: AmityCommunityProfilePageSettings = .init()
+        withCommunityId communityId: String
     ) -> AmityCommunityProfilePageViewController {
         
         let communityRepositoryManager = AmityCommunityRepositoryManager(communityId: communityId)
@@ -55,9 +48,8 @@ public final class AmityCommunityProfilePageViewController: AmityProfileViewCont
         )
         let vc = AmityCommunityProfilePageViewController()
         vc.screenViewModel = viewModel
-        vc.header = AmityCommunityProfileHeaderViewController.make(rootViewController: vc, viewModel: viewModel, settings: settings)
+        vc.header = AmityCommunityProfileHeaderViewController.make(rootViewController: vc, viewModel: viewModel)
         vc.bottom = AmityCommunityFeedViewController.make(communityId: communityId)
-        vc.settings = settings
         return vc
         
     }

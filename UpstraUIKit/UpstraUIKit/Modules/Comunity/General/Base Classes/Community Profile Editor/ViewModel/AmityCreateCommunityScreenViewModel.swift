@@ -249,31 +249,31 @@ private extension AmityCreateCommunityScreenViewModel {
     }
     
     private func createCommunity(image: AmityImageData?) {
-        let builder = AmityCommunityCreationDataBuilder()
-        builder.setDisplayName(displayName)
-        builder.setCommunityDescription(description)
-        builder.setIsPublic(isPublic)
+        let createOptions = AmityCommunityCreateOptions()
+        createOptions.setDisplayName(displayName)
+        createOptions.setCommunityDescription(description)
+        createOptions.setIsPublic(isPublic)
         
         if !isPublic {
             let userIds = storeUsers.map { $0.userId }
-            builder.setUserIds(userIds)
+            createOptions.setUserIds(userIds)
         }
         
         if let selectedCategoryId = selectedCategoryId {
-            builder.setCategoryIds([selectedCategoryId])
+            createOptions.setCategoryIds([selectedCategoryId])
         }
         
         if let image = image {
-            builder.setAvatar(image)
+            createOptions.setAvatar(image)
         }
         
         let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.metadata
-        builder.setMetadata([
+        createOptions.setMetadata([
             AmityUserModel.localeLanguageKey: currentUserMetadata?.languages.first ?? "en",
             AmityUserModel.businessTypeKey: (currentUserMetadata?.businessType ?? .b2c).rawValue,
         ])
         
-        repository.createCommunity(with: builder) { [weak self] (community, error) in
+        repository.createCommunity(with: createOptions) { [weak self] (community, error) in
             guard let strongSelf = self else { return }
             
             if let community = community {
@@ -290,23 +290,23 @@ private extension AmityCreateCommunityScreenViewModel {
     }
     
     private func updateCommunity(image: AmityImageData?) {
-        let builder = AmityCommunityUpdateDataBuilder()
-        builder.setDisplayName(displayName)
-        builder.setCommunityDescription(description)
-        builder.setIsPublic(isPublic)
+        let updateOptions = AmityCommunityUpdateOptions()
+        updateOptions.setDisplayName(displayName)
+        updateOptions.setCommunityDescription(description)
+        updateOptions.setIsPublic(isPublic)
         if let imageData = imageData {
-            builder.setAvatar(imageData)
+            updateOptions.setAvatar(imageData)
         }
         
         if let selectedCategoryId = selectedCategoryId {
-            builder.setCategoryIds([selectedCategoryId])
+            updateOptions.setCategoryIds([selectedCategoryId])
         }
         
         if let image = image {
-            builder.setAvatar(image)
+            updateOptions.setAvatar(image)
         }
         
-        repository.updateCommunity(withId: communityId, builder: builder) { [weak self] (community, error) in
+        repository.updateCommunity(withId: communityId, options: updateOptions) { [weak self] (community, error) in
             guard let strongSelf = self else { return }
             if let error = error {
                 strongSelf.delegate?.screenViewModel(strongSelf, failure: AmityError(error: error) ?? .unknown)

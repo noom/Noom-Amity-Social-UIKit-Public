@@ -436,7 +436,7 @@ public class AmityPostModel {
                     dataTypeInternal = .file
                 }
             case "video":
-                if let videoData = aChild.getVideoInfo(for: .original) {
+                if let videoData = aChild.getVideoInfo() {
                     let thumbnail = aChild.getVideoThumbnailInfo()
                     let state = AmityMediaState.downloadableVideo(
                         videoData: videoData,

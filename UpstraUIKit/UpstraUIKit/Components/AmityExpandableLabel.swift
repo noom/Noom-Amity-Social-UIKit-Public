@@ -94,6 +94,9 @@ open class AmityExpandableLabel: UILabel {
         }
     }
     
+    // Set a color for hyperLink text in label
+    open var hyperLinkColor: UIColor = AmityColorSet.highlight
+    
     /// Set a font for readmore label
     /// The default value is 'AmityFontSet.bodyBold'.
     open var readMoreFont: UIFont = AmityFontSet.bodyBold {
@@ -574,6 +577,11 @@ extension String {
         var count = 0
         enumerateSubstrings(in: startIndex..<endIndex, options: .byComposedCharacterSequences) { _,_,_,_  in count += 1 }
         return count
+    }
+    
+    public func hasPrefixIgnoringCase(_ prefix: String) -> Bool {
+        let prefixRange = range(of: prefix, options: [.anchored, .caseInsensitive])
+        return prefixRange != nil
     }
 }
 

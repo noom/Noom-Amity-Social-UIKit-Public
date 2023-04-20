@@ -211,7 +211,8 @@ open class AmityPostDetailViewController: AmityViewController {
                     AmityAlertController.present(title: AmityLocalizedStringSet.Poll.Option.alertDeleteTitle.localizedString, message: AmityLocalizedStringSet.Poll.Option.alertDeleteDesc.localizedString, actions: [cancel, delete], from: strongSelf)
                 }
                 
-                contentView.configure(items: [closePoll, deletePoll], selectedItem: nil)
+                let items = (post.poll?.isClosed ?? false) ? [deletePoll] : [closePoll, deletePoll]
+                contentView.configure(items: items, selectedItem: nil)
             case .file, .image, .text, .video, .unknown:
                 contentView.configure(items: [editOption, deleteOption], selectedItem: nil)
             case .liveStream:
@@ -284,12 +285,6 @@ extension AmityPostDetailViewController: AmityPostTableViewDelegate {
         let viewModel = screenViewModel.item(at: indexPath)
         switch viewModel {
         case .post(let postComponent):
-            var cell: UITableViewCell
-            if let clientComponent = tableView.feedDataSource?.getUIComponentForPost(post: postComponent._composable.post, at: indexPath.section) {
-                cell = clientComponent.getComponentCell(tableView, at: indexPath)
-            } else {
-                cell = postComponent.getComponentCell(tableView, at: indexPath)
-            }
             (cell as? AmityPostHeaderProtocol)?.delegate = postHeaderProtocolHandler
             (cell as? AmityPostFooterProtocol)?.delegate = postFooterProtocolHandler
             (cell as? AmityPostProtocol)?.delegate = postProtocolHandler

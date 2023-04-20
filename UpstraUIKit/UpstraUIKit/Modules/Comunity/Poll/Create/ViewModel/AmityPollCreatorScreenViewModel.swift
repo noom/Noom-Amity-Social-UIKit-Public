@@ -107,18 +107,18 @@ extension AmityPollCreatorScreenViewModel {
         andMentionees mentionees: AmityMentioneesBuilder?,
         source: CreatePostSource
     ) {
-        let builder = AmityPollCreationBuilder()
+        let createOptions = AmityPollCreateOptions()
         
         for item in answersItem {
-            builder.setAnswer(item)
+            createOptions.setAnswer(item)
         }
         
-        builder.setQuestion(pollQuestion)
+        createOptions.setQuestion(pollQuestion)
         if let timeMilliseconds = timeMilliseconds {
-            builder.setTimeToClosePoll(timeMilliseconds)
+            createOptions.setTimeToClosePoll(timeMilliseconds)
         }
-        builder.setAnswerType(isMultipleSelection ? .multiple : .single)
-        pollRepository.createPoll(builder) { [weak self] pollId, error in
+        createOptions.setAnswerType(isMultipleSelection ? .multiple : .single)
+        pollRepository.createPoll(createOptions) { [weak self] pollId, error in
             guard let strongSelf = self else { return }
             if let pollId = pollId {
                 let pollPostBuilder = AmityPollPostBuilder()
