@@ -43,9 +43,8 @@ class AmityCategoryListScreenViewModel: AmityCategoryListScreenViewModelType {
     
     private func prepareData(categoryCollection: AmityCollection<AmityCommunityCategory>) {
         guard let currentUserMetadata =
-                AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata else { return }
+                AmityUIKitManagerInternal.shared.client.currentUser?.metadata else { return }
         var categories: [AmityCommunityCategoryModel] = []
-        let catCount = categoryCollection.count()
         
         for index in 0..<categoryCollection.count() {
             guard let object = categoryCollection.object(at: index) else { continue }
@@ -59,7 +58,7 @@ class AmityCategoryListScreenViewModel: AmityCategoryListScreenViewModelType {
                 )
             
             if let model = AmityCommunityCategoryModel.from(category: object, communityList: communities),
-               model.matchesUserSegment(currentUserMetadata) == true {
+               model.matchesUserSegment(currentUserMetadata) {
                 categories.append(model)
             }
         }

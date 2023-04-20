@@ -10,9 +10,9 @@ import UIKit
 import AmitySDK
 
 struct AmityCommunityModel {
-    public static let commentsDisabledKey = "isCommentingDisabled"
-    public static let commentsHiddenKey = "areCommentsHidden"
-    public static let anonymousKey = "isAnonymous"
+    static let commentsDisabledKey = "isCommentingDisabled"
+    static let commentsHiddenKey = "areCommentsHidden"
+    static let anonymousKey = "isAnonymous"
     
     let communityId: String
     let description: String
@@ -24,7 +24,7 @@ struct AmityCommunityModel {
     let postsCount: Int
     var membersCount: Int
     let createdAt: Date
-    let metadata: [String: Any]?
+    let metadata: AmityCommunityMetadata
     let userId: String
     let tags: [String]
     let category: String
@@ -33,7 +33,7 @@ struct AmityCommunityModel {
     let isPostReviewEnabled: Bool
     let participation: AmityCommunityParticipation
     
-    var object: AmityCommunity
+    let object: AmityCommunity
     
     init(object: AmityCommunity) {
         self.object = object
@@ -47,7 +47,7 @@ struct AmityCommunityModel {
         self.postsCount = Int(object.postsCount)
         self.membersCount = Int(object.membersCount)
         self.createdAt = object.createdAt
-        self.metadata = object.metadata
+        self.metadata = .init(object.metadata)
         self.userId = object.userId
         self.tags = object.tags ?? []
         self.category = object.categories.first?.name ?? AmityLocalizedStringSet.General.general.localizedString
@@ -55,18 +55,5 @@ struct AmityCommunityModel {
         self.avatarURL = object.avatar?.fileURL ?? ""
         self.participation = object.participation
         self.isPostReviewEnabled = object.isPostReviewEnabled
-    }
-    
-    func matchesUserSegment(_ comparisonMetadata: [String: Any]?) -> Bool {
-        let language = metadata?[AmityUserModel.localeLanguageKey] as? String ?? "en"
-        let otherLanguage = comparisonMetadata?[AmityUserModel.localeLanguageKey] as? [String] ?? []
-        let businessType = metadata?[AmityUserModel.businessTypeKey] as? String
-        let otherBusinessType = comparisonMetadata?[AmityUserModel.businessTypeKey] as? String
-        let partnerId = metadata?[AmityUserModel.partnerIdKey] as? Int
-        let otherPartnerId = comparisonMetadata?[AmityUserModel.partnerIdKey] as? Int
-        
-        return otherLanguage.contains(language)
-            && businessType == otherBusinessType
-            && (partnerId == nil || partnerId == otherPartnerId)
     }
 }

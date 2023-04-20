@@ -4,26 +4,31 @@
 //
 
 import Foundation
-import AmitySDK
 
-/// Shared between multiple models' metadata dictionaries
-struct MetadataKey {
-    static let localeLanguage = "localeLanguage"
-    static let businessType = "businessType"
-    static let partnerId = "partnerId"
-}
-
+/// Strongly-type read wrapper around `AmityUser`'s `metadata` dictionary.
 struct AmityUserMetadata {
-    var languages: [String] = []
-    var businessType: BusinessType?
-    var partnerId: String?
+    private let dict: [String: Any]?
 
-    init(from dict: [String: Any]?) {
-        self.languages = dict?[MetadataKey.localeLanguage] as? [String] ?? []
-        self.businessType = (dict?[MetadataKey.businessType] as? String).flatMap(BusinessType.init(rawValue:))
-        self.partnerId = dict?[MetadataKey.partnerId] as? String
+    init(_ metadata: [String: Any]?) {
+        self.dict = metadata
     }
 
+    var languages: [String] {
+        return dict?[AmityUserModel.localeLanguageKey] as? [String] ?? []
+    }
+
+    var businessType: BusinessType? {
+        return (dict?[AmityUserModel.businessTypeKey] as? String).flatMap(BusinessType.init(rawValue:))
+    }
+
+    var partnerId: Int? {
+        return dict?[AmityUserModel.partnerIdKey] as? Int
+    }
+}
+
+// MARK: Metadata Matching
+
+extension AmityUserMetadata {
     func matches(_ other: AmityUserMetadata) -> Bool {
         return languages.contains(where: { other.languages.contains($0) })
             && businessType == other.businessType
@@ -31,10 +36,12 @@ struct AmityUserMetadata {
     }
 }
 
-// MARK: BusinessType
+// MARK: Convenience Extensions
 
-enum BusinessType: String {
-    case b2b = "B2B"
-    case b2c = "B2C"
-    case test = "TEST"
+import AmitySDK
+
+extension AmityObject<AmityUser> {
+    var metadata: AmityUserMetadata {
+        return .init(object?.metadata)
+    }
 }

@@ -28,7 +28,7 @@ struct AmityUserModel {
         avatarURL = user.getAvatarInfo()?.fileURL ?? ""
         about = user.userDescription
         isGlobalBan = user.isGlobalBan
-        metadata = .init(from: user.metadata)
+        metadata = .init(user.metadata)
     }
     
     var isCurrentUser: Bool {
