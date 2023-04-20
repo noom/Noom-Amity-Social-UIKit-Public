@@ -74,7 +74,7 @@ extension AmityMyCommunityScreenViewModel {
         if isRetrieveAllCommunity {
             delegate?.screenViewModelDidRetrieveAllCommunity(self)
         } else {
-            if communityList.isEmpty {
+            if self.communityList.isEmpty {
                 delegate?.screenViewModelDidSearchNotFound(self)
             } else {
                 delegate?.screenViewModelDidSearch(self)

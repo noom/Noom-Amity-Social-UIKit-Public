@@ -29,7 +29,10 @@ struct AmityUserMetadata {
 // MARK: Metadata Matching
 
 extension AmityUserMetadata {
-    func matches(_ other: AmityUserMetadata) -> Bool {
+    func matches(_ other: AmityUserMetadata?) -> Bool {
+        guard let other else {
+            return false
+        }
         return languages.contains(where: { other.languages.contains($0) })
             && businessType == other.businessType
             // partnerId not compared on purpose

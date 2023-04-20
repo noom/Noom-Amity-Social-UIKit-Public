@@ -92,10 +92,10 @@ extension AmityMemberPickerScreenViewModel {
             guard let self else { return }
             switch result {
             case .success(let users):
-                if let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata {
+                if let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.metadata {
                     self.users = users.map {
                         (key: $0.key,
-                         value: $0.value.filter { $0.matchesUserSegment(currentUserMetadata) })
+                         value: $0.value.filter { $0.metadata.matches(currentUserMetadata) })
                     }
                     self.delegate?.screenViewModelDidFetchUser()
                 }
@@ -110,8 +110,8 @@ extension AmityMemberPickerScreenViewModel {
         searchUserController?.search(with: text, storeUsers: storeUsers, { [weak self] (result) in
             switch result {
             case .success(let users):
-                if let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata {
-                    self?.searchUsers = users.filter { $0.matchesUserSegment(currentUserMetadata) }
+                if let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.metadata {
+                    self?.searchUsers = users.filter { $0.metadata.matches(currentUserMetadata) }
                     self?.delegate?.screenViewModelDidSearchUser()
                 }
             case .failure(let error):
