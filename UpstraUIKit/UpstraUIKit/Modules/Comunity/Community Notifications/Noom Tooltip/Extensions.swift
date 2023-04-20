@@ -58,15 +58,17 @@ extension UIViewController {
 }
 
 public extension DateFormatter {
-    static let iso8601Full: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
-        return formatter
-    }()
-    
     static let yyyymmdd: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "YY/MM/dd"
         return dateFormatter
+    }()
+}
+
+public extension ISO8601DateFormatter {
+    static let iso8601Full: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
     }()
 }

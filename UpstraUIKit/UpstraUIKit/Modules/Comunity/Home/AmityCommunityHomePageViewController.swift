@@ -8,6 +8,8 @@
 
 import UIKit
 import SwiftUI
+import Combine
+import RxSwift
 
 public class AmityCommunityHomePageViewController: AmityPageViewController, AmityRootViewController {
 
@@ -19,6 +21,9 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     public let exploreVC = AmityCommunityExplorerViewController.make()
     public let myCommunitiesVC = AmityMyCommunityViewController.make()
     private var notificationsItem: UIBarButtonItem?
+    private var getNotificationsCancellable: AnyCancellable?
+    private var getUserInfoCancellable: AnyCancellable?
+    private var notifications = [CommunityNotification]()
 
     // MARK: - Buttons -
 
@@ -142,17 +147,30 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
 
     private func fetchNotifications() {
         guard let client = notificationAPIClient else { return }
-        _ = client
+        getNotificationsCancellable = client
             .getNotifications()
-            .map({ [weak self] result in
+            .sink { [weak self] result in
                 switch result {
                 case .success(let notifications):
-                    self?.showBadge(withCount: notifications.count)
-                    // TODO: fetch the Notifications.User info to get the lastSeenTime of the notifications and then calculate the number of most recent notifcations that the user has not seen.
+                    self?.notifications = notifications
+                    self?.handleFetched(notifications)
                 case .failure(let error):
                     print(error)
                 }
-            })
+            }
+    }
+
+    private func handleFetched(_ notifications: [CommunityNotification]) {
+        guard let client = notificationAPIClient else { return }
+        getUserInfoCancellable = client.getNotificationTrayUser().sink { [weak self] result in
+            switch result {
+            case .success(let user):
+                let count = notifications.filter { $0.lastUpdate > user.lastViewed }.count
+                self?.showBadge(withCount: count)
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 
     private func showBadge(withCount count: Int) {
@@ -181,7 +199,8 @@ private extension AmityCommunityHomePageViewController {
     @objc func notificationsTapped() {
         guard
             let notificationsItem = notificationsItem,
-            let notificationAPIClient = notificationAPIClient
+            let notificationAPIClient = notificationAPIClient,
+            !notifications.isEmpty
         else {
             return
         }
@@ -200,7 +219,8 @@ private extension AmityCommunityHomePageViewController {
                         }
                     }
                 }
-            )
+            ),
+            notifications: notifications
         )
     }
 }

@@ -16,7 +16,8 @@ extension UIViewController {
     ///   - onDidClose: This block is triggered after the tooltip is dismissed by the user.
     func presentNavbarTooltip(
         anchorItem: UIBarButtonItem,
-        client: NotificationTrayClient
+        client: NotificationTrayClient,
+        notifications: [CommunityNotification]
     ) {
         presentPopover(
             anchorItem: anchorItem,
@@ -26,7 +27,7 @@ extension UIViewController {
                     store: .init(
                         initialState: .init(
                             notifications: IdentifiedArray(
-                                uniqueElements: []
+                                uniqueElements: notifications.map(NotificationRow.State.init)
                             )
                         ),
                         reducer: NotificationTray(client: client)
