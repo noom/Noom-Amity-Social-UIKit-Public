@@ -21,9 +21,8 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     public let exploreVC = AmityCommunityExplorerViewController.make()
     public let myCommunitiesVC = AmityMyCommunityViewController.make()
     private var notificationsItem: UIBarButtonItem?
-    private var getNotificationsCancellable: AnyCancellable?
-    private var getUserInfoCancellable: AnyCancellable?
-    private var notifications = [CommunityNotification]()
+    private var fetchNotificationsAndUserCancellable: AnyCancellable?
+    private var notifications: [CommunityNotification] = []
 
     // MARK: - Buttons -
 
@@ -60,7 +59,7 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
-        fetchNotifications()
+        fetchNotificationsAndUser()
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -113,7 +112,7 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
         notificationItem.tintColor = AmityColorSet.base
         notificationItem.accessibilityIdentifier = "notifications_button"
         self.notificationsItem = notificationItem
-        
+
         navigationItem.rightBarButtonItems = [searchItem, notificationItem]
         // TODO(LTRGTR-168): Set right bar buttons to include notification bell
         setupCloseItem()
@@ -146,31 +145,22 @@ public class AmityCommunityHomePageViewController: AmityPageViewController, Amit
         ])
     }
 
-    private func fetchNotifications() {
+    private func fetchNotificationsAndUser() {
         guard let client = notificationAPIClient else { return }
-        getNotificationsCancellable = client
-            .getNotifications()
-            .sink { [weak self] result in
-                switch result {
-                case .success(let notifications):
-                    self?.notifications = notifications
-                    self?.handleFetched(notifications)
-                case .failure(let error):
-                    print(error)
-                }
+        fetchNotificationsAndUserCancellable = Publishers.Zip(
+            client.getNotifications(),
+            client.getNotificationTrayUser()
+        )
+        .sink { [weak self] fetchNotifcationsResult, fetchUserResult in
+            guard
+                case .success(let notifications) = fetchNotifcationsResult,
+                case .success(let user) = fetchUserResult
+            else {
+                return
             }
-    }
-
-    private func handleFetched(_ notifications: [CommunityNotification]) {
-        guard let client = notificationAPIClient else { return }
-        getUserInfoCancellable = client.getNotificationTrayUser().sink { [weak self] result in
-            switch result {
-            case .success(let user):
-                let count = notifications.filter { $0.lastUpdate > user.lastViewed }.count
-                self?.showBadge(withCount: count)
-            case .failure(let error):
-                print(error)
-            }
+            self?.notifications = notifications
+            let count = notifications.filter { $0.lastUpdate > user.lastViewed }.count
+            self?.showBadge(withCount: count)
         }
     }
 
