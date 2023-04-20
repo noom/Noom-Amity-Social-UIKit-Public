@@ -103,9 +103,7 @@ public final class AmityMyCommunityViewController: AmityViewController, Indicato
             visible = overrideVisible
         }
         
-        if let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata,
-            let businessType = currentUserMetadata[AmityUserModel.businessTypeKey] as? String,
-            businessType == "B2B" {
+        if AmityUIKitManagerInternal.shared.client.currentUser?.metadata.businessType == .b2b {
             visible = false
         }
         

@@ -117,7 +117,7 @@ final class AmityCommunityProfileHeaderViewController: UIViewController {
     }
     
     private func updateMemberLabel(community: AmityCommunityModel?) {
-        let isAnonymous = community?.metadata?[AmityCommunityModel.anonymousKey] as? Bool ?? false
+        let isAnonymous = community?.metadata.isAnonymous ?? false
         
         if !isAnonymous, let community {
             let memberCount = community.membersCount

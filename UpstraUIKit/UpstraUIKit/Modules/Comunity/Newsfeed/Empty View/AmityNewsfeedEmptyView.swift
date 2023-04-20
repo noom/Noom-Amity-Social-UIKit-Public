@@ -54,9 +54,7 @@ final class AmityNewsfeedEmptyView: AmityView {
         createCommunityButton.setTitleColor(AmityColorSet.primary.blend(.shade2), for: .disabled)
         createCommunityButton.isEnabled = Reachability.shared.isConnectedToNetwork
         
-        if let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata,
-            let businessType = currentUserMetadata[AmityUserModel.businessTypeKey] as? String,
-            businessType == "B2B" {
+        if AmityUIKitManagerInternal.shared.client.currentUser?.metadata.businessType == .b2b {
             createCommunityButton.isHidden = true
         }
     }

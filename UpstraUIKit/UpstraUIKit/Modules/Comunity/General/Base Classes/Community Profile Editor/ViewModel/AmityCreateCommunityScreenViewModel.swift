@@ -267,12 +267,11 @@ private extension AmityCreateCommunityScreenViewModel {
             builder.setAvatar(image)
         }
         
-        var metadata: [String: Any] = [:]
-        let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata
-        let languages = currentUserMetadata?[AmityUserModel.localeLanguageKey] as? [String]
-        metadata[AmityUserModel.localeLanguageKey] = languages?.first ?? "en"
-        metadata[AmityUserModel.businessTypeKey] = currentUserMetadata?[AmityUserModel.businessTypeKey] ?? "B2C"
-        builder.setMetadata(metadata)
+        let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.metadata
+        builder.setMetadata([
+            AmityUserModel.localeLanguageKey: currentUserMetadata?.languages.first ?? "en",
+            AmityUserModel.businessTypeKey: (currentUserMetadata?.businessType ?? .b2c).rawValue,
+        ])
         
         repository.createCommunity(with: builder) { [weak self] (community, error) in
             guard let strongSelf = self else { return }
