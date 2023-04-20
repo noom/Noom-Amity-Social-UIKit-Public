@@ -58,7 +58,7 @@ class AmityCategoryPickerScreenViewModel: AmityCategoryPickerScreenViewModelType
                 )
             
             if let model = AmityCommunityCategoryModel.from(category: object, communityList: communities),
-               model.matchesUserSegment(currentUserMetadata) {
+               model.metadata.matchesUserSegment(currentUserMetadata) {
                 categories.append(model)
             }
         }

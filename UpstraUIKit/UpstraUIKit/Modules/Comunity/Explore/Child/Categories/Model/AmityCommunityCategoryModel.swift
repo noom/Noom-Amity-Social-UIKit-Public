@@ -29,14 +29,6 @@ public struct AmityCommunityCategoryModel {
         self.metadata = .init(metadata)
     }
     
-    func matchesUserSegment(_ userMetadata: AmityUserMetadata?) -> Bool {
-        guard let userMetadata else { return false }
-        let partnerId = metadata.partnerId
-        return userMetadata.languages.contains(metadata.language ?? "en")
-            && metadata.businessType == userMetadata.businessType
-            && (partnerId == nil || partnerId == userMetadata.partnerId)
-    }
-    
     static func from(category: AmityCommunityCategory, communityList: AmityCollection<AmityCommunity>) -> AmityCommunityCategoryModel? {
         let communityCount = communityList.count()
 

@@ -48,7 +48,7 @@ extension AmityCategoryPreviewScreenViewModel {
                 switch result {
                 case .success(let category):
                     let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.metadata
-                    strongSelf.categories = category.filter { $0.matchesUserSegment(currentUserMetadata) }
+                    strongSelf.categories = category.filter { $0.metadata.matchesUserSegment(currentUserMetadata) }
                     strongSelf.delegate?.screenViewModel(strongSelf, didRetrieveCategory: category, isEmpty: category.isEmpty)
                 case .failure(let error):
                     strongSelf.delegate?.screenViewModel(strongSelf, didFail: error)
