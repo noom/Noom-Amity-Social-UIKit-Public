@@ -34,9 +34,9 @@ public struct NotificationTrayAPIClient {
     public typealias UpdateNotificationTrayUser = () -> EffectTask<Void>
     public var updateNotificationTrayUser: UpdateNotificationTrayUser
 
-    public struct User: Codable {
+    public struct User {
         let accessCode: String
-        let lastViewed: String
+        let lastViewed: Date
     }
     public typealias GetNotificationTrayUser = () -> EffectTask<Result<User, Error>>
     public var getNotificationTrayUser: GetNotificationTrayUser
@@ -47,4 +47,19 @@ struct NotificationTrayClient {
 
     var close: () -> EffectTask<Void>
     var openNotification: (CommunityNotification.PostID) -> EffectTask<Void>
+}
+
+extension NotificationTrayAPIClient.User: Decodable {
+
+    private enum CodingKeys: String, CodingKey {
+        case accessCode = "userAccessCode"
+        case lastViewed
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        accessCode = try container.decode(String.self, forKey: .accessCode)
+        let lastViewedString = try? container.decode(String.self, forKey: .lastViewed)
+        lastViewed = lastViewedString.flatMap { ISO8601DateFormatter.iso8601Full.date(from: $0) } ?? Date()
+    }
 }

@@ -49,7 +49,7 @@ extension CommunityNotification: Codable {
         actors = (try? container.decode([Actor].self, forKey: .actors)) ?? []
         sourceType = (try? container.decode(SourceType.self, forKey: .sourceType)) ?? .unknown
         let lastUpdateString = try? container.decode(String.self, forKey: .lastUpdate)
-        lastUpdate = lastUpdateString.flatMap { DateFormatter.iso8601Full.date(from: $0) } ?? Date()
+        lastUpdate = lastUpdateString.flatMap { ISO8601DateFormatter.iso8601Full.date(from: $0) } ?? Date()
         imageUrl = (try? container.decode(String.self, forKey: .imageUrl)).flatMap(URL.init)
     }
 }
@@ -110,7 +110,7 @@ extension CommunityNotification {
             sourceType: sourceType,
             path: path,
             imageUrl: imageUrl,
-            lastUpdate: DateFormatter.iso8601Full.date(from: lastUpdate) ?? Date(),
+            lastUpdate: ISO8601DateFormatter.iso8601Full.date(from: lastUpdate) ?? Date(),
             actors: actors,
             hasRead: hasRead
         )
