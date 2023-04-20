@@ -84,10 +84,14 @@ public final class AmityMyCommunityViewController: AmityViewController, Indicato
     // MARK: - Setup views
     private func setupView() {
         title = AmityLocalizedStringSet.Home.homeMe.localizedString
+        
         if communityCreationButtonVisible() {
             let rightItem = UIBarButtonItem(image: AmityIconSet.iconAdd, style: .plain, target: self, action: #selector(createCommunityTap))
             rightItem.tintColor = AmityColorSet.base
             navigationItem.rightBarButtonItem = rightItem
+            createButton.isHidden = false
+        } else {
+            createButton.isHidden = true
         }
     }
     
@@ -98,6 +102,13 @@ public final class AmityMyCommunityViewController: AmityViewController, Indicato
         if let overrideVisible = AmityUIKitManagerInternal.shared.env["amity_uikit_social_community_creation_button_visible"] as? Bool {
             visible = overrideVisible
         }
+        
+        if let currentUserMetadata = AmityUIKitManagerInternal.shared.client.currentUser?.object?.metadata,
+            let businessType = currentUserMetadata[AmityUserModel.businessTypeKey] as? String,
+            businessType == "B2B" {
+            visible = false
+        }
+        
         return visible
     }
     
