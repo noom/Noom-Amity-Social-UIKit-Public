@@ -64,6 +64,14 @@ extension NotificationTray.View: View {
         WithViewStore(store.stateless) { viewStore in
             DismissableTooltipView(title: "Notifications") {
                 VStack(alignment: .leading, spacing: 8.0) {
+                    Button {
+                        viewStore.send(.markAllNotificationsAsRead)
+                    } label: {
+                        Text("Mark all as read")
+                            .font(Font(uiFont: UIFont(name: "UntitledSans-Medium", size: 14) ?? .systemFont(ofSize: 14)))
+                            .foregroundColor(Color(red: 0.02, green: 0.447, blue: 0.478))
+                    }
+
                     ForEachStore(
                         store.scope(
                             state: \.notifications,
@@ -71,14 +79,6 @@ extension NotificationTray.View: View {
                         ),
                         content: NotificationRow.View.init
                     )
-
-                    Spacer(minLength: 0)
-
-                    Button {
-                        viewStore.send(.markAllNotificationsAsRead)
-                    } label: {
-                        Text("Mark all notifications as read")
-                    }
                 }
             } closeAction: {
                 viewStore.send(.closeTapped)

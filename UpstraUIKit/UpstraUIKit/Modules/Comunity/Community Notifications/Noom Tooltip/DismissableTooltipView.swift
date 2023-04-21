@@ -26,7 +26,7 @@ extension DismissableTooltipView: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
-            VStack(alignment: .leading, spacing: textSpacing) {
+            VStack(alignment: .center, spacing: textSpacing) {
                 if !title.isEmpty {
                     Text(title)
                         .fixedSize(horizontal: false, vertical: true)
