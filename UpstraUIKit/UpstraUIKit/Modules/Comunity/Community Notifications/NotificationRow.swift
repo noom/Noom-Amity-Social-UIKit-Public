@@ -98,13 +98,13 @@ extension NotificationRow.View: View {
                         Image(systemName: "intentionallyWrongName")
                             .data(url: viewStore.imageUrl)
                             .frame(width: 28, height: 28)
-                            .background(Color.gray)
+                            .background(Color.backgroundGrey)
                             .clipShape(Circle())
                         VStack(alignment: .leading, spacing: 4) {
                             AttrText(viewStore.attributedText)
                             Text(DateComponentsFormatter.timeAgo.string(from: viewStore.lastUpdate, to: Date()) ?? "")
-                                .font(Font.noomFont(ofSize: 12))
-                                .foregroundColor(Color.backgroundGrey)
+                                .font(Font.noomFontRegular(ofSize: 12))
+                                .foregroundColor(Color.greyThree)
                         }
                         Spacer()
 

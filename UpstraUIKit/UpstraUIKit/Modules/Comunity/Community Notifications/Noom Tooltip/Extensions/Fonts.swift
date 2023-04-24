@@ -7,8 +7,13 @@ import UIKit
 import SwiftUI
 
 extension Font {
-    static func noomFont(ofSize size: CGFloat) -> Self {
+    static func noomFontRegular(ofSize size: CGFloat) -> Self {
         let uiFont = UIFont(name: "UntitledSans-Regular", size: size) ?? .systemFont(ofSize: size)
+        return Font(uiFont as CTFont)
+    }
+
+    static func noomFontMedium(ofSize size: CGFloat) -> Self {
+        let uiFont = UIFont(name: "UntitledSans-Medium", size: size) ?? .systemFont(ofSize: size, weight: .medium)
         return Font(uiFont as CTFont)
     }
 }
