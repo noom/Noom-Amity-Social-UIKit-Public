@@ -58,32 +58,6 @@ extension UIViewController {
     }
 }
 
-extension DateFormatter {
-    static let yyyymmdd: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "YY/MM/dd"
-        return dateFormatter
-    }()
-}
-
-extension Date {
-    func timeAgo() -> String {
-        let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .full
-        formatter.allowedUnits = [.year, .month, .day, .hour, .minute, .second]
-        formatter.zeroFormattingBehavior = .dropAll
-        formatter.maximumUnitCount = 1
-        let value = String(format: formatter.string(from: self, to: Date()) ?? "", locale: .current)
-        return "\(value) ago"
-    }
-}
-
-extension Font {
-    init(uiFont: UIFont) {
-        self = Font(uiFont as CTFont)
-    }
-}
-
 extension Image {
     func data(url: URL?) -> Self {
         if let url = url,
@@ -93,13 +67,5 @@ extension Image {
         }
         return self.resizable()
     }
-}
-
-public extension ISO8601DateFormatter {
-    static let iso8601Full: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return formatter
-    }()
 }
 

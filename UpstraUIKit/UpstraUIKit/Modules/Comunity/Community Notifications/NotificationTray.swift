@@ -68,8 +68,8 @@ extension NotificationTray.View: View {
                         viewStore.send(.markAllNotificationsAsRead)
                     } label: {
                         Text("Mark all as read")
-                            .font(Font(uiFont: UIFont(name: "UntitledSans-Medium", size: 14) ?? .systemFont(ofSize: 14)))
-                            .foregroundColor(Color(red: 0.02, green: 0.447, blue: 0.478))
+                            .font(Font.noomFont(ofSize: 14))
+                            .foregroundColor(Color.lagoon)
                     }
 
                     ForEachStore(

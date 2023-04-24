@@ -26,6 +26,8 @@ struct NotificationRow: ReducerProtocol {
 
     enum Action {
         case rowTapped
+        case fetchImage
+        case imageFetched
     }
 
     func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
@@ -37,6 +39,8 @@ struct NotificationRow: ReducerProtocol {
                 state.notification.postId
                     .map { client.openNotification($0).fireAndForget() } ?? .none
             )
+        case .fetchImage, .imageFetched:
+            return .none
         }
     }
 }
@@ -67,15 +71,15 @@ extension NotificationRow {
 
 extension NotificationRow.ViewState {
     var attributedText: NSAttributedString {
-        let attributedString = NSMutableAttributedString(string: description, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)])
+        let attributedString = NSMutableAttributedString(string: description, attributes: [NSAttributedString.Key.font: UIFont.noomRegular])
         actors.forEach {
             guard let range = description.range(of: $0.name) else { return }
             let convertedRange = NSRange(range, in: description)
             attributedString.addAttribute(NSAttributedString.Key.font,
-                                          value: UIFont.systemFont(ofSize: 14, weight: .bold),
+                                          value: UIFont.noomRegularBold,
                                       range: convertedRange)
             attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-                                          value: UIColor(red: 0.984, green: 0.318, blue: 0.231, alpha: 1),
+                                          value: UIColor.taraco,
                                       range: convertedRange)
         }
         return attributedString
@@ -91,22 +95,22 @@ extension NotificationRow.View: View {
             } label: {
                 VStack(spacing: 12) {
                     HStack(spacing: 8) {
-                        Image(systemName: ".fill")
+                        Image(systemName: "intentionallyWrongName")
                             .data(url: viewStore.imageUrl)
                             .frame(width: 28, height: 28)
                             .background(Color.gray)
                             .clipShape(Circle())
                         VStack(alignment: .leading, spacing: 4) {
                             AttrText(viewStore.attributedText)
-                            Text(viewStore.lastUpdate.timeAgo())
-                                .font(Font(uiFont: UIFont(name: "UntitledSans-Regular", size: 12) ?? .systemFont(ofSize: 12)))
-                                .foregroundColor(Color(red: 0.4, green: 0.4, blue: 0.4))
+                            Text(DateComponentsFormatter.timeAgo.string(from: viewStore.lastUpdate, to: Date()) ?? "")
+                                .font(Font.noomFont(ofSize: 12))
+                                .foregroundColor(Color.backgroundGrey)
                         }
                         Spacer()
 
                         if !viewStore.hasRead {
                             Circle()
-                                .foregroundColor(Color(red: 0.904, green: 0.318, blue: 0.231))
+                                .foregroundColor(Color.taraco)
                                 .frame(width: 12, height: 12)
                         }
                     }
@@ -118,7 +122,7 @@ extension NotificationRow.View: View {
     }
 }
 
-struct AttrText: UIViewRepresentable {
+private struct AttrText: UIViewRepresentable {
 
     var attributedText: NSAttributedString?
 
